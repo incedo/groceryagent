@@ -117,7 +117,7 @@ observe a pull-request run where the build and smoke test pass and no publicatio
 
 ## 8. Completion Criteria
 
-- [ ] Pull requests run the complete Gradle and isolated native backend gates.
+- [x] Pull requests run the complete Gradle and isolated native backend gates.
 - [x] The pipeline builds the GraalVM microservice once per workflow run.
 - [x] The tested image runs with PostgreSQL and passes API health/query checks.
 - [x] The runtime is verified as non-root.
@@ -132,6 +132,10 @@ The loop becomes `SATISFIED` after a pull-request run proves the isolated native
 eligible push proves this repository can schedule the `homelab` job, complete the native smoke test,
 and publish privately. A missing repository runner assignment is an operational prerequisite, not
 permission to use a public registry.
+
+Pull request run `30923418466` proved the isolated path: the 102-task multiplatform gate passed in
+6m30s and the native PostgreSQL/API/non-root smoke passed on GitHub-hosted `ubuntu-latest` in 4m48s.
+The registry boundary and publication steps were both skipped as required for a pull request.
 
 ## 9. Next Loop
 
