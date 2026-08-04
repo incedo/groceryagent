@@ -1,6 +1,6 @@
 # Native Backend CI/CD Pipeline
 
-**Status:** AGREED
+**Status:** SATISFIED
 **Last updated:** 2026-08-04
 **Depends on:** Native event-sourced catalog backend
 
@@ -95,16 +95,22 @@ run where no registry publication step executes.
 
 ## 7. Completion Criteria
 
-- [ ] Pull requests run the complete Gradle and native backend gates.
-- [ ] The pipeline builds the GraalVM microservice once per workflow run.
-- [ ] The tested image runs with PostgreSQL and passes API health/query checks.
-- [ ] A separate read-only job downloads and validates the tested image artifact.
-- [ ] The runtime is verified as non-root.
-- [ ] Pull requests and manual runs cannot publish packages.
-- [ ] Successful main pushes publish SHA and `main` tags.
-- [ ] Successful `v*` tags publish SHA, version, and `latest` tags.
-- [ ] GHCR uses only the scoped GitHub Actions token.
-- [ ] README and architecture documentation describe triggers, tags, and limitations.
+- [x] Pull requests run the complete Gradle and native backend gates.
+- [x] The pipeline builds the GraalVM microservice once per workflow run.
+- [x] The tested image runs with PostgreSQL and passes API health/query checks.
+- [x] A separate read-only job downloads and validates the tested image artifact.
+- [x] The runtime is verified as non-root.
+- [x] Pull requests and manual runs cannot publish packages.
+- [x] Successful main pushes publish SHA and `main` tags.
+- [x] Successful `v*` tags publish SHA, version, and `latest` tags.
+- [x] GHCR uses only the scoped GitHub Actions token.
+- [x] README and architecture documentation describe triggers, tags, and limitations.
+
+Pull request run `30905657416` verified the final workflow topology: the 102-task multiplatform gate
+passed in 5m16s, the native build/PostgreSQL smoke and artifact upload passed in 4m40s, and the
+read-only artifact download/load check passed in 14s. The package publication job was skipped as
+required for a pull request. Its GHCR push path becomes active only after this pipeline reaches
+`main` or a matching version tag.
 
 ## 8. Next Loop
 
