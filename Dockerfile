@@ -12,10 +12,12 @@ RUN --mount=type=cache,target=/root/.gradle \
     ./gradlew :apps:backend:nativeCompile --no-daemon \
       -Dorg.gradle.java.installations.paths=/opt/jdk17
 
-FROM oraclelinux:10-slim
-RUN microdnf install -y ca-certificates shadow-utils zlib && \
-    microdnf clean all && \
-    useradd --system --uid 10001 --no-create-home --shell /sbin/nologin grocery
+FROM debian:bookworm-slim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates zlib1g && \
+    rm -rf /var/lib/apt/lists/* && \
+    groupadd --system --gid 10001 grocery && \
+    useradd --system --uid 10001 --gid grocery --no-create-home --shell /usr/sbin/nologin grocery
 WORKDIR /app
 COPY --from=native-builder --chown=grocery:grocery \
     /workspace/apps/backend/build/native/nativeCompile/grocery-catalog-service \
