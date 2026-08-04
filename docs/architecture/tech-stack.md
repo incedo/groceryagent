@@ -288,7 +288,10 @@ GitHub Actions runs `./gradlew check` on `macos-15` for JVM, iOS Simulator, Wasm
 line-count gates. A separate Ubuntu job builds the GraalVM native container, starts PostgreSQL, and
 checks liveness, readiness, and a database-backed catalog query. Docker-dependent JUnit classes
 skip only where Docker is unavailable; the native Ubuntu job keeps the container contract required.
-No provider credentials are available to either job.
+The two jobs run in parallel. A push-only publication job waits for both, loads the tested image
+artifact, and publishes SHA/channel tags to GHCR without rebuilding. Pull requests have no
+package-write permission, and no provider credentials are available to any job. See the
+[native backend CI/CD pipeline](native-backend-ci-cd.md).
 
 Kover `0.9.8`, verified as the latest stable release from the official project on 2026-08-02, generates HTML and XML reports during `integration/picnic-client` checks. Capture-derived layout and Ktor transport tests currently measure 95.32% JVM line coverage and 65.46% branch coverage; non-regression floors are 95% and 64% respectively. Kover does not measure Kotlin/Native or Wasm execution, so those target tests remain independent quality gates. It passes with Gradle 9.6.1 but emits a dependency-notation deprecation that must be revalidated or resolved before a future Gradle 10 upgrade. See [JVM code coverage](code-coverage.md).
 

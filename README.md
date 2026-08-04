@@ -33,6 +33,7 @@ The project is being established with the same shared-first architecture used by
 - [Picnic catalog object model](docs/architecture/picnic-catalog-object-model.md)
 - [Canonical catalog and backend query API](docs/architecture/canonical-catalog-backend.md)
 - [Native event-sourced catalog backend](docs/architecture/native-event-sourced-backend.md)
+- [Native backend CI/CD pipeline](docs/architecture/native-backend-ci-cd.md)
 - [Sanitized Picnic capture fixtures](docs/architecture/picnic-sanitized-fixtures.md)
 - [Picnic capture coverage expansion](docs/architecture/picnic-capture-coverage.md)
 - [Ktor transport contract](docs/architecture/ktor-transport-contract.md)
@@ -68,11 +69,17 @@ Run its deterministic contract checks with:
 ./gradlew :integration:picnic-client:jvmTest lineCountCheck
 ```
 
-Pull requests run the complete JVM, iOS Simulator, Wasm, line-count, and coverage quality gate through GitHub Actions:
+Pull requests run the complete JVM, iOS Simulator, Wasm, line-count, and coverage gate alongside a
+native microservice build and PostgreSQL smoke test through GitHub Actions:
 
 ```shell
 ./gradlew check
 ```
+
+Successful pushes to `main` publish the already-tested image as
+`ghcr.io/incedo/grocery-catalog-service:sha-<commit>` and `:main`. A successful `v*` Git tag also
+publishes the version without its leading `v` and `:latest`. Pull requests and manually dispatched
+runs never publish. See the [CI/CD contract](docs/architecture/native-backend-ci-cd.md).
 
 Generate JVM coverage reports with:
 
