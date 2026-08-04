@@ -18,6 +18,7 @@ services:
       - grocery-postgres:/var/lib/postgresql
 
   catalog-service:
+    image: ${CATALOG_SERVICE_IMAGE:-grocery-automate-catalog-service:local}
     build:
       context: .
       dockerfile: Dockerfile
