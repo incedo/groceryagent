@@ -285,12 +285,15 @@ PostgreSQL; live Picnic access remains opt-in.
 The Picnic integration includes a JVM-only, read-only smoke runner backed by the Ktor Java engine at the repository's existing Ktor version. It reads a captured session from an ignored local env file without executing shell content, performs search and product-detail reads through the production ports and adapters, and never runs as part of `check` or CI.
 
 GitHub Actions runs `./gradlew check` on `macos-15` for JVM, iOS Simulator, Wasm, coverage, and
-line-count gates. A separate Ubuntu job builds the GraalVM native container, starts PostgreSQL, and
-checks liveness, readiness, and a database-backed catalog query. Docker-dependent JUnit classes
-skip only where Docker is unavailable; the native Ubuntu job keeps the container contract required.
-The two jobs run in parallel. A push-only publication job waits for both, loads the tested image
-artifact, and publishes SHA/channel tags to GHCR without rebuilding. Pull requests have no
-package-write permission, and no provider credentials are available to any job. See the
+line-count gates. After that gate passes, a native job builds the GraalVM container, starts
+PostgreSQL, and checks liveness, readiness, and a database-backed catalog query. Pull requests and
+manual runs use an isolated GitHub-hosted Ubuntu runner; trusted main and tag pushes use the
+self-hosted `homelab` runner. Docker-dependent JUnit classes skip only where Docker is unavailable;
+the native job keeps the container contract required. On eligible pushes, that same homelab job
+publishes the exact tested image to
+`registry.home.intelliworks.nl:5000/grocery-automate/catalog-service`; it does not upload a private
+image archive to GitHub or rebuild for release. Pull requests never publish, GitHub-hosted runners
+cannot publish, and no provider credentials are available to any job. See the
 [native backend CI/CD pipeline](native-backend-ci-cd.md).
 
 Kover `0.9.8`, verified as the latest stable release from the official project on 2026-08-02, generates HTML and XML reports during `integration/picnic-client` checks. Capture-derived layout and Ktor transport tests currently measure 95.32% JVM line coverage and 65.46% branch coverage; non-regression floors are 95% and 64% respectively. Kover does not measure Kotlin/Native or Wasm execution, so those target tests remain independent quality gates. It passes with Gradle 9.6.1 but emits a dependency-notation deprecation that must be revalidated or resolved before a future Gradle 10 upgrade. See [JVM code coverage](code-coverage.md).

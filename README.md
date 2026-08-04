@@ -76,10 +76,12 @@ native microservice build and PostgreSQL smoke test through GitHub Actions:
 ./gradlew check
 ```
 
-Successful pushes to `main` publish the already-tested image as
-`ghcr.io/incedo/grocery-catalog-service:sha-<commit>` and `:main`. A successful `v*` Git tag also
-publishes the version without its leading `v` and `:latest`. Pull requests and manually dispatched
-runs never publish. See the [CI/CD contract](docs/architecture/native-backend-ci-cd.md).
+Successful pushes to `main` publish the already-tested image privately as
+`registry.home.intelliworks.nl:5000/grocery-automate/catalog-service:sha-<commit>` and `:main`. A
+successful `v*` Git tag also publishes the version without its leading `v` and `:latest`. Publishing
+runs only on the LAN-connected `homelab` runner; pull requests and manually dispatched runs never
+publish, and there is no public-registry fallback. See the
+[CI/CD contract](docs/architecture/native-backend-ci-cd.md).
 
 Generate JVM coverage reports with:
 
