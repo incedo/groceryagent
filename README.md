@@ -29,6 +29,7 @@ The project is being established with the same shared-first architecture used by
 - [Feature and bounded-context spec template](docs/architecture/TEMPLATE.md)
 - [Picnic Kotlin client compatibility and architecture](docs/architecture/picnic-client.md)
 - [Picnic captured-contract reconciliation and implementation loops](docs/architecture/picnic-contract-reconciliation.md)
+- [Opt-in Picnic live smoke client](docs/architecture/picnic-live-smoke-client.md)
 - [Picnic catalog object model](docs/architecture/picnic-catalog-object-model.md)
 - [Sanitized Picnic capture fixtures](docs/architecture/picnic-sanitized-fixtures.md)
 - [Picnic capture coverage expansion](docs/architecture/picnic-capture-coverage.md)
@@ -86,3 +87,15 @@ search.products.forEach { product ->
     println("${product.name}: ${product.priceCents} cents")
 }
 ```
+
+For a manual read-only check against Picnic, the JVM smoke client can consume the auth file
+created by the local API-discovery project. It never runs in ordinary tests or CI:
+
+```shell
+./gradlew :integration:picnic-client:picnicLiveSmoke \
+  -PpicnicEnvFile=/Users/kees/data/projects/picnic-api-discovery/.secrets/auth.env \
+  -PpicnicQuery=pasta
+```
+
+See [the live smoke-client contract](docs/architecture/picnic-live-smoke-client.md) for its
+environment shape, safety boundaries, and optional product-id selection.
