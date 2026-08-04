@@ -12,6 +12,8 @@ This document defines project conventions for Android phone and tablet, iOS, des
   - `integration/*`: provider, persistence, and platform adapters.
 - Keep the functional dependency direction one-way: `apps -> shared -> feature -> core`.
 - Integration modules implement core ports and are wired at the app boundary.
+- The implemented catalog slice keeps canonical contracts in `core/catalog`, Picnic mapping in
+  `integration/picnic-client`, and JVM HTTP composition in `apps/backend`.
 
 ## 2. Shared-First Development
 

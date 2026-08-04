@@ -1,7 +1,7 @@
 # Grocery Recommendations Tech Stack
 
 **Status:** AGREED
-**Last updated:** 2026-08-02
+**Last updated:** 2026-08-04
 
 ## 1. Product Direction
 
@@ -67,6 +67,11 @@ integration/postgres
 ```
 
 Add modules only when their boundary is real; the list is a target structure, not permission to create empty modules.
+
+The first implemented vertical slice uses `core/catalog` for provider-neutral catalog models and
+the query port, `integration/picnic-client` for Picnic transport and canonical mapping, and
+`apps/backend` for the local Ktor search/detail API. This read-only query path deliberately has no
+durable event or projection because it does not change domain state.
 
 ## 3. Client Stack
 
@@ -266,11 +271,16 @@ Minimum automated coverage includes:
 
 Live provider tests are opt-in. Normal CI uses recorded, license-compatible fixtures and fake adapters so it remains deterministic and does not consume provider quotas.
 
+The backend route suite uses Ktor's test host with a fake `ProductCatalogPort` to verify canonical
+search/detail JSON, input validation, not-found behavior, and redacted provider failures. A manual
+read-only run against the ignored discovery environment verified current Picnic search and detail
+through the production Ktor client, current-route mapper, canonical adapter, and backend routes.
+
 The Picnic integration includes a JVM-only, read-only smoke runner backed by the Ktor Java engine at the repository's existing Ktor version. It reads a captured session from an ignored local env file without executing shell content, performs search and product-detail reads through the production ports and adapters, and never runs as part of `check` or CI.
 
 GitHub Actions runs the full `./gradlew check` quality gate on `macos-15`, which can execute JVM, iOS Simulator, and Wasm browser tests in one job. The workflow uses the current stable major releases `actions/checkout@v6` and `actions/setup-java@v5`, verified from their official repositories on 2026-08-02, with Temurin JDK 17 and Gradle caching. No provider credentials are available to this workflow.
 
-Kover `0.9.8`, verified as the latest stable release from the official project on 2026-08-02, generates HTML and XML reports during `integration/picnic-client` checks. Capture-derived layout and Ktor transport tests currently measure 95.44% JVM line coverage and 64.94% branch coverage; non-regression floors are 95% and 64% respectively. Kover does not measure Kotlin/Native or Wasm execution, so those target tests remain independent quality gates. It passes with Gradle 9.6.1 but emits a dependency-notation deprecation that must be revalidated or resolved before a future Gradle 10 upgrade. See [JVM code coverage](code-coverage.md).
+Kover `0.9.8`, verified as the latest stable release from the official project on 2026-08-02, generates HTML and XML reports during `integration/picnic-client` checks. Capture-derived layout and Ktor transport tests currently measure 95.32% JVM line coverage and 65.46% branch coverage; non-regression floors are 95% and 64% respectively. Kover does not measure Kotlin/Native or Wasm execution, so those target tests remain independent quality gates. It passes with Gradle 9.6.1 but emits a dependency-notation deprecation that must be revalidated or resolved before a future Gradle 10 upgrade. See [JVM code coverage](code-coverage.md).
 
 Use the Gradle wrapper, centralize dependency versions in `gradle/libs.versions.toml`, target JDK 17, and keep touched Kotlin and Gradle source files at or under 300 lines.
 

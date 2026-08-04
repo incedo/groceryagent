@@ -37,10 +37,13 @@ Picnic HTTP response
   -> raw JsonElement inside integration adapter
   -> discovery-backed catalog mapper
   -> typed PicnicSearchResult / PicnicProductDetails
-  -> future canonical grocery adapter
+  -> PicnicCanonicalCatalogAdapter
+  -> core/catalog models
 ```
 
-The typed provider model is not imported by features. A later adapter maps it into canonical `Product`, `ProductComposition`, `ProductOffer`, money, quantity, freshness and provenance models.
+The typed provider model is not imported by features. `PicnicCanonicalCatalogAdapter` now maps it
+into canonical `Product`, `ProductComposition`, `ProductOffer`, money, quantity, freshness, and
+provenance models as specified in [Canonical Catalog and Backend Query API](canonical-catalog-backend.md).
 
 ## 5. Model Invariants
 
@@ -85,4 +88,7 @@ The typed provider model is not imported by features. A later adapter maps it in
 
 ## 9. Next Loop
 
-Add typed clean-data objects for cart, user, delivery, wallet and checkout preflight, then map the provider objects into canonical core models and event-backed projections.
+The canonical query adapter and local backend are complete. The next catalog loop adds durable
+`ProductImported` and `OfferObserved` events, idempotent storage, rebuildable projections, and
+frontend synchronization. Typed clean-data objects for cart, user, delivery, wallet, and checkout
+preflight remain separate future loops.

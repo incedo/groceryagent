@@ -43,7 +43,9 @@ Ktor | secure storage | system/fake adapters
 - `domain` contains provider-specific configuration and typed convenience values.
 - `PicnicClient` is a façade that wires the hexagon; it is not a domain model.
 
-Features must not import the concrete Ktor adapter or Picnic payload models. A future `integration/picnic-catalog-adapter` maps Picnic data into core `Product`, `ProductOffer`, freshness, and provenance models.
+Features must not import the concrete Ktor adapter or Picnic payload models.
+`PicnicCanonicalCatalogAdapter` maps Picnic data into `core/catalog` product, composition, offer,
+money, quantity, freshness, and provenance models for backend and future feature consumers.
 
 ## Supported Targets and Initial Versions
 
@@ -112,7 +114,9 @@ Required commands:
 ## Out of Scope and Next Loops
 
 - Live account verification is excluded because it needs private credentials and may mutate a real Picnic account.
-- Canonical Grocery Automate mapping is a follow-up adapter, not part of the provider client.
+- Canonical Grocery Automate catalog mapping is implemented as an inward-facing adapter in this
+  integration module; durable catalog ingestion remains a follow-up.
 - Exhaustive typed models for dynamic Fusion/PML components are intentionally avoided. Add stable provider objects incrementally with synthetic or sanitized, license-compatible fixtures.
-- Backend proxying, event ingestion, source snapshots, projections, and frontend synchronization form the next end-to-end loop.
+- The read-only canonical backend query API is implemented. Event ingestion, durable source
+  snapshots, projections, and frontend synchronization form the next end-to-end loop.
 - Request-host/header drift, current payload alignment, HTTP outcome modeling, typed clean responses, and legacy-route disposition are bounded as PCR-001 through PCR-006 in [Picnic Contract Reconciliation](picnic-contract-reconciliation.md).
