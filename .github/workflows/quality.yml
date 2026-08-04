@@ -35,13 +35,16 @@ jobs:
         run: ./gradlew check --no-daemon
 
   native-backend:
-    name: Build and verify native backend
-    runs-on: ubuntu-latest
+    name: Build, verify, and deliver native backend
+    needs: check
+    runs-on: ${{ github.event_name == 'push' && 'homelab' || 'ubuntu-latest' }}
     timeout-minutes: 30
     permissions:
       contents: read
     env:
       LOCAL_IMAGE: grocery-catalog-service:${{ github.sha }}
+      REGISTRY_HOST: registry.home.intelliworks.nl:5000
+      REGISTRY_IMAGE: registry.home.intelliworks.nl:5000/grocery-automate/catalog-service
 
     steps:
       - name: Check out repository
@@ -66,18 +69,36 @@ jobs:
           curl --fail --silent --show-error 'http://127.0.0.1:8080/api/v1/events?after=0'
           test "$(docker inspect --format '{{.Config.User}}' grocery-automate-catalog-service-1)" = grocery
 
-      - name: Export tested image
+      - name: Verify private registry boundary
+        if: github.event_name == 'push'
         run: |
           set -euo pipefail
-          docker save "$LOCAL_IMAGE" | gzip -1 > /tmp/grocery-catalog-service.tar.gz
+          test "$REGISTRY_HOST" = "registry.home.intelliworks.nl:5000"
+          curl --fail --silent --show-error "http://$REGISTRY_HOST/v2/"
 
-      - name: Upload tested image artifact
-        uses: actions/upload-artifact@v7.0.1
-        with:
-          name: native-catalog-service-${{ github.sha }}
-          path: /tmp/grocery-catalog-service.tar.gz
-          compression-level: 0
-          retention-days: 1
+      - name: Publish tested image to homelab
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha_tag="$REGISTRY_IMAGE:sha-$GITHUB_SHA"
+          docker tag "$LOCAL_IMAGE" "$sha_tag"
+          docker push "$sha_tag"
+
+          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+            docker tag "$LOCAL_IMAGE" "$REGISTRY_IMAGE:main"
+            docker push "$REGISTRY_IMAGE:main"
+          elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            version="${GITHUB_REF_NAME#v}"
+            [[ "$version" =~ ^[0-9][0-9A-Za-z._-]{0,127}$ ]] || {
+              echo "Version tag must start with a digit and be a valid container tag." >&2
+              exit 1
+            }
+            docker tag "$LOCAL_IMAGE" "$REGISTRY_IMAGE:$version"
+            docker tag "$LOCAL_IMAGE" "$REGISTRY_IMAGE:latest"
+            docker push "$REGISTRY_IMAGE:$version"
+            docker push "$REGISTRY_IMAGE:latest"
+          fi
 
       - name: Show service logs after failure
         if: failure()
@@ -88,76 +109,3 @@ jobs:
         env:
           CATALOG_SERVICE_IMAGE: ${{ env.LOCAL_IMAGE }}
         run: docker compose down --volumes
-
-  verify-image-artifact:
-    name: Verify native image artifact
-    needs: native-backend
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    env:
-      LOCAL_IMAGE: grocery-catalog-service:${{ github.sha }}
-
-    steps:
-      - name: Download tested image artifact
-        uses: actions/download-artifact@v8.0.1
-        with:
-          name: native-catalog-service-${{ github.sha }}
-          path: /tmp/native-image
-
-      - name: Load and verify tested image
-        run: |
-          set -euo pipefail
-          gzip --decompress --stdout /tmp/native-image/grocery-catalog-service.tar.gz | docker load
-          test "$(docker image inspect --format '{{.Config.User}}' "$LOCAL_IMAGE")" = grocery
-
-  publish:
-    name: Publish tested native image
-    if: github.event_name == 'push'
-    needs: [check, verify-image-artifact]
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: read
-      packages: write
-    env:
-      LOCAL_IMAGE: grocery-catalog-service:${{ github.sha }}
-      REGISTRY_IMAGE: ghcr.io/${{ github.repository_owner }}/grocery-catalog-service
-
-    steps:
-      - name: Download tested image artifact
-        uses: actions/download-artifact@v8.0.1
-        with:
-          name: native-catalog-service-${{ github.sha }}
-          path: /tmp/native-image
-
-      - name: Load tested image
-        run: gzip --decompress --stdout /tmp/native-image/grocery-catalog-service.tar.gz | docker load
-
-      - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io --username "${{ github.actor }}" --password-stdin
-
-      - name: Publish tested image
-        shell: bash
-        run: |
-          set -euo pipefail
-          registry_image="${REGISTRY_IMAGE,,}"
-          sha_tag="$registry_image:sha-$GITHUB_SHA"
-          docker tag "$LOCAL_IMAGE" "$sha_tag"
-          docker push "$sha_tag"
-
-          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
-            docker tag "$LOCAL_IMAGE" "$registry_image:main"
-            docker push "$registry_image:main"
-          elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
-            version="${GITHUB_REF_NAME#v}"
-            [[ "$version" =~ ^[0-9][0-9A-Za-z._-]{0,127}$ ]] || {
-              echo "Version tag must start with a digit and be a valid container tag." >&2
-              exit 1
-            }
-            docker tag "$LOCAL_IMAGE" "$registry_image:$version"
-            docker tag "$LOCAL_IMAGE" "$registry_image:latest"
-            docker push "$registry_image:$version"
-            docker push "$registry_image:latest"
-          fi

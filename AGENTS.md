@@ -202,6 +202,31 @@ Project rules for contributors and coding agents working in this repository.
 - Do not create a commit while relevant required tests fail. If a known unrelated check fails, document the exact failure and evidence instead of hiding it.
 - One request uses one `codex/*` branch and one pull request unless the user explicitly asks to group work.
 
+## Private Registry and Delivery Rules
+
+- Project-built container images are private artifacts and must publish only to the LAN-only
+  homelab registry at `registry.home.intelliworks.nl:5000`.
+- Never publish Grocery Automate images to GHCR, Docker Hub, or another public registry unless the
+  user explicitly changes this rule in a separately agreed architecture loop.
+- Public registries may be used read-only for pinned and verified upstream base images and build
+  dependencies; this does not authorize publishing project artifacts there.
+- Homelab image publication runs only on the self-hosted `homelab` GitHub Actions runner after all
+  required tests and native container checks pass. GitHub-hosted runners must not publish images.
+- Pull requests, especially forks, must not run untrusted code on the self-hosted homelab runner;
+  use an isolated GitHub-hosted runner for their native build and smoke tests.
+- The homelab registry is intentionally LAN-only plain HTTP. Do not expose it publicly, add public
+  ingress, disable TLS verification for other hosts, or configure it as insecure outside managed
+  homelab Docker daemons.
+- Use `registry.home.intelliworks.nl:5000/grocery-automate/<service>` image names. Always publish an
+  immutable `sha-<full-git-sha>` tag; mutable `main` or `latest` tags may move only after the same
+  tested image is published successfully.
+- Build once and publish the exact image that passed PostgreSQL integration and native readiness
+  checks. Do not rebuild a separate release image.
+- Do not put registry credentials, provider credentials, database secrets, or private image
+  archives in the repository, public package stores, workflow artifacts, logs, or container layers.
+- If the homelab runner or registry is unavailable, fail or leave delivery pending; never fall back
+  automatically to a public registry.
+
 ## Implementation Loop Rules
 
 - Every non-trivial feature starts from an `AGREED` spec using `docs/architecture/TEMPLATE.md` or an equivalent existing spec.
