@@ -32,6 +32,7 @@ The project is being established with the same shared-first architecture used by
 - [Opt-in Picnic live smoke client](docs/architecture/picnic-live-smoke-client.md)
 - [Picnic catalog object model](docs/architecture/picnic-catalog-object-model.md)
 - [Canonical catalog and backend query API](docs/architecture/canonical-catalog-backend.md)
+- [Native event-sourced catalog backend](docs/architecture/native-event-sourced-backend.md)
 - [Sanitized Picnic capture fixtures](docs/architecture/picnic-sanitized-fixtures.md)
 - [Picnic capture coverage expansion](docs/architecture/picnic-capture-coverage.md)
 - [Ktor transport contract](docs/architecture/ktor-transport-contract.md)
@@ -47,11 +48,13 @@ The project is being established with the same shared-first architecture used by
 - `core/*` canonical models, rules, events, and design primitives
 - `integration/*` retailer, catalog, recipe, persistence, and platform adapters
 
-Implemented modules in the first catalog slice are:
+Implemented catalog-backend modules are:
 
 - `core/catalog`: provider-neutral product, composition, offer, money, quantity, provenance, and catalog-port contracts;
+- `core/events`: platform-neutral event envelopes, catalog events, append contracts, and the deterministic catalog reducer;
 - `integration/picnic-client`: Picnic client plus the adapter from Picnic objects to canonical catalog objects;
-- `apps/backend`: local JVM Ktor composition root and canonical product search/detail API.
+- `integration/postgres`: JDBC event store, checksum-protected migrations, and rebuildable catalog projection;
+- `apps/backend`: Ktor CIO composition root, import command, persisted catalog queries, cursor feed, and native-image entry point.
 
 The first provider integration is `integration/picnic-client`, a Kotlin Multiplatform ports-and-adapters client matching the public route surface of `MRVDH/picnic-api` 4.6.0. It exposes Picnic service ports while keeping HTTP, authentication storage, time, and password hashing replaceable at the composition root.
 
@@ -107,16 +110,21 @@ created by the local API-discovery project. It never runs in ordinary tests or C
 See [the live smoke-client contract](docs/architecture/picnic-live-smoke-client.md) for its
 environment shape, safety boundaries, and optional product-id selection.
 
-Run the read-only local backend with the same ignored environment file:
+Run the complete native backend and PostgreSQL locally:
 
 ```shell
-PICNIC_ENV_FILE=/Users/kees/data/projects/picnic-api-discovery/.secrets/auth.env \
-  ./gradlew :apps:backend:run
+docker compose up --build --wait
 
-curl --get --data-urlencode 'query=pasta' --data-urlencode 'limit=20' \
+curl http://127.0.0.1:8080/health/ready
+curl --get --data-urlencode 'query=pasta' \
   http://127.0.0.1:8080/api/v1/products
-curl http://127.0.0.1:8080/api/v1/products/picnic:nl:s1173335
+docker compose down --volumes
 ```
 
-The backend binds to loopback by default and returns canonical JSON. It is a local development
-service, not a production-ready public proxy.
+Catalog queries read the PostgreSQL projection. Provider discovery remains explicitly transient at
+`GET /api/v1/provider-products`; importing a selected product requires an `Idempotency-Key` UUID at
+`POST /api/v1/products/{id}/imports`. For provider-backed discovery/imports, mount the ignored
+Picnic environment file read-only through a local Compose override and set `PICNIC_ENV_FILE` to its
+container path. The checked-in Compose service intentionally starts without provider credentials
+and reports that adapter as unavailable. Local ports bind to loopback and database credentials are
+development-only.
