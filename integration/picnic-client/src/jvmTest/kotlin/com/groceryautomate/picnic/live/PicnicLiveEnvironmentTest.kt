@@ -1,5 +1,7 @@
 package com.groceryautomate.picnic.live
 
+import com.groceryautomate.picnic.adapter.out.config.PicnicEnvironmentFile
+import com.groceryautomate.picnic.adapter.out.config.parsePicnicEnvironment
 import java.nio.file.Files
 import kotlin.io.path.createTempFile
 import kotlin.test.Test
@@ -21,7 +23,7 @@ class PicnicLiveEnvironmentTest {
             """.trimIndent()
         )
 
-        val environment = PicnicLiveEnvironment.load(file)
+        val environment = PicnicEnvironmentFile.load(file)
 
         assertEquals("secret-token", environment.authToken)
         assertEquals("de", environment.config.country.apiCode)
@@ -49,7 +51,7 @@ class PicnicLiveEnvironmentTest {
             """.trimIndent()
         )
 
-        val environment = PicnicLiveEnvironment.load(file)
+        val environment = PicnicEnvironmentFile.load(file)
 
         assertEquals("fr", environment.config.country.apiCode)
         assertEquals(10100, environment.config.clientId)
@@ -62,7 +64,7 @@ class PicnicLiveEnvironmentTest {
     @Test
     fun `rejects malformed files without echoing secret values`() {
         val failure = assertFailsWith<IllegalArgumentException> {
-            parseEnvironment(listOf("not an assignment with secret-token"))
+            parsePicnicEnvironment(listOf("not an assignment with secret-token"))
         }
 
         assertEquals("Invalid environment assignment on line 1.", failure.message)

@@ -15,4 +15,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "grocery-automate"
 
+include(":apps:backend")
+include(":core:catalog")
 include(":integration:picnic-client")

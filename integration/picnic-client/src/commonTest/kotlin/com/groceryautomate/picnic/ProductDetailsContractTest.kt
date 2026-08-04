@@ -47,6 +47,7 @@ class ProductDetailsContractTest {
         assertEquals("Milk", details.product.name)
         assertEquals("Dairy", details.product.brand)
         assertEquals(189, details.product.priceCents)
+        assertEquals("1 l", details.product.unitQuantity)
         assertEquals(listOf("Milk"), details.allergens.contains)
         assertEquals(listOf("Nuts"), details.allergens.mayContain)
         assertEquals(PicnicAllergenDataStatus.OBSERVED, details.allergens.status)

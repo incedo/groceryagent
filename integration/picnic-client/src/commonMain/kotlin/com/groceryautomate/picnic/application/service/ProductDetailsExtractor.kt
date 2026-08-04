@@ -28,7 +28,7 @@ internal fun extractProductDetails(
         name = base.name.ifBlank { mainContainer.headerText().orEmpty() },
         brand = base.brand ?: mainContainer.brandText(),
         priceCents = base.priceCents ?: mainContainer?.firstPositiveInt("price"),
-        unitQuantity = base.unitQuantity ?: mainContainer.quantityTexts().getOrNull(0),
+        unitQuantity = base.unitQuantity ?: mainContainer.quantityText(),
         imageId = base.imageId ?: extractImageIds(page).firstOrNull(),
         maxCount = base.maxCount ?: providerProduct?.intOrNull("max_count")
     )
@@ -77,14 +77,16 @@ private fun JsonObject?.brandText(): String? = this?.allObjects()
     ?.stringOrNull("markdown")
     ?.let(::stripColorMarkup)
 
-private fun JsonObject?.quantityTexts(): List<String> = this?.allObjects()
-    ?.firstOrNull { it.string("type") == "STACK" }
-    ?.get("children")
-    ?.let { it as? JsonArray }
-    .orEmpty()
-    .filterIsInstance<JsonObject>()
-    .filter { it.string("type") == "RICH_TEXT" }
-    .mapNotNull { it.stringOrNull("markdown")?.let(::stripColorMarkup) }
+private val quantityTextPattern = Regex(
+    "^(?:\\d+\\s*[x×]\\s*)?\\d+(?:[.,]\\d+)?\\s*" +
+        "(?:g|gr|gram|grammen|kg|kilo|kilogram|ml|milliliter|l|liter|litre|stuk|stuks|item|items)$",
+    RegexOption.IGNORE_CASE
+)
+
+private fun JsonObject?.quantityText(): String? = this?.allObjects()
+    ?.filter { it.string("type") == "RICH_TEXT" }
+    ?.mapNotNull { it.stringOrNull("markdown")?.let(::stripColorMarkup) }
+    ?.firstOrNull(quantityTextPattern::matches)
 
 private fun JsonElement.firstPositiveInt(name: String): Int? = valuesNamed(name)
     .filterIsInstance<JsonPrimitive>()

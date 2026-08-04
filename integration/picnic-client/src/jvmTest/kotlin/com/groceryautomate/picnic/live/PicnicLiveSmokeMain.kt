@@ -1,6 +1,7 @@
 package com.groceryautomate.picnic.live
 
 import com.groceryautomate.picnic.PicnicClient
+import com.groceryautomate.picnic.adapter.out.config.PicnicEnvironmentFile
 import com.groceryautomate.picnic.adapter.out.http.KtorPicnicHttpTransport
 import com.groceryautomate.picnic.adapter.out.memory.InMemoryPicnicAuthStore
 import com.groceryautomate.picnic.domain.PicnicApiException
@@ -15,7 +16,7 @@ fun main() = runBlocking {
     val envPath = Path.of(requiredProperty("picnic.env.file"))
     val query = requiredProperty("picnic.query")
     val requestedProductId = System.getProperty("picnic.product.id")?.trim()?.takeIf(String::isNotEmpty)
-    val environment = PicnicLiveEnvironment.load(envPath)
+    val environment = PicnicEnvironmentFile.load(envPath)
 
     HttpClient(Java).use { httpClient ->
         val picnic = PicnicClient(
