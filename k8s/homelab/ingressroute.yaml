@@ -1,0 +1,17 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: catalog-service
+  namespace: grocery-automate
+  labels:
+    app.kubernetes.io/name: grocery-automate
+    app.kubernetes.io/component: catalog-service
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`grocery.home.intelliworks.nl`) || Host(`grocery-automate.home.intelliworks.nl`)
+      kind: Rule
+      services:
+        - name: catalog-service
+          port: 8080

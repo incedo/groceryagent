@@ -109,3 +109,11 @@ jobs:
         env:
           CATALOG_SERVICE_IMAGE: ${{ env.LOCAL_IMAGE }}
         run: docker compose down --volumes
+
+      - name: Clean local Docker data
+        if: always()
+        run: |
+          docker container prune -f
+          docker image prune -a -f
+          docker builder prune -a -f || docker builder prune -f
+          docker volume prune -f

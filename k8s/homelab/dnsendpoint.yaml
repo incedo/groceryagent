@@ -1,0 +1,19 @@
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: grocery-automate
+  namespace: grocery-automate
+  labels:
+    app.kubernetes.io/name: grocery-automate
+spec:
+  endpoints:
+    - dnsName: grocery.home.intelliworks.nl
+      recordType: A
+      targets:
+        - 192.168.68.21
+      recordTTL: 60
+    - dnsName: grocery-automate.home.intelliworks.nl
+      recordType: A
+      targets:
+        - 192.168.68.21
+      recordTTL: 60
