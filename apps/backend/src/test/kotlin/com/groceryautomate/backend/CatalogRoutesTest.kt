@@ -1,21 +1,11 @@
 package com.groceryautomate.backend
 
-import com.groceryautomate.catalog.AllergenStatement
-import com.groceryautomate.catalog.AvailabilityStatus
 import com.groceryautomate.catalog.CatalogProduct
-import com.groceryautomate.catalog.Money
-import com.groceryautomate.catalog.Product
-import com.groceryautomate.catalog.ProductCatalogPort
-import com.groceryautomate.catalog.ProductComposition
-import com.groceryautomate.catalog.ProductId
-import com.groceryautomate.catalog.ProductOffer
-import com.groceryautomate.catalog.ProductOfferId
 import com.groceryautomate.catalog.ProductSearchResult
-import com.groceryautomate.catalog.ProviderEvidence
-import com.groceryautomate.catalog.ProviderRouteGeneration
-import com.groceryautomate.catalog.RetailerId
 import com.groceryautomate.catalog.VerificationStatus
 import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.post
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.testApplication
@@ -26,129 +16,106 @@ import kotlin.test.assertFalse
 
 class CatalogRoutesTest {
     @Test
-    fun searchReturnsCanonicalProductsAndForwardsLimit() = testApplication {
-        val catalog = FakeCatalog()
-        application { catalogModule(catalog) }
+    fun searchAndDetailReadPersistedProjection() = testApplication {
+        val repository = FakeEventRepository()
+        install(repository, FakeProvider())
 
-        val response = client.get("/api/v1/products?query=wholegrain%20oats&limit=7")
-        val result = Json.decodeFromString<ProductSearchResult>(response.bodyAsText())
+        val search = client.get("/api/v1/products?query=wholegrain%20oats&limit=7")
+        val result = Json.decodeFromString<ProductSearchResult>(search.bodyAsText())
+        val detail = client.get("/api/v1/products/picnic:nl:s1001")
+        val product = Json.decodeFromString<CatalogProduct>(detail.bodyAsText())
 
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals("wholegrain oats", catalog.lastQuery)
-        assertEquals(7, catalog.lastLimit)
-        assertEquals("picnic:nl:s1001", result.products.single().product.id.value)
+        assertEquals(HttpStatusCode.OK, search.status)
+        assertEquals("wholegrain oats", repository.lastQuery)
+        assertEquals(7, repository.lastLimit)
         assertEquals(199, result.products.single().offers.single().price.minorUnits)
+        assertEquals(VerificationStatus.UNKNOWN, product.composition?.allergens?.status)
     }
 
     @Test
-    fun productDetailReturnsCanonicalComposition() = testApplication {
-        application { catalogModule(FakeCatalog()) }
+    fun providerDiscoveryIsExplicitAndTransient() = testApplication {
+        val provider = FakeProvider()
+        install(FakeEventRepository(), provider)
 
-        val response = client.get("/api/v1/products/picnic:nl:s1001")
-        val product = Json.decodeFromString<CatalogProduct>(response.bodyAsText())
+        val response = client.get("/api/v1/provider-products?query=oats&limit=3")
 
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(VerificationStatus.UNKNOWN, product.composition?.allergens?.status)
-        assertEquals("2026-08-04T10:00:00Z", product.evidence.observedAt)
+        assertEquals("oats", provider.lastQuery)
+        assertEquals(3, provider.lastLimit)
     }
 
     @Test
-    fun missingQueryAndInvalidLimitReturnStableValidationErrors() = testApplication {
-        application { catalogModule(FakeCatalog()) }
+    fun importRequiresIdempotencyKeyAndAppendsEvents() = testApplication {
+        val repository = FakeEventRepository(null)
+        install(repository, FakeProvider())
 
-        val missing = client.get("/api/v1/products")
-        val invalidLimit = client.get("/api/v1/products?query=oats&limit=101")
-
-        assertEquals(HttpStatusCode.BadRequest, missing.status)
-        assertEquals("INVALID_REQUEST", Json.decodeFromString<ApiError>(missing.bodyAsText()).code)
-        assertEquals(HttpStatusCode.BadRequest, invalidLimit.status)
-        assertEquals("INVALID_REQUEST", Json.decodeFromString<ApiError>(invalidLimit.bodyAsText()).code)
-    }
-
-    @Test
-    fun missingProductReturnsStableNotFound() = testApplication {
-        application { catalogModule(FakeCatalog(product = null)) }
-
-        val response = client.get("/api/v1/products/picnic:nl:s404")
-        val error = Json.decodeFromString<ApiError>(response.bodyAsText())
-
-        assertEquals(HttpStatusCode.NotFound, response.status)
-        assertEquals("PRODUCT_NOT_FOUND", error.code)
-    }
-
-    @Test
-    fun providerFailureIsRedacted() = testApplication {
-        application {
-            catalogModule(FakeCatalog(failure = IllegalStateException("provider secret-token leaked")))
+        val missing = client.post("/api/v1/products/s1001/imports")
+        val accepted = client.post("/api/v1/products/s1001/imports") {
+            header("Idempotency-Key", "00000000-0000-4000-8000-000000000001")
         }
 
-        val response = client.get("/api/v1/products?query=oats")
+        assertEquals(HttpStatusCode.BadRequest, missing.status)
+        assertEquals(HttpStatusCode.Accepted, accepted.status)
+        assertEquals(2, repository.appended?.events?.size)
+    }
+
+    @Test
+    fun validationAndMissingProjectionUseStableErrors() = testApplication {
+        install(FakeEventRepository(null), FakeProvider())
+
+        val missingQuery = client.get("/api/v1/products")
+        val badLimit = client.get("/api/v1/products?query=oats&limit=101")
+        val missingProduct = client.get("/api/v1/products/picnic:nl:missing")
+
+        assertEquals(HttpStatusCode.BadRequest, missingQuery.status)
+        assertEquals("INVALID_REQUEST", errorCode(missingQuery.bodyAsText()))
+        assertEquals(HttpStatusCode.BadRequest, badLimit.status)
+        assertEquals(HttpStatusCode.NotFound, missingProduct.status)
+        assertEquals("PRODUCT_NOT_FOUND", errorCode(missingProduct.bodyAsText()))
+    }
+
+    @Test
+    fun providerFailureIsUnavailableAndRedacted() = testApplication {
+        val secret = "provider secret-token leaked"
+        install(FakeEventRepository(), FakeProvider(failure = IllegalStateException(secret)))
+
+        val response = client.get("/api/v1/provider-products?query=oats")
         val body = response.bodyAsText()
 
-        assertEquals(HttpStatusCode.BadGateway, response.status)
-        assertEquals("PROVIDER_UNAVAILABLE", Json.decodeFromString<ApiError>(body).code)
-        assertFalse(body.contains("secret-token"))
-        assertFalse(body.contains("provider", ignoreCase = true) && body.contains("leaked"))
-    }
-}
-
-private class FakeCatalog(
-    private val product: CatalogProduct? = catalogProduct(),
-    private val failure: Throwable? = null
-) : ProductCatalogPort {
-    var lastQuery: String? = null
-    var lastLimit: Int? = null
-
-    override suspend fun search(query: String, limit: Int): ProductSearchResult {
-        failure?.let { throw it }
-        lastQuery = query
-        lastLimit = limit
-        return ProductSearchResult(query, 1, listOfNotNull(product))
+        assertEquals(HttpStatusCode.ServiceUnavailable, response.status)
+        assertEquals("PROVIDER_UNAVAILABLE", errorCode(body))
+        assertFalse(body.contains(secret))
     }
 
-    override suspend fun getProduct(id: ProductId): CatalogProduct? {
-        failure?.let { throw it }
-        return product
-    }
-}
+    @Test
+    fun healthSeparatesLivenessFromReadiness() = testApplication {
+        install(FakeEventRepository(), FakeProvider(), ready = false)
 
-private fun catalogProduct(): CatalogProduct {
-    val id = ProductId("picnic:nl:s1001")
-    val evidence = ProviderEvidence(
-        provider = "picnic",
-        externalId = "s1001",
-        endpoint = "/pages/product-details-page-root",
-        region = "nl",
-        observedAt = "2026-08-04T10:00:00Z",
-        apiVersion = 15,
-        routeGeneration = ProviderRouteGeneration.CURRENT
-    )
-    return CatalogProduct(
-        product = Product(id, "Wholegrain oats", "Picnic", null, "image-1", emptyList()),
-        composition = ProductComposition(
-            ingredients = null,
-            allergens = AllergenStatement(emptyList(), emptyList(), VerificationStatus.UNKNOWN),
-            nutrition = null,
-            preparation = emptyList(),
-            storage = null,
-            originCountry = null,
-            supplier = null,
-            additionalInformation = emptyMap()
-        ),
-        offers = listOf(
-            ProductOffer(
-                id = ProductOfferId("picnic:nl:s1001:current"),
-                productId = id,
-                retailerId = RetailerId("picnic"),
-                region = "nl",
-                price = Money(199, "EUR"),
-                packageQuantity = null,
-                tierPrices = emptyList(),
-                promotion = null,
-                availability = AvailabilityStatus.UNKNOWN,
-                evidence = evidence
+        assertEquals(HttpStatusCode.OK, client.get("/health/live").status)
+        assertEquals(HttpStatusCode.ServiceUnavailable, client.get("/health/ready").status)
+    }
+
+    private fun io.ktor.server.testing.ApplicationTestBuilder.install(
+        repository: FakeEventRepository,
+        provider: FakeProvider,
+        ready: Boolean = true
+    ) {
+        val ids = ArrayDeque(
+            listOf(
+                "00000000-0000-4000-8000-000000000002",
+                "00000000-0000-4000-8000-000000000003"
             )
-        ),
-        evidence = evidence
-    )
+        )
+        val gateway = ProviderCatalogGateway(provider)
+        application {
+            catalogModule(
+                repository,
+                gateway,
+                CatalogImportService(gateway, repository, { ids.removeFirst() }) { "2026-08-04T11:00:00Z" },
+                readiness = { ready }
+            )
+        }
+    }
+
+    private fun errorCode(body: String): String = Json.decodeFromString<ApiError>(body).code
 }

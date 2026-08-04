@@ -68,10 +68,10 @@ integration/postgres
 
 Add modules only when their boundary is real; the list is a target structure, not permission to create empty modules.
 
-The first implemented vertical slice uses `core/catalog` for provider-neutral catalog models and
-the query port, `integration/picnic-client` for Picnic transport and canonical mapping, and
-`apps/backend` for the local Ktor search/detail API. This read-only query path deliberately has no
-durable event or projection because it does not change domain state.
+The implemented catalog slice uses `core/catalog` for provider-neutral models, `core/events` for
+versioned envelopes and reducers, `integration/picnic-client` for provider mapping,
+`integration/postgres` for the event store and projection, and `apps/backend` for the Ktor command,
+query, event-feed, and health API.
 
 ## 3. Client Stack
 
@@ -93,13 +93,19 @@ The web target is Compose Multiplatform on `wasmJs`. UI behavior remains semanti
 
 | Technology | Purpose |
 |---|---|
-| Ktor on JVM | Versioned JSON API and integration orchestration |
-| PostgreSQL | Durable event data, source snapshots, and read models |
-| Flyway or a dedicated migration module | Ordered, reviewable schema migrations |
+| Ktor CIO on GraalVM Native Image | Versioned JSON API and low-overhead service runtime |
+| PostgreSQL 18.4 | Append-only event data and rebuildable read models |
+| Dedicated SQL migration runner | Ordered, transactional, checksum-protected migrations |
+| JDBC, pgJDBC, and HikariCP | Explicit transactions and bounded database connections |
 | OIDC/JWT | Authentication when accounts or cloud sync are introduced |
 | Docker | Reproducible local backend and database runtime |
 
-Use Ktor plugins for content negotiation, request validation, authentication, CORS, status pages, and structured call logging. Keep domain decisions in shared pure Kotlin rather than Ktor routes.
+Use Ktor plugins only where needed and keep serialization paths explicit so Native Image does not
+depend on runtime reflection. Keep domain decisions in shared pure Kotlin rather than Ktor routes.
+
+The catalog event store atomically records command idempotency, contiguous stream versions,
+immutable event envelopes, and projection changes. JDBC keeps ordering and transaction boundaries
+visible. Projection rebuild replays the global cursor without changing the event log.
 
 Local-first capability is desirable for saved recipes, preferences, comparisons, and shopping lists. Local storage sits behind core repository contracts so SQLite or browser storage can vary per platform without leaking into features. Cloud sync uses stable IDs, idempotent writes, and per-device cursors.
 
@@ -271,14 +277,18 @@ Minimum automated coverage includes:
 
 Live provider tests are opt-in. Normal CI uses recorded, license-compatible fixtures and fake adapters so it remains deterministic and does not consume provider quotas.
 
-The backend route suite uses Ktor's test host with a fake `ProductCatalogPort` to verify canonical
-search/detail JSON, input validation, not-found behavior, and redacted provider failures. A manual
-read-only run against the ignored discovery environment verified current Picnic search and detail
-through the production Ktor client, current-route mapper, canonical adapter, and backend routes.
+The backend route suite uses Ktor's test host and fake ports. Testcontainers component tests run
+the real PostgreSQL 18.4 schema, event append transaction, idempotency, cursor, rebuild, projection,
+and HTTP chain. Docker Compose additionally builds and starts the actual native executable against
+PostgreSQL; live Picnic access remains opt-in.
 
 The Picnic integration includes a JVM-only, read-only smoke runner backed by the Ktor Java engine at the repository's existing Ktor version. It reads a captured session from an ignored local env file without executing shell content, performs search and product-detail reads through the production ports and adapters, and never runs as part of `check` or CI.
 
-GitHub Actions runs the full `./gradlew check` quality gate on `macos-15`, which can execute JVM, iOS Simulator, and Wasm browser tests in one job. The workflow uses the current stable major releases `actions/checkout@v6` and `actions/setup-java@v5`, verified from their official repositories on 2026-08-02, with Temurin JDK 17 and Gradle caching. No provider credentials are available to this workflow.
+GitHub Actions runs `./gradlew check` on `macos-15` for JVM, iOS Simulator, Wasm, coverage, and
+line-count gates. A separate Ubuntu job builds the GraalVM native container, starts PostgreSQL, and
+checks liveness, readiness, and a database-backed catalog query. Docker-dependent JUnit classes
+skip only where Docker is unavailable; the native Ubuntu job keeps the container contract required.
+No provider credentials are available to either job.
 
 Kover `0.9.8`, verified as the latest stable release from the official project on 2026-08-02, generates HTML and XML reports during `integration/picnic-client` checks. Capture-derived layout and Ktor transport tests currently measure 95.32% JVM line coverage and 65.46% branch coverage; non-regression floors are 95% and 64% respectively. Kover does not measure Kotlin/Native or Wasm execution, so those target tests remain independent quality gates. It passes with Gradle 9.6.1 but emits a dependency-notation deprecation that must be revalidated or resolved before a future Gradle 10 upgrade. See [JVM code coverage](code-coverage.md).
 
@@ -286,13 +296,36 @@ Use the Gradle wrapper, centralize dependency versions in `gradle/libs.versions.
 
 At project initialization and whenever a dependency is first added, select the latest stable compatible release verified through official release information. That policy is a selection rule, not a requirement to interrupt ordinary feature work whenever a newer release appears. Deliberate upgrades are separately scoped unless required for the feature, compatibility, or a security fix. Beta or release-candidate versions are limited to documented cases where platform support, compatibility, security, or another higher-priority architecture rule cannot be satisfied by a stable release. Less stable channels require explicit approval.
 
+### Native backend version baseline
+
+Versions were verified from official releases on 2026-08-04 and are pinned exactly for repeatable
+builds:
+
+| Component | Selected stable version |
+|---|---:|
+| GraalVM Community / Native Image | 25.2.4 / JDK 25.0.4 |
+| GraalVM Native Build Tools | 1.1.6 |
+| PostgreSQL | 18.4 |
+| pgJDBC | 42.7.13 |
+| HikariCP | 7.1.0 |
+| Testcontainers | 2.0.5 |
+| SLF4J | 2.0.18 |
+
+For an upgrade, first check the [GraalVM Community releases](https://github.com/graalvm/graalvm-ce-builds/releases),
+[Native Build Tools releases](https://github.com/graalvm/native-build-tools/releases),
+[PostgreSQL releases](https://www.postgresql.org/docs/release/), and the libraries' official release
+pages. Upgrade in a dedicated loop, retain JDK 17 compilation unless the repository rule changes,
+then run event contracts, Testcontainers tests, `./gradlew check`, and the Compose native smoke.
+Take a newer security/CPU fix immediately when required. Beta or RC remains an exception that must
+record why stable cannot satisfy the architecture and what will trigger migration back to stable.
+
 ## 14. Deployment Direction
 
-The default production shape is a static Compose/Wasm frontend plus JVM Ktor services and PostgreSQL:
+The default production shape is a static Compose/Wasm frontend plus native Ktor services and PostgreSQL:
 
 ```text
 CDN/static host -> Compose/Wasm frontend
-API ingress      -> Ktor backend -> PostgreSQL
+API ingress      -> GraalVM/Ktor backend -> PostgreSQL
                                 -> provider adapters
 ```
 
@@ -306,7 +339,7 @@ Container images are immutable and configuration comes from environment variable
 4. Add deterministic recommendations and explanations.
 5. Add structured recipes, cost estimation, and shopping-list generation.
 6. Introduce live providers one at a time behind existing ports.
-7. Add accounts, PostgreSQL persistence, and optional cloud sync when needed.
+7. Add accounts, authenticated cursor sync, and optional offline writes when needed.
 
 This order keeps the product useful and testable before live data availability or AI behavior becomes a dependency.
 

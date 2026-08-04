@@ -174,6 +174,6 @@ brand label could be mistaken for package quantity.
 
 ## 13. Next Loop
 
-Add durable catalog ingestion using versioned `ProductImported` and `OfferObserved` events,
-idempotent storage, rebuildable current-product/current-offer projections, cursor-based sync, and
-frontend-observable query state.
+The durable ingestion portion is complete in
+[Native event-sourced catalog backend](native-event-sourced-backend.md). Frontend event consumption
+and observable client projections remain the next bounded loop.
