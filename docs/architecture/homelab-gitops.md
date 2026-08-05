@@ -27,10 +27,10 @@ Keys:   DATABASE_URL
         DATABASE_PASSWORD
 ```
 
-The database URL points at the shared homelab PostgreSQL host:
+The database URL points at the shared homelab PostgreSQL host IP:
 
 ```text
-jdbc:postgresql://postgres.home.intelliworks.nl:5432/grocery_automate
+jdbc:postgresql://192.168.68.22:5432/grocery_automate
 ```
 
 DNS is requested from this app repository with ExternalDNS `DNSEndpoint`
