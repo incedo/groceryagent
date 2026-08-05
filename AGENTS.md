@@ -186,6 +186,12 @@ Project rules for contributors and coding agents working in this repository.
 
 ## Git Workflow Rules
 
+- Never commit, push, or apply changes directly to `main`. All changes, including documentation,
+  workflow, configuration, and emergency fixes, must first be committed to a separate branch and
+  presented in a pull request.
+- The required order is: create a `codex/*` branch -> implement and verify -> commit -> push -> open
+  the pull request -> wait for required checks -> merge the pull request. Do not merge or update
+  `main` before the pull request exists and its required checks pass.
 - For every new user request, create and use a separate branch with prefix `codex/`.
 - Open one pull request per request or branch.
 - Keep each pull request scoped to that single request and avoid unrelated changes.
