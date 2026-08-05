@@ -192,6 +192,12 @@ Project rules for contributors and coding agents working in this repository.
 - The required order is: create a `codex/*` branch -> implement and verify -> commit -> push -> open
   the pull request -> wait for required checks -> merge the pull request. Do not merge or update
   `main` before the pull request exists and its required checks pass.
+- Protect `main` in GitHub with required pull requests, current required CI checks, resolved review
+  conversations, and blocked force-pushes and deletion. Keep administrator enforcement disabled as
+  an explicit emergency override.
+- An administrator override requires explicit user authorization for the specific emergency and
+  must never be used for convenience or to hide a failing check. Record the reason, verify the
+  resulting state, and reconcile any exceptional direct change through a follow-up pull request.
 - For every new user request, create and use a separate branch with prefix `codex/`.
 - Open one pull request per request or branch.
 - Keep each pull request scoped to that single request and avoid unrelated changes.
