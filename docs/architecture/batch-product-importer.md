@@ -59,6 +59,14 @@ The manifest fields are:
 | `products[].retailer` | `picnic` in this loop |
 | `products[].productId` | non-blank provider product identifier; unique per retailer |
 
+The offline `--split-manifest <source> <new-output-directory> <max-products> [max-bytes]` command partitions a
+reviewed schema-version 1 manifest without provider or database access. It preserves source order,
+keeps historical observations with their product shard, rejects unmatched observations, and writes
+a versioned index with source/shard SHA-256 checksums. The byte ceiling defaults to 900,000 so each
+file stays comfortably below the ConfigMap limit. Batch IDs and filenames are deterministic.
+Each shard remains an ordinary single-manifest invocation and must be run sequentially; sharding
+does not add request pacing or authorize a live import.
+
 Changing `batchId` deliberately creates new import commands and therefore new observations.
 Reusing it safely resumes the same batch. Each item is processed sequentially. A missing product
 or provider/storage failure is reported without provider payloads or credentials; remaining items

@@ -44,9 +44,9 @@ data class ImportProduct(
 }
 
 @Serializable
-enum class ImportRetailer {
+enum class ImportRetailer(val providerId: String) {
     @SerialName("picnic")
-    PICNIC
+    PICNIC("picnic")
 }
 
 object ImportManifestFile {
