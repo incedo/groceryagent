@@ -50,6 +50,34 @@ For `products-and-history`, also verify `Secret/grocery-automate-picnic` and obt
 for the account, delay, retry, and maximum-request policy. The current importer is sequential but
 does not yet impose a delay between Picnic product requests.
 
+### Split a large product batch into bounded manifests
+
+Generate deterministic, non-overlapping shards in a new private directory before delivery. This
+example keeps at most 50 products in each shard and performs no provider or database requests:
+
+```shell
+export IMPORT_SHARD_DIR=/absolute/private/path/import-shards-$IMPORT_RUN
+./gradlew :apps:importer:run \
+  --args="--split-manifest $IMPORT_FILE $IMPORT_SHARD_DIR 50" --no-daemon
+```
+
+The directory contains ordered `manifest-part-NNN.json` files and `manifest-index.json`. Verify the
+exact source and shard bytes before using them:
+
+```shell
+test "$(shasum -a 256 "$IMPORT_FILE" | awk '{print $1}')" = \
+  "$(jq -r '.sourceSha256' "$IMPORT_SHARD_DIR/manifest-index.json")"
+(
+  cd "$IMPORT_SHARD_DIR"
+  jq -r '.shards[] | "\(.sha256)  \(.fileName)"' manifest-index.json |
+    shasum -a 256 -c -
+)
+```
+
+Do not edit a generated shard. Regenerate the complete directory from the reviewed source instead.
+Run one shard at a time in index order and wait for database verification before submitting the
+next. Reuse the same shard and batch ID when resuming a failed run.
+
 ## 2. Manifest delivery boundary
 
 The checked-in CronJob mounts a ConfigMap. Kubernetes ConfigMaps are limited to 1 MiB, so use this
@@ -63,7 +91,13 @@ Use 900,000 bytes as the operational ceiling to leave room for Kubernetes object
 partial 284-order history manifest generated on 2026-08-09 is 7,016,062 bytes and therefore must
 not be put in a ConfigMap. Full order history will be larger.
 
-For a large manifest, stop here until a reviewed delivery mechanism mounts it read-only at
+For shard sets, inspect every generated file:
+
+```shell
+find "$IMPORT_SHARD_DIR" -name 'manifest-part-*.json' -type f -exec wc -c {} +
+```
+
+For a large manifest or shard, stop here until a reviewed delivery mechanism mounts it read-only at
 `/app/config/import-products.json`, such as a dedicated PVC or authenticated private object-store
 init flow. Do not commit private generated manifests, split them into Git-managed ConfigMaps, place
 them in Secrets, or paste them into Job arguments.
@@ -108,6 +142,12 @@ kubectl -n "$IMPORT_NAMESPACE" get job "$IMPORT_JOB" -o yaml
 
 Never run the plain `kubectl create job --from=cronjob/...` command for historical order data: the
 default mode is `products-and-history`, which performs Picnic requests.
+
+For a shard set, repeat this section manually in `manifest-index.json` sequence order. Set
+`IMPORT_FILE`, `IMPORT_RUN`, `IMPORT_JOB`, and `IMPORT_CONFIG` from the selected shard and its batch
+ID. Never create the next Job while another importer Job is active. Running the same shards later
+in `products-and-history` mode safely retries historical observations by observation ID, but product
+requests still require the separately approved account and pacing policy.
 
 ## 4. Monitor and verify
 

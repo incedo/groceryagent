@@ -42,6 +42,22 @@ fun main(args: Array<String>) {
             "${manifest.historicalPrices.size} historical prices.")
         return
     }
+    if (args.firstOrNull() == "--split-manifest") {
+        require(args.size in 4..5) {
+            "Usage: --split-manifest <manifest-file> <new-output-directory> <max-products> [max-bytes]"
+        }
+        val maxProducts = args[3].toIntOrNull()
+            ?: error("Maximum products per shard must be an integer.")
+        val maxBytes = args.getOrNull(4)?.let { value ->
+            value.toIntOrNull() ?: error("Maximum bytes per shard must be an integer.")
+        } ?: DEFAULT_MAX_MANIFEST_BYTES
+        val index = ImportManifestSplitter().split(
+            Path.of(args[1]), Path.of(args[2]), maxProducts, maxBytes
+        )
+        println("Split ${index.totalProductCount} products and ${index.totalHistoricalPriceCount} " +
+            "historical prices into ${index.shards.size} manifests in ${args[2]}.")
+        return
+    }
     require(args.isEmpty()) { "The importer accepts no arguments; configure it through environment variables." }
     val settings = ImporterSettings.fromEnvironment()
     val fileManifest = ImportManifestFile.read(settings.manifestFile)
