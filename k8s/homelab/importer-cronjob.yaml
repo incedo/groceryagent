@@ -41,6 +41,8 @@ spec:
                   value: "5000"
                 - name: PICNIC_TIMEOUT_MILLIS
                   value: "15000"
+                - name: PICNIC_REQUEST_DELAY_MILLIS
+                  value: "3000"
                 - name: DATABASE_URL
                   valueFrom:
                     secretKeyRef:

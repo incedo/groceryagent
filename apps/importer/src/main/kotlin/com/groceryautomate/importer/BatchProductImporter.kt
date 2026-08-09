@@ -7,30 +7,35 @@ import kotlinx.coroutines.CancellationException
 
 class BatchProductImporter(
     private val imports: ProductImportService,
-    private val historicalPrices: BatchHistoricalPriceImporter? = null
+    private val historicalPrices: BatchHistoricalPriceImporter? = null,
+    private val awaitNextProduct: suspend () -> Unit = {}
 ) {
     suspend fun run(manifest: ImportManifest): ImportReport {
         val producerId = ProducerId(manifest.producerId)
-        val results = manifest.products.map { product ->
-            try {
-                val append = imports.importProduct(
-                    ProductId(product.productId),
-                    importCommandId(manifest.batchId, product),
-                    producerId
-                )
-                when {
-                    append == null -> ImportItemResult(product.productId, ImportStatus.NOT_FOUND)
-                    append.duplicateCommand -> ImportItemResult(
-                        product.productId,
-                        ImportStatus.ALREADY_IMPORTED,
-                        append.eventCount
+        val results = buildList {
+            manifest.products.forEachIndexed { index, product ->
+                val result = try {
+                    val append = imports.importProduct(
+                        ProductId(product.productId),
+                        importCommandId(manifest.batchId, product),
+                        producerId
                     )
-                    else -> ImportItemResult(product.productId, ImportStatus.IMPORTED, append.eventCount)
+                    when {
+                        append == null -> ImportItemResult(product.productId, ImportStatus.NOT_FOUND)
+                        append.duplicateCommand -> ImportItemResult(
+                            product.productId,
+                            ImportStatus.ALREADY_IMPORTED,
+                            append.eventCount
+                        )
+                        else -> ImportItemResult(product.productId, ImportStatus.IMPORTED, append.eventCount)
+                    }
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (_: Exception) {
+                    ImportItemResult(product.productId, ImportStatus.FAILED)
                 }
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (_: Exception) {
-                ImportItemResult(product.productId, ImportStatus.FAILED)
+                add(result)
+                if (index < manifest.products.lastIndex) awaitNextProduct()
             }
         }
         val priceResults = if (manifest.historicalPrices.isEmpty()) emptyList() else

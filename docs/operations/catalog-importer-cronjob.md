@@ -10,7 +10,8 @@ not start an import. The CronJob must remain suspended; every import is a named 
 - `history-only` writes historical price events without loading Picnic credentials or making
   retailer requests.
 - `products-and-history` reads every listed product from Picnic before storing product, current
-  offer, and historical price events. Use it only with an approved account and pacing policy.
+  offer, and historical price events. It defaults to a three-second delay between products; use it
+  only with an approved account and pacing policy.
 - A Job name becomes `IMPORT_BATCH_ID`. Reusing the same name after a failed attempt preserves
   idempotency for product imports; historical observations are idempotent by observation ID.
 - Deleting a Job stops future work but does not roll back events already committed to PostgreSQL.
@@ -47,8 +48,8 @@ The suspend query must print `true`. Stop if a previous importer Job is active, 
 missing, the manifest is unreviewed, or the selected mode is not intentional.
 
 For `products-and-history`, also verify `Secret/grocery-automate-picnic` and obtain explicit approval
-for the account, delay, retry, and maximum-request policy. The current importer is sequential but
-does not yet impose a delay between Picnic product requests.
+for the account, delay, retry, and maximum-request policy. The homelab CronJob sets
+`PICNIC_REQUEST_DELAY_MILLIS=3000`; retain or deliberately increase it for sequential shard runs.
 
 ### Split a large product batch into bounded manifests
 

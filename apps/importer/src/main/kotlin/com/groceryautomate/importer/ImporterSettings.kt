@@ -8,6 +8,7 @@ data class ImporterSettings(
     val batchIdOverride: String?,
     val picnicEnvironmentFile: Path,
     val providerTimeoutMillis: Long,
+    val providerRequestDelayMillis: Long,
     val mode: ImportMode,
     val database: PostgresSettings
 ) {
@@ -18,6 +19,7 @@ data class ImporterSettings(
                 batchIdOverride = read("IMPORT_BATCH_ID")?.trim()?.takeIf(String::isNotEmpty),
                 picnicEnvironmentFile = Path.of(read.value("PICNIC_ENV_FILE", "/run/secrets/picnic.env")),
                 providerTimeoutMillis = read.positiveLong("PICNIC_TIMEOUT_MILLIS", 15_000),
+                providerRequestDelayMillis = read.nonNegativeLong("PICNIC_REQUEST_DELAY_MILLIS", 3_000),
                 mode = ImportMode.from(read.value("IMPORT_MODE", "products-and-history")),
                 database = PostgresSettings(
                     jdbcUrl = read.value("DATABASE_URL", "jdbc:postgresql://127.0.0.1:5432/grocery"),
@@ -54,4 +56,9 @@ private fun ((String) -> String?).positiveInt(name: String, default: Int): Int {
 private fun ((String) -> String?).positiveLong(name: String, default: Long): Long {
     val raw = invoke(name) ?: return default
     return raw.toLongOrNull()?.takeIf { it > 0 } ?: error("$name must be a positive integer.")
+}
+
+private fun ((String) -> String?).nonNegativeLong(name: String, default: Long): Long {
+    val raw = invoke(name) ?: return default
+    return raw.toLongOrNull()?.takeIf { it >= 0 } ?: error("$name must be a non-negative integer.")
 }

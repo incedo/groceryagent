@@ -54,8 +54,10 @@ class BatchProductImporterTest {
     @Test
     fun continuesAfterMissingAndFailedProductsAndReportsFailure() = runTest {
         val repository = RecordingRepository()
+        var pacingBoundaries = 0
         val importer = BatchProductImporter(
-            ProductImportService(FakeProvider(setOf("failed")), repository, { EVENT_ID_1 }) { OBSERVED_AT }
+            ProductImportService(FakeProvider(setOf("failed")), repository, { EVENT_ID_1 }) { OBSERVED_AT },
+            awaitNextProduct = { pacingBoundaries += 1 }
         )
         val manifest = ImportManifest(
             1,
@@ -70,6 +72,7 @@ class BatchProductImporterTest {
         assertEquals(2, report.failureCount)
         assertEquals(false, report.successful)
         assertEquals(1, repository.appends.size)
+        assertEquals(2, pacingBoundaries)
     }
 
     @Test
