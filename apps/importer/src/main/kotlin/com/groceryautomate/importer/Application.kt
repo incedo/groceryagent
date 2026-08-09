@@ -18,6 +18,21 @@ import java.time.Instant
 import java.util.UUID
 
 fun main(args: Array<String>) {
+    if (args.firstOrNull() == "--capture-orders") {
+        require(args.size == 2) { "Usage: --capture-orders <new-private-directory>" }
+        val result = runBlocking { captureOrders(Path.of(args[1])) }
+        println("Captured ${result.deliveryCount} completed deliveries in ${result.directory}.")
+        println("Private local data: review it and delete it after manifest generation.")
+        return
+    }
+    if (args.firstOrNull() == "--orders-to-manifest") {
+        require(args.size == 4) {
+            "Usage: --orders-to-manifest <capture-directory> <new-manifest-file> <batch-id>"
+        }
+        val manifest = OrderCaptureFiles().toManifest(Path.of(args[1]), Path.of(args[2]), args[3])
+        println("Generated import manifest ${args[2]} with ${manifest.products.size} products.")
+        return
+    }
     if (args.firstOrNull() == "--validate-manifest") {
         require(args.size == 2) { "Usage: --validate-manifest <path>" }
         val manifest = ImportManifestFile.read(Path.of(args[1]))
@@ -32,6 +47,25 @@ fun main(args: Array<String>) {
     report.results.forEach { println("${it.productId}: ${it.status} (${it.eventCount} events)") }
     println("Import batch ${report.batchId}: ${report.results.size} products, ${report.failureCount} failures.")
     if (!report.successful) kotlin.system.exitProcess(1)
+}
+
+private suspend fun captureOrders(directory: Path): OrderCaptureResult {
+    val envFile = System.getenv("PICNIC_ENV_FILE")
+        ?.trim()?.takeIf(String::isNotEmpty)
+        ?: error("PICNIC_ENV_FILE must explicitly select the other account environment file.")
+    val environment = PicnicEnvironmentFile.load(Path.of(envFile))
+    val timeout = System.getenv("PICNIC_TIMEOUT_MILLIS")
+        ?.toLongOrNull()?.takeIf { it > 0 } ?: 15_000
+    return HttpClient(Java) {
+        install(HttpTimeout) { requestTimeoutMillis = timeout }
+    }.use { httpClient ->
+        val picnic = PicnicClient(
+            config = environment.config,
+            transport = KtorPicnicHttpTransport(httpClient),
+            authStore = InMemoryPicnicAuthStore(environment.authToken)
+        )
+        OrderCaptureService(picnic.delivery).captureCompletedOrders(directory)
+    }
 }
 
 private fun runImport(settings: ImporterSettings, manifest: ImportManifest): ImportReport {

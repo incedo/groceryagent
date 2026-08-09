@@ -29,6 +29,10 @@ application {
     mainClass.set("com.groceryautomate.importer.ApplicationKt")
 }
 
+tasks.named<JavaExec>("run") {
+    workingDir(rootProject.projectDir)
+}
+
 tasks.test {
     useJUnitPlatform()
 }
