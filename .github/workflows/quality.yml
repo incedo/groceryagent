@@ -15,16 +15,60 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  check:
-    name: Multiplatform check
-    runs-on: macos-15
-    timeout-minutes: 30
+  changes:
+    name: Classify changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code_changed: ${{ steps.classify.outputs.code_changed }}
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Classify documentation-only changes
+        id: classify
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          code_changed=true
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ||
+                ( "$GITHUB_EVENT_NAME" == "push" && "$GITHUB_REF" == refs/heads/* ) ]]; then
+            code_changed=false
+            if [[ -z "$BASE_SHA" || "$BASE_SHA" =~ ^0+$ ]]; then
+              code_changed=true
+            else
+              while IFS= read -r file; do
+                case "$file" in
+                  docs/*|*.md) ;;
+                  *) code_changed=true; break ;;
+                esac
+              done < <(git diff --name-only "$BASE_SHA" "$GITHUB_SHA")
+            fi
+          fi
+          echo "code_changed=$code_changed" >> "$GITHUB_OUTPUT"
+
+  check:
+    name: Multiplatform check
+    needs: changes
+    runs-on: ${{ needs.changes.outputs.code_changed == 'true' && 'macos-15' || 'ubuntu-latest' }}
+    timeout-minutes: 30
+
+    steps:
+      - name: Skip code checks for documentation-only changes
+        if: needs.changes.outputs.code_changed != 'true'
+        run: echo "Documentation-only change; Gradle quality gate skipped."
+
+      - name: Check out repository
+        if: needs.changes.outputs.code_changed == 'true'
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
+        if: needs.changes.outputs.code_changed == 'true'
         uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -32,12 +76,13 @@ jobs:
           cache: gradle
 
       - name: Run quality gate
+        if: needs.changes.outputs.code_changed == 'true'
         run: ./gradlew check --no-daemon
 
   native-backend:
     name: Build, verify, and deliver native backend
-    needs: check
-    runs-on: ${{ github.event_name == 'push' && 'homelab' || 'ubuntu-latest' }}
+    needs: [changes, check]
+    runs-on: ${{ needs.changes.outputs.code_changed == 'true' && github.event_name == 'push' && 'homelab' || 'ubuntu-latest' }}
     timeout-minutes: 30
     permissions:
       contents: read
@@ -49,27 +94,37 @@ jobs:
       REGISTRY_IMPORTER_IMAGE: registry.home.intelliworks.nl:5000/grocery-automate/catalog-importer
 
     steps:
+      - name: Skip native checks for documentation-only changes
+        if: needs.changes.outputs.code_changed != 'true'
+        run: echo "Documentation-only change; native build and delivery skipped."
+
       - name: Check out repository
+        if: needs.changes.outputs.code_changed == 'true'
         uses: actions/checkout@v6
 
       - name: Validate Compose configuration
+        if: needs.changes.outputs.code_changed == 'true'
         run: docker compose config --quiet
 
       - name: Build native service image
+        if: needs.changes.outputs.code_changed == 'true'
         run: docker build --tag "$LOCAL_IMAGE" .
 
       - name: Build and validate native importer image
+        if: needs.changes.outputs.code_changed == 'true'
         run: |
           docker build --file Dockerfile.importer --tag "$LOCAL_IMPORTER_IMAGE" .
           docker run --rm "$LOCAL_IMPORTER_IMAGE" \
             --validate-manifest /app/import-products.example.json
 
       - name: Start tested image with PostgreSQL
+        if: needs.changes.outputs.code_changed == 'true'
         env:
           CATALOG_SERVICE_IMAGE: ${{ env.LOCAL_IMAGE }}
         run: docker compose up --no-build --wait
 
       - name: Verify native service API
+        if: needs.changes.outputs.code_changed == 'true'
         run: |
           curl --fail --silent --show-error http://127.0.0.1:8080/health/live
           curl --fail --silent --show-error http://127.0.0.1:8080/health/ready
@@ -78,14 +133,14 @@ jobs:
           test "$(docker inspect --format '{{.Config.User}}' grocery-automate-catalog-service-1)" = grocery
 
       - name: Verify private registry boundary
-        if: github.event_name == 'push'
+        if: needs.changes.outputs.code_changed == 'true' && github.event_name == 'push'
         run: |
           set -euo pipefail
           test "$REGISTRY_HOST" = "registry.home.intelliworks.nl:5000"
           curl --fail --silent --show-error "http://$REGISTRY_HOST/v2/"
 
       - name: Publish tested image to homelab
-        if: github.event_name == 'push'
+        if: needs.changes.outputs.code_changed == 'true' && github.event_name == 'push'
         shell: bash
         run: |
           set -euo pipefail
@@ -118,17 +173,17 @@ jobs:
           fi
 
       - name: Show service logs after failure
-        if: failure()
+        if: needs.changes.outputs.code_changed == 'true' && failure()
         run: docker compose logs --no-color || true
 
       - name: Stop services
-        if: always()
+        if: needs.changes.outputs.code_changed == 'true' && always()
         env:
           CATALOG_SERVICE_IMAGE: ${{ env.LOCAL_IMAGE }}
         run: docker compose down --volumes
 
       - name: Clean local Docker data
-        if: always()
+        if: needs.changes.outputs.code_changed == 'true' && always()
         run: |
           docker container prune -f
           docker image prune -a -f
