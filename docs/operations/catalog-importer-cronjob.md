@@ -160,6 +160,13 @@ kubectl -n "$IMPORT_NAMESPACE" wait \
 kubectl -n "$IMPORT_NAMESPACE" get job "$IMPORT_JOB" -o jsonpath='{.status}{"\n"}'
 ```
 
+Each product result is a single structured line with `product`, `status`, and `events`. Unsuccessful
+results also include `failure_category`; provider HTTP failures include `http_status`, while
+current/legacy compatibility failures include `route_attempts` such as
+`CURRENT/404/ROUTE_UNAVAILABLE,LEGACY/410/ROUTE_UNAVAILABLE`. Unexpected failures expose only the
+exception type. The importer deliberately never logs exception messages, provider response bodies,
+request headers, or auth values in these result lines.
+
 A successful process exit is necessary but not sufficient. Query a known product through the
 backend projection and confirm its historical observations:
 
