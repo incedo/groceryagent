@@ -1,5 +1,6 @@
 package com.groceryautomate.importer
 
+import com.groceryautomate.catalog.HistoricalPriceObservation
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -13,7 +14,8 @@ data class ImportManifest(
     val schemaVersion: Int,
     val batchId: String,
     val producerId: String,
-    val products: List<ImportProduct>
+    val products: List<ImportProduct>,
+    val historicalPrices: List<HistoricalPriceObservation> = emptyList()
 ) {
     init {
         require(schemaVersion == IMPORT_MANIFEST_SCHEMA_VERSION) {
@@ -24,6 +26,9 @@ data class ImportManifest(
         require(products.isNotEmpty()) { "Import manifest must contain at least one product." }
         require(products.distinctBy { it.retailer to it.productId }.size == products.size) {
             "Import manifest must not contain duplicate retailer product ids."
+        }
+        require(historicalPrices.distinctBy { it.id }.size == historicalPrices.size) {
+            "Import manifest must not contain duplicate historical price observations."
         }
     }
 }

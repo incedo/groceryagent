@@ -40,4 +40,16 @@ class ImportManifestTest {
 
         assertEquals("catalog-importer-12345", settings.batchIdOverride)
     }
+
+    @Test
+    fun historyOnlyModeIsExplicitAndInvalidModesFailClosed() {
+        val settings = ImporterSettings.fromEnvironment { name ->
+            if (name == "IMPORT_MODE") "history-only" else null
+        }
+
+        assertEquals(ImportMode.HISTORY_ONLY, settings.mode)
+        assertFailsWith<IllegalStateException> {
+            ImporterSettings.fromEnvironment { name -> if (name == "IMPORT_MODE") "fast" else null }
+        }
+    }
 }

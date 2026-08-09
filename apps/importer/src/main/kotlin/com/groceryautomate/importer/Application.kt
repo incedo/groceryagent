@@ -1,6 +1,7 @@
 package com.groceryautomate.importer
 
 import com.groceryautomate.events.ProductImportService
+import com.groceryautomate.events.HistoricalPriceImportService
 import com.groceryautomate.picnic.PicnicClient
 import com.groceryautomate.picnic.adapter.`in`.catalog.PicnicCanonicalCatalogAdapter
 import com.groceryautomate.picnic.adapter.out.config.PicnicEnvironmentFile
@@ -30,22 +31,28 @@ fun main(args: Array<String>) {
             "Usage: --orders-to-manifest <capture-directory> <new-manifest-file> <batch-id>"
         }
         val manifest = OrderCaptureFiles().toManifest(Path.of(args[1]), Path.of(args[2]), args[3])
-        println("Generated import manifest ${args[2]} with ${manifest.products.size} products.")
+        println("Generated import manifest ${args[2]} with ${manifest.products.size} products and " +
+            "${manifest.historicalPrices.size} historical prices.")
         return
     }
     if (args.firstOrNull() == "--validate-manifest") {
         require(args.size == 2) { "Usage: --validate-manifest <path>" }
         val manifest = ImportManifestFile.read(Path.of(args[1]))
-        println("Valid import manifest ${manifest.batchId}: ${manifest.products.size} products.")
+        println("Valid import manifest ${manifest.batchId}: ${manifest.products.size} products and " +
+            "${manifest.historicalPrices.size} historical prices.")
         return
     }
     require(args.isEmpty()) { "The importer accepts no arguments; configure it through environment variables." }
     val settings = ImporterSettings.fromEnvironment()
     val fileManifest = ImportManifestFile.read(settings.manifestFile)
     val manifest = settings.batchIdOverride?.let { fileManifest.copy(batchId = it) } ?: fileManifest
-    val report = runImport(settings, manifest)
+    val report = when (settings.mode) {
+        ImportMode.PRODUCTS_AND_HISTORY -> runImport(settings, manifest)
+        ImportMode.HISTORY_ONLY -> runHistoricalPriceImport(settings, manifest)
+    }
     report.results.forEach { println("${it.productId}: ${it.status} (${it.eventCount} events)") }
-    println("Import batch ${report.batchId}: ${report.results.size} products, ${report.failureCount} failures.")
+    println("Import batch ${report.batchId}: ${report.results.size} products, " +
+        "${report.historicalPriceResults.size} historical prices, ${report.failureCount} failures.")
     if (!report.successful) kotlin.system.exitProcess(1)
 }
 
@@ -89,11 +96,28 @@ private fun runImport(settings: ImporterSettings, manifest: ImportManifest): Imp
                 { UUID.randomUUID().toString() },
                 { Instant.now().toString() }
             )
-            runBlocking { BatchProductImporter(imports).run(manifest) }
+            val historicalPrices = HistoricalPriceImportService(repository) { UUID.randomUUID().toString() }
+            runBlocking {
+                BatchProductImporter(imports, BatchHistoricalPriceImporter(historicalPrices)).run(manifest)
+            }
         } finally {
             dataSource.close()
         }
     } finally {
         httpClient.close()
+    }
+}
+
+private fun runHistoricalPriceImport(settings: ImporterSettings, manifest: ImportManifest): ImportReport {
+    require(manifest.historicalPrices.isNotEmpty()) { "History-only import requires historical prices." }
+    val dataSource = PostgresDataSource.create(settings.database)
+    return try {
+        PostgresMigrator(dataSource).migrate()
+        val repository = PostgresCatalogEventRepository(dataSource)
+        val service = HistoricalPriceImportService(repository) { UUID.randomUUID().toString() }
+        val results = runBlocking { BatchHistoricalPriceImporter(service).run(manifest) }
+        ImportReport(manifest.batchId, emptyList(), results)
+    } finally {
+        dataSource.close()
     }
 }

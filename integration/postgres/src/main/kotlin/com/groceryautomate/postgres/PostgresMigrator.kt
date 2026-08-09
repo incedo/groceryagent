@@ -66,11 +66,18 @@ class PostgresMigrator(
         const val MIGRATION_LOCK_ID = 7_425_846_392_001L
 
         fun loadDefaultMigrations(): List<SqlMigration> {
-            val path = "db/migration/V001__event_store.sql"
+            return listOf(
+                loadMigration(1, "event_store"),
+                loadMigration(2, "historical_price_projection")
+            )
+        }
+
+        private fun loadMigration(version: Int, name: String): SqlMigration {
+            val path = "db/migration/V${version.toString().padStart(3, '0')}__${name}.sql"
             val resource = checkNotNull(PostgresMigrator::class.java.classLoader.getResource(path)) {
                 "Missing migration $path."
             }
-            return listOf(SqlMigration(1, "event_store", resource.readText()))
+            return SqlMigration(version, name, resource.readText())
         }
     }
 }

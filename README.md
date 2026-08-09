@@ -172,8 +172,35 @@ PICNIC_ENV_FILE=/absolute/path/second-account.env \
 
 The first command performs only read requests and stores raw summary/detail JSON below the ignored
 `.local/` directory. The second command extracts only recognized Picnic product-ID fields,
-deduplicates them, and writes a regular import manifest. Review that manifest, import it with the
-Compose command above, and move the raw order capture to Trash when it is no longer needed. Order,
-address, payment, slot, and account data are never written to PostgreSQL. The per-delivery detail
-route is still a live compatibility candidate; if the second account receives an unsupported-route
-response, the partial capture remains local and no manifest is generated.
+deduplicates them, and writes a regular import manifest. Supported single-product order lines also
+produce historical paid-price observations with integer line totals, quantity, purchase time,
+promotion, package text, retailer, and region. Delivery, order, and line identifiers become an
+opaque SHA-256 observation ID; raw identifiers, addresses, payments, slots, and account data are
+never written to PostgreSQL.
+
+Import historical prices without any Picnic product requests by selecting the explicit mode:
+
+```shell
+docker run --rm \
+  --env IMPORT_MODE=history-only \
+  --env IMPORT_MANIFEST_FILE=/app/import-manifest.json \
+  --env DATABASE_URL=jdbc:postgresql://database-host:5432/grocery_automate \
+  --env DATABASE_USER=... --env DATABASE_PASSWORD=... \
+  --mount type=bind,src=/absolute/path/import-products-with-history.json,dst=/app/import-manifest.json,readonly \
+  registry.home.intelliworks.nl:5000/grocery-automate/catalog-importer:main
+```
+
+`history-only` does not load a Picnic environment file. The default `products-and-history` mode
+first fetches current product details and then imports historical prices, so it must only be used
+with an account and request pacing suitable for that provider load. Historical observations are
+queryable without replacing current offers:
+
+```shell
+curl 'http://127.0.0.1:8080/api/v1/catalog/products/picnic:nl:s1001/price-history?limit=1000'
+```
+
+Each result preserves `paidLineTotal / quantity` as an exact ratio; the importer never rounds a
+non-divisible line total into a fabricated unit price. Multi-product order lines are skipped because
+their combined price cannot be attributed safely. Review the manifest, then move raw order capture
+to Trash when it is no longer needed. The per-delivery detail route remains a live compatibility
+candidate; an incomplete capture cannot generate a manifest.

@@ -1,6 +1,7 @@
 package com.groceryautomate.importer
 
 import com.groceryautomate.picnic.domain.PicnicOrderReferenceExtractor
+import com.groceryautomate.picnic.domain.PicnicHistoricalPriceExtractor
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -65,13 +66,15 @@ class OrderCaptureFiles(
     }
 
     fun toManifest(captureDirectory: Path, output: Path, batchId: String): ImportManifest {
-        val productIds = PicnicOrderReferenceExtractor.productIds(readDeliveryDetails(captureDirectory))
+        val details = readDeliveryDetails(captureDirectory)
+        val productIds = PicnicOrderReferenceExtractor.productIds(details)
         require(productIds.isNotEmpty()) { "Order capture contains no recognized Picnic product ids." }
         return ImportManifest(
             schemaVersion = IMPORT_MANIFEST_SCHEMA_VERSION,
             batchId = batchId,
             producerId = "picnic-order-capture",
-            products = productIds.map { ImportProduct(ImportRetailer.PICNIC, it) }
+            products = productIds.map { ImportProduct(ImportRetailer.PICNIC, it) },
+            historicalPrices = PicnicHistoricalPriceExtractor.observations(details, ::historicalObservationId)
         ).also { writeManifest(output, it) }
     }
 

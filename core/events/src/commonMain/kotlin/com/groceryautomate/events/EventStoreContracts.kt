@@ -1,6 +1,7 @@
 package com.groceryautomate.events
 
 import com.groceryautomate.catalog.ProductCatalogPort
+import com.groceryautomate.catalog.PriceHistoryPort
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 
@@ -59,7 +60,7 @@ data class EventPage(
     val events: List<EventEnvelope>
 )
 
-interface CatalogEventRepository : ProductCatalogPort {
+interface CatalogEventRepository : ProductCatalogPort, PriceHistoryPort {
     suspend fun findCommand(commandId: CommandId): AppendResult?
     suspend fun streamVersion(streamId: StreamId): Long
     suspend fun append(request: AppendCatalogEvents): AppendResult

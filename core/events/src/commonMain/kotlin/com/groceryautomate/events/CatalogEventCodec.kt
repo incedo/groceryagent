@@ -15,6 +15,7 @@ object CatalogEventCodec {
     fun encode(event: CatalogEvent): JsonObject = when (event) {
         is ProductImported -> json.encodeToJsonElement(event)
         is OfferObserved -> json.encodeToJsonElement(event)
+        is HistoricalPriceObserved -> json.encodeToJsonElement(event)
     } as JsonObject
 
     fun decode(type: String, schemaVersion: Int, payload: JsonObject): CatalogEvent {
@@ -24,6 +25,7 @@ object CatalogEventCodec {
         return when (type) {
             PRODUCT_IMPORTED_TYPE -> json.decodeFromJsonElement<ProductImported>(payload)
             OFFER_OBSERVED_TYPE -> json.decodeFromJsonElement<OfferObserved>(payload)
+            HISTORICAL_PRICE_OBSERVED_TYPE -> json.decodeFromJsonElement<HistoricalPriceObserved>(payload)
             else -> error("Unsupported catalog event type: $type.")
         }
     }

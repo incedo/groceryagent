@@ -3,6 +3,8 @@ package com.groceryautomate.postgres
 import com.groceryautomate.catalog.CatalogProduct
 import com.groceryautomate.catalog.ProductId
 import com.groceryautomate.catalog.ProductSearchResult
+import com.groceryautomate.catalog.ProductPriceHistory
+import com.groceryautomate.catalog.HistoricalPriceObservation
 import com.groceryautomate.events.AppendCatalogEvents
 import com.groceryautomate.events.AppendResult
 import com.groceryautomate.events.CatalogEventCodec
@@ -101,6 +103,31 @@ class PostgresCatalogEventRepository(
         }
     }
 
+    override suspend fun getPriceHistory(productId: ProductId, limit: Int): ProductPriceHistory = io {
+        require(limit in 1..1000) { "Price history limit must be between 1 and 1000." }
+        val observations = dataSource.connection.use { connection ->
+            connection.prepareStatement(
+                """
+                SELECT document FROM product_price_history
+                WHERE product_id = ? ORDER BY purchased_at, observation_id LIMIT ?
+                """.trimIndent()
+            ).use {
+                it.setString(1, productId.value)
+                it.setInt(2, limit)
+                it.executeQuery().use { result ->
+                    buildList {
+                        while (result.next()) add(
+                            CatalogEventCodec.json.decodeFromString<HistoricalPriceObservation>(
+                                result.getString("document")
+                            )
+                        )
+                    }
+                }
+            }
+        }
+        ProductPriceHistory(productId, observations)
+    }
+
     override suspend fun readEvents(after: Long, limit: Int): EventPage = io {
         require(after >= 0) { "Event cursor must not be negative." }
         require(limit in 1..1000) { "Event limit must be between 1 and 1000." }
@@ -124,6 +151,7 @@ class PostgresCatalogEventRepository(
     override suspend fun rebuildProjections(): Int = io {
         dataSource.connection.use { connection ->
             connection.inTransaction {
+                createStatement().use { it.executeUpdate("DELETE FROM product_price_history") }
                 createStatement().use { it.executeUpdate("DELETE FROM catalog_products") }
                 val writer = PostgresProjectionWriter(this)
                 createStatement().use { statement ->
