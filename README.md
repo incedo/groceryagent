@@ -34,6 +34,7 @@ The project is being established with the same shared-first architecture used by
 - [Canonical catalog and backend query API](docs/architecture/canonical-catalog-backend.md)
 - [Native event-sourced catalog backend](docs/architecture/native-event-sourced-backend.md)
 - [Batch product importer](docs/architecture/batch-product-importer.md)
+- [Picnic order capture to product import](docs/architecture/picnic-order-capture-import.md)
 - [Native backend CI/CD pipeline](docs/architecture/native-backend-ci-cd.md)
 - [Sanitized Picnic capture fixtures](docs/architecture/picnic-sanitized-fixtures.md)
 - [Picnic capture coverage expansion](docs/architecture/picnic-capture-coverage.md)
@@ -156,3 +157,23 @@ product/offer observation is intended. Product and offer facts are stored throug
 `ProductImported` and `OfferObserved`, never by directly mutating catalog tables. Recipe ingestion
 is a follow-up because the current retailer recipe endpoint has no agreed canonical mapper or
 recipe event contract.
+
+To seed products from a different Picnic account's completed orders, first capture the private
+order responses locally with that account's explicit auth file:
+
+```shell
+PICNIC_ENV_FILE=/absolute/path/second-account.env \
+./gradlew :apps:importer:run \
+  --args='--capture-orders .local/orders/account-2-YYYYMMDD'
+
+./gradlew :apps:importer:run \
+  --args='--orders-to-manifest .local/orders/account-2-YYYYMMDD .local/import-account-2-YYYYMMDD.json account-2-orders-YYYYMMDD'
+```
+
+The first command performs only read requests and stores raw summary/detail JSON below the ignored
+`.local/` directory. The second command extracts only recognized Picnic product-ID fields,
+deduplicates them, and writes a regular import manifest. Review that manifest, import it with the
+Compose command above, and move the raw order capture to Trash when it is no longer needed. Order,
+address, payment, slot, and account data are never written to PostgreSQL. The per-delivery detail
+route is still a live compatibility candidate; if the second account receives an unsupported-route
+response, the partial capture remains local and no manifest is generated.

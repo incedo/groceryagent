@@ -9,3 +9,4 @@ local.properties
 .env
 .env.picnic.local
 .secrets/
+.local/
