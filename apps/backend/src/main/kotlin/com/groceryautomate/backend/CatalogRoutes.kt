@@ -24,7 +24,7 @@ internal fun Route.catalogRoutes(
     provider: ProductCatalogPort,
     imports: CatalogImportService
 ) {
-    route("/api/v1/products") {
+    route("/api/v1/catalog/products") {
         get {
             val query = call.requiredQuery()
             call.respondJson(ProductSearchResult.serializer(), repository.search(query, call.searchLimit()))
@@ -32,6 +32,11 @@ internal fun Route.catalogRoutes(
         get("/{id}") {
             val product = repository.getProduct(ProductId(call.requiredProductId()))
             if (product == null) call.productNotFound() else call.respondJson(CatalogProduct.serializer(), product)
+        }
+    }
+    route("/api/v1/retailers/picnic/products") {
+        get {
+            call.respondJson(ProductSearchResult.serializer(), provider.search(call.requiredQuery(), call.searchLimit()))
         }
         post("/{id}/imports") {
             val commandId = call.request.header("Idempotency-Key")
@@ -43,9 +48,6 @@ internal fun Route.catalogRoutes(
             val result = imports.importProduct(ProductId(call.requiredProductId()), commandId, producerId)
             if (result == null) call.productNotFound() else call.respondJson(AppendResult.serializer(), result, HttpStatusCode.Accepted)
         }
-    }
-    get("/api/v1/provider-products") {
-        call.respondJson(ProductSearchResult.serializer(), provider.search(call.requiredQuery(), call.searchLimit()))
     }
 }
 

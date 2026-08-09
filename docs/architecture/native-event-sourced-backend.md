@@ -1,7 +1,7 @@
 # Native Event-Sourced Catalog Backend
 
 **Status:** SATISFIED
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-09
 **Depends on:** Canonical catalog and backend query API
 
 ## 1. Overview
@@ -92,7 +92,8 @@ changes commit in one PostgreSQL transaction.
 |---|---|---|---|
 | `ImportProviderProduct` | provider product ID, command ID, producer ID | require provider detail; snapshot canonical facts | one `ProductImported`, then zero or more `OfferObserved` |
 
-`POST /api/v1/products/{providerProductId}/imports` requires an `Idempotency-Key` UUID. A retry
+`POST /api/v1/retailers/picnic/products/{providerProductId}/imports` requires an `Idempotency-Key`
+UUID. A retry
 with the same key returns the original append result and cannot append or project twice. A command
 ID reused for another stream is rejected.
 
@@ -134,10 +135,10 @@ the same canonical JSON. It never edits the event log.
 
 ## 10. API
 
-- `POST /api/v1/products/{id}/imports`: provider-backed import command.
-- `GET /api/v1/products?query=&limit=`: persisted projection search.
-- `GET /api/v1/products/{id}`: persisted projection detail.
-- `GET /api/v1/provider-products?query=&limit=`: explicitly transient provider discovery.
+- `POST /api/v1/retailers/picnic/products/{id}/imports`: Picnic-backed import command.
+- `GET /api/v1/catalog/products?query=&limit=`: persisted projection search.
+- `GET /api/v1/catalog/products/{id}`: persisted projection detail.
+- `GET /api/v1/retailers/picnic/products?query=&limit=`: explicitly transient Picnic discovery.
 - `GET /api/v1/events?after=&limit=`: ordered sync envelopes, default cursor zero.
 - `GET /health/live`: process liveness.
 - `GET /health/ready`: database readiness.

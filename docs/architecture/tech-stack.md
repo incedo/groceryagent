@@ -1,7 +1,7 @@
 # Grocery Recommendations Tech Stack
 
 **Status:** AGREED
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-09
 
 ## 1. Product Direction
 
@@ -242,7 +242,8 @@ Version all public routes under `/api/v1`.
 
 | Area | Example routes |
 |---|---|
-| Catalog | `GET /api/v1/products`, `GET /api/v1/products/{id}` |
+| Catalog | `GET /api/v1/catalog/products`, `GET /api/v1/catalog/products/{id}` |
+| Retailers | `GET /api/v1/retailers/{retailer}/products` plus retailer-specific actions |
 | Offers | `GET /api/v1/offers?productId=&region=` |
 | Recommendations | `POST /api/v1/recommendations/query` |
 | Comparisons | `POST /api/v1/comparisons` |

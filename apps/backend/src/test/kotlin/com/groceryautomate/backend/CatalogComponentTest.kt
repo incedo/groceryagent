@@ -48,13 +48,13 @@ class CatalogComponentTest {
             testApplication {
                 application { catalogModule(repository, gateway, imports, repository::isReady) }
 
-                val first = client.post("/api/v1/products/s1001/imports") {
+                val first = client.post("/api/v1/retailers/picnic/products/s1001/imports") {
                     header("Idempotency-Key", "00000000-0000-4000-8000-000000000001")
                 }
-                val duplicate = client.post("/api/v1/products/s1001/imports") {
+                val duplicate = client.post("/api/v1/retailers/picnic/products/s1001/imports") {
                     header("Idempotency-Key", "00000000-0000-4000-8000-000000000001")
                 }
-                val detail = client.get("/api/v1/products/picnic:nl:s1001")
+                val detail = client.get("/api/v1/catalog/products/picnic:nl:s1001")
                 val events = client.get("/api/v1/events?after=0&limit=10")
 
                 assertEquals(HttpStatusCode.Accepted, first.status)

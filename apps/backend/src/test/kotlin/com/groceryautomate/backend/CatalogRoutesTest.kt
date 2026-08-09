@@ -20,9 +20,9 @@ class CatalogRoutesTest {
         val repository = FakeEventRepository()
         install(repository, FakeProvider())
 
-        val search = client.get("/api/v1/products?query=wholegrain%20oats&limit=7")
+        val search = client.get("/api/v1/catalog/products?query=wholegrain%20oats&limit=7")
         val result = Json.decodeFromString<ProductSearchResult>(search.bodyAsText())
-        val detail = client.get("/api/v1/products/picnic:nl:s1001")
+        val detail = client.get("/api/v1/catalog/products/picnic:nl:s1001")
         val product = Json.decodeFromString<CatalogProduct>(detail.bodyAsText())
 
         assertEquals(HttpStatusCode.OK, search.status)
@@ -37,7 +37,7 @@ class CatalogRoutesTest {
         val provider = FakeProvider()
         install(FakeEventRepository(), provider)
 
-        val response = client.get("/api/v1/provider-products?query=oats&limit=3")
+        val response = client.get("/api/v1/retailers/picnic/products?query=oats&limit=3")
 
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals("oats", provider.lastQuery)
@@ -49,8 +49,8 @@ class CatalogRoutesTest {
         val repository = FakeEventRepository(null)
         install(repository, FakeProvider())
 
-        val missing = client.post("/api/v1/products/s1001/imports")
-        val accepted = client.post("/api/v1/products/s1001/imports") {
+        val missing = client.post("/api/v1/retailers/picnic/products/s1001/imports")
+        val accepted = client.post("/api/v1/retailers/picnic/products/s1001/imports") {
             header("Idempotency-Key", "00000000-0000-4000-8000-000000000001")
         }
 
@@ -63,9 +63,9 @@ class CatalogRoutesTest {
     fun validationAndMissingProjectionUseStableErrors() = testApplication {
         install(FakeEventRepository(null), FakeProvider())
 
-        val missingQuery = client.get("/api/v1/products")
-        val badLimit = client.get("/api/v1/products?query=oats&limit=101")
-        val missingProduct = client.get("/api/v1/products/picnic:nl:missing")
+        val missingQuery = client.get("/api/v1/catalog/products")
+        val badLimit = client.get("/api/v1/catalog/products?query=oats&limit=101")
+        val missingProduct = client.get("/api/v1/catalog/products/picnic:nl:missing")
 
         assertEquals(HttpStatusCode.BadRequest, missingQuery.status)
         assertEquals("INVALID_REQUEST", errorCode(missingQuery.bodyAsText()))
@@ -79,12 +79,22 @@ class CatalogRoutesTest {
         val secret = "provider secret-token leaked"
         install(FakeEventRepository(), FakeProvider(failure = IllegalStateException(secret)))
 
-        val response = client.get("/api/v1/provider-products?query=oats")
+        val response = client.get("/api/v1/retailers/picnic/products?query=oats")
         val body = response.bodyAsText()
 
         assertEquals(HttpStatusCode.ServiceUnavailable, response.status)
         assertEquals("PROVIDER_UNAVAILABLE", errorCode(body))
         assertFalse(body.contains(secret))
+    }
+
+    @Test
+    fun legacyCatalogAndProviderRoutesAreAbsent() = testApplication {
+        install(FakeEventRepository(), FakeProvider())
+
+        assertEquals(HttpStatusCode.NotFound, client.get("/api/v1/products?query=oats").status)
+        assertEquals(HttpStatusCode.NotFound, client.get("/api/v1/products/picnic:nl:s1001").status)
+        assertEquals(HttpStatusCode.NotFound, client.post("/api/v1/products/s1001/imports").status)
+        assertEquals(HttpStatusCode.NotFound, client.get("/api/v1/provider-products?query=oats").status)
     }
 
     @Test
