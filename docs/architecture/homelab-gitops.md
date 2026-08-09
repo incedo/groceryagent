@@ -38,15 +38,13 @@ DNS is requested from this app repository with ExternalDNS `DNSEndpoint`
 resources. The records point at edge Traefik on `192.168.68.21`; edge Traefik
 then forwards the hostnames to k3s Traefik.
 
-The `catalog-importer` is deployed as a suspended CronJob. Before enabling or manually starting it,
-replace the placeholder product values in `catalog-import-manifest` and provision the
-platform-owned `grocery-automate-picnic` Secret with an `auth.env` key. The manifest and provider
-secret are mounted read-only. Keeping `suspend: true` is the safe default: it prevents placeholder
-imports and unreviewed retailer traffic. The generated Kubernetes Job name overrides `batchId`, so
-pod retries are idempotent while each later scheduled Job records fresh observations. A batch may
-be started explicitly after those prerequisites are met:
+The `catalog-importer` is deployed as a suspended CronJob. Keeping `suspend: true` is the safe
+default: merges, image publication, and ArgoCD reconciliation do not create importer Jobs. Each
+reviewed run is a named one-off Job whose name overrides `batchId` for idempotent retries.
 
-```shell
-kubectl -n grocery-automate create job \
-  --from=cronjob/catalog-importer catalog-import-YYYYMMDD
-```
+Follow the [Catalog Importer CronJob Runbook](../operations/catalog-importer-cronjob.md) for
+preflight checks, mode selection, run-specific manifest delivery, monitoring, verification,
+failure recovery, and cleanup. In particular, never use the plain `create job --from=cronjob`
+command for historical order data: the default mode makes Picnic product requests. Large generated
+history manifests also exceed the Kubernetes ConfigMap limit and require a separately reviewed
+read-only delivery mechanism before a Job may start.
