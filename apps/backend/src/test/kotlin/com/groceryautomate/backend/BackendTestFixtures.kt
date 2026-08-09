@@ -11,6 +11,9 @@ import com.groceryautomate.catalog.ProductId
 import com.groceryautomate.catalog.ProductOffer
 import com.groceryautomate.catalog.ProductOfferId
 import com.groceryautomate.catalog.ProductSearchResult
+import com.groceryautomate.catalog.ProductPriceHistory
+import com.groceryautomate.catalog.HistoricalPriceObservation
+import com.groceryautomate.catalog.HistoricalPriceObservationId
 import com.groceryautomate.catalog.ProviderEvidence
 import com.groceryautomate.catalog.ProviderRouteGeneration
 import com.groceryautomate.catalog.RetailerId
@@ -83,6 +86,7 @@ internal class FakeEventRepository(
     var lastQuery: String? = null
     var lastLimit: Int? = null
     var appended: AppendCatalogEvents? = null
+    var priceHistory = ProductPriceHistory(ProductId("picnic:nl:s1001"), emptyList())
 
     override suspend fun findCommand(commandId: CommandId): AppendResult? = null
     override suspend fun streamVersion(streamId: StreamId): Long = 0
@@ -100,6 +104,22 @@ internal class FakeEventRepository(
     }
 
     override suspend fun getProduct(id: ProductId): CatalogProduct? = product
+    override suspend fun getPriceHistory(productId: ProductId, limit: Int): ProductPriceHistory =
+        ProductPriceHistory(productId, priceHistory.observations.take(limit))
     override suspend fun readEvents(after: Long, limit: Int): EventPage = EventPage(after, after, emptyList())
     override suspend fun rebuildProjections(): Int = 0
 }
+
+internal val testHistoricalPrice = HistoricalPriceObservation(
+    HistoricalPriceObservationId("history-1"),
+    ProductId("picnic:nl:s1001"),
+    RetailerId("picnic"),
+    "nl",
+    Money(350, "EUR"),
+    Money(398, "EUR"),
+    2,
+    "500 gram",
+    "Bonus",
+    "2024-01-02T10:00:00Z",
+    "picnic-completed-order"
+)

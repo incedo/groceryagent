@@ -22,4 +22,6 @@ fun reduceCatalogProduct(current: CatalogProduct?, event: CatalogEvent): Catalog
             offers = product.offers.filterNot { it.id == event.offer.id } + event.offer
         )
     }
+
+    is HistoricalPriceObserved -> error("Historical price events use their own projection.")
 }

@@ -41,7 +41,7 @@ class PostgresCatalogEventRepositoryTest {
                 it.execute("CREATE SCHEMA public")
             }
         }
-        assertEquals(1, PostgresMigrator(dataSource).migrate())
+        assertEquals(2, PostgresMigrator(dataSource).migrate())
         repository = PostgresCatalogEventRepository(dataSource)
     }
 
@@ -142,10 +142,39 @@ class PostgresCatalogEventRepositoryTest {
     @Test
     fun projectionRebuildIsDeterministic() = runTest {
         repository.append(catalogAppend())
+        repository.append(historicalPriceAppend())
         val before = repository.getProduct(ProductId("picnic:nl:s1"))
+        val historyBefore = repository.getPriceHistory(ProductId("picnic:nl:s1"))
 
-        assertEquals(2, repository.rebuildProjections())
+        assertEquals(3, repository.rebuildProjections())
         assertEquals(before, repository.getProduct(ProductId("picnic:nl:s1")))
+        assertEquals(historyBefore, repository.getPriceHistory(ProductId("picnic:nl:s1")))
+    }
+
+    @Test
+    fun historicalPricesAreIdempotentFilteredAndChronological() = runTest {
+        val later = fixtureHistoricalPrice().copy(
+            id = com.groceryautomate.catalog.HistoricalPriceObservationId("history-2"),
+            purchasedAt = "2025-01-02T10:00:00Z"
+        )
+        repository.append(historicalPriceAppend(later).copy(
+            commandId = CommandId("00000000-0000-4000-8000-000000000008"),
+            correlationId = CommandId("00000000-0000-4000-8000-000000000008"),
+            events = listOf(
+                ProposedCatalogEvent(
+                    EventId("00000000-0000-4000-8000-000000000009"),
+                    later.purchasedAt,
+                    com.groceryautomate.events.HistoricalPriceObserved(later)
+                )
+            )
+        ))
+        val first = repository.append(historicalPriceAppend())
+        val duplicate = repository.append(historicalPriceAppend())
+
+        val history = repository.getPriceHistory(ProductId("picnic:nl:s1"), 10)
+        assertEquals(listOf("history-1", "history-2"), history.observations.map { it.id.value })
+        assertEquals(first.copy(duplicateCommand = true), duplicate)
+        assertTrue(repository.getPriceHistory(ProductId("picnic:nl:missing")).observations.isEmpty())
     }
 
     @Test

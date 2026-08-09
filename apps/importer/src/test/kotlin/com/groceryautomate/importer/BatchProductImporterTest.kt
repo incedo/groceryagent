@@ -9,6 +9,9 @@ import com.groceryautomate.catalog.ProductId
 import com.groceryautomate.catalog.ProductOffer
 import com.groceryautomate.catalog.ProductOfferId
 import com.groceryautomate.catalog.ProductSearchResult
+import com.groceryautomate.catalog.ProductPriceHistory
+import com.groceryautomate.catalog.HistoricalPriceObservation
+import com.groceryautomate.catalog.HistoricalPriceObservationId
 import com.groceryautomate.catalog.ProviderEvidence
 import com.groceryautomate.catalog.ProviderRouteGeneration
 import com.groceryautomate.catalog.RetailerId
@@ -20,6 +23,8 @@ import com.groceryautomate.events.EventPage
 import com.groceryautomate.events.OfferObserved
 import com.groceryautomate.events.ProductImportService
 import com.groceryautomate.events.ProductImported
+import com.groceryautomate.events.HistoricalPriceImportService
+import com.groceryautomate.events.HistoricalPriceObserved
 import com.groceryautomate.events.StreamId
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -65,6 +70,25 @@ class BatchProductImporterTest {
         assertEquals(2, report.failureCount)
         assertEquals(false, report.successful)
         assertEquals(1, repository.appends.size)
+    }
+
+    @Test
+    fun importsHistoricalPricesWithoutCallingPicnicAgainAndResumesIdempotently() = runTest {
+        val repository = RecordingRepository()
+        val eventIds = ArrayDeque(listOf(EVENT_ID_1, EVENT_ID_2, EVENT_ID_3))
+        val importer = BatchProductImporter(
+            ProductImportService(FakeProvider(), repository, eventIds::removeFirst) { OBSERVED_AT },
+            BatchHistoricalPriceImporter(HistoricalPriceImportService(repository, eventIds::removeFirst))
+        )
+        val manifest = manifest("s1001").copy(historicalPrices = listOf(historicalPrice()))
+
+        val first = importer.run(manifest)
+        val resumed = importer.run(manifest)
+
+        assertEquals(ImportStatus.IMPORTED, first.historicalPriceResults.single().status)
+        assertEquals(ImportStatus.ALREADY_IMPORTED, resumed.historicalPriceResults.single().status)
+        assertTrue(repository.appends.last().events.single().event is HistoricalPriceObserved)
+        assertEquals(2, repository.appends.size)
     }
 }
 
@@ -128,6 +152,8 @@ private class RecordingRepository : CatalogEventRepository {
         ProductSearchResult(query, 0, emptyList())
 
     override suspend fun getProduct(id: ProductId): CatalogProduct? = null
+    override suspend fun getPriceHistory(productId: ProductId, limit: Int): ProductPriceHistory =
+        ProductPriceHistory(productId, emptyList())
     override suspend fun readEvents(after: Long, limit: Int): EventPage = EventPage(after, after, emptyList())
     override suspend fun rebuildProjections(): Int = 0
 }
@@ -142,3 +168,18 @@ internal fun manifest(productId: String) = ImportManifest(
 internal const val OBSERVED_AT = "2026-08-09T10:00:00Z"
 internal const val EVENT_ID_1 = "00000000-0000-4000-8000-000000000001"
 internal const val EVENT_ID_2 = "00000000-0000-4000-8000-000000000002"
+internal const val EVENT_ID_3 = "00000000-0000-4000-8000-000000000003"
+
+internal fun historicalPrice() = HistoricalPriceObservation(
+    HistoricalPriceObservationId("history-1"),
+    ProductId("picnic:nl:s1001"),
+    RetailerId("picnic"),
+    "nl",
+    Money(350, "EUR"),
+    Money(398, "EUR"),
+    2,
+    "500 gram",
+    "Bonus",
+    "2024-01-02T10:00:00Z",
+    "picnic-completed-order"
+)

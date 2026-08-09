@@ -2,6 +2,7 @@ package com.groceryautomate.backend
 
 import com.groceryautomate.catalog.CatalogProduct
 import com.groceryautomate.catalog.ProductSearchResult
+import com.groceryautomate.catalog.ProductPriceHistory
 import com.groceryautomate.catalog.VerificationStatus
 import com.groceryautomate.events.ProductImportService
 import io.ktor.client.request.get
@@ -43,6 +44,22 @@ class CatalogRoutesTest {
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals("oats", provider.lastQuery)
         assertEquals(3, provider.lastLimit)
+    }
+
+    @Test
+    fun priceHistoryIsQueryableWithAnExplicitLimit() = testApplication {
+        val repository = FakeEventRepository().apply {
+            priceHistory = ProductPriceHistory(testProduct.product.id, listOf(testHistoricalPrice, testHistoricalPrice))
+        }
+        install(repository, FakeProvider())
+
+        val response = client.get("/api/v1/catalog/products/picnic:nl:s1001/price-history?limit=1")
+        val history = Json.decodeFromString<ProductPriceHistory>(response.bodyAsText())
+
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals(1, history.observations.size)
+        assertEquals(350, history.observations.single().paidLineTotal.minorUnits)
+        assertEquals(2, history.observations.single().quantity)
     }
 
     @Test

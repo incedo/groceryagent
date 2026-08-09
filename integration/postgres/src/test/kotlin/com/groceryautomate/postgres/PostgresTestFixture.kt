@@ -10,6 +10,8 @@ import com.groceryautomate.catalog.ProductOfferId
 import com.groceryautomate.catalog.ProviderEvidence
 import com.groceryautomate.catalog.ProviderRouteGeneration
 import com.groceryautomate.catalog.RetailerId
+import com.groceryautomate.catalog.HistoricalPriceObservation
+import com.groceryautomate.catalog.HistoricalPriceObservationId
 import com.groceryautomate.events.AppendCatalogEvents
 import com.groceryautomate.events.CommandId
 import com.groceryautomate.events.EventId
@@ -18,11 +20,14 @@ import com.groceryautomate.events.ProducerId
 import com.groceryautomate.events.ProductImported
 import com.groceryautomate.events.ProposedCatalogEvent
 import com.groceryautomate.events.StreamId
+import com.groceryautomate.events.HistoricalPriceObserved
 
 internal const val COMMAND_ID = "00000000-0000-4000-8000-000000000001"
 internal const val PRODUCT_EVENT_ID = "00000000-0000-4000-8000-000000000002"
 internal const val OFFER_EVENT_ID = "00000000-0000-4000-8000-000000000003"
 internal const val OCCURRED_AT = "2026-08-04T10:00:00Z"
+internal const val PRICE_EVENT_ID = "00000000-0000-4000-8000-000000000006"
+internal const val PRICE_COMMAND_ID = "00000000-0000-4000-8000-000000000007"
 
 internal fun catalogAppend(
     commandId: String = COMMAND_ID,
@@ -85,3 +90,27 @@ internal fun fixtureCatalogProduct(): CatalogProduct {
         evidence = evidence
     )
 }
+
+internal fun historicalPriceAppend(
+    observation: HistoricalPriceObservation = fixtureHistoricalPrice()
+): AppendCatalogEvents = catalogAppend(
+    commandId = PRICE_COMMAND_ID,
+    streamId = "price-history:${observation.id.value}",
+    events = listOf(
+        ProposedCatalogEvent(EventId(PRICE_EVENT_ID), observation.purchasedAt, HistoricalPriceObserved(observation))
+    )
+)
+
+internal fun fixtureHistoricalPrice() = HistoricalPriceObservation(
+    id = HistoricalPriceObservationId("history-1"),
+    productId = ProductId("picnic:nl:s1"),
+    retailerId = RetailerId("picnic"),
+    region = "nl",
+    paidLineTotal = Money(350, "EUR"),
+    originalLineTotal = Money(398, "EUR"),
+    quantity = 2,
+    packageText = "500 gram",
+    promotionLabel = "Bonus",
+    purchasedAt = "2024-01-02T10:00:00Z",
+    source = "picnic-completed-order"
+)

@@ -4,6 +4,7 @@ import com.groceryautomate.catalog.ProductCatalogPort
 import com.groceryautomate.catalog.ProductId
 import com.groceryautomate.catalog.CatalogProduct
 import com.groceryautomate.catalog.ProductSearchResult
+import com.groceryautomate.catalog.ProductPriceHistory
 import com.groceryautomate.events.AppendResult
 import com.groceryautomate.events.CatalogEventRepository
 import com.groceryautomate.events.CommandId
@@ -19,6 +20,8 @@ import io.ktor.server.routing.route
 
 private const val DEFAULT_SEARCH_LIMIT = 20
 private const val MAX_SEARCH_LIMIT = 100
+private const val DEFAULT_HISTORY_LIMIT = 100
+private const val MAX_HISTORY_LIMIT = 1000
 
 internal fun Route.catalogRoutes(
     repository: CatalogEventRepository,
@@ -33,6 +36,13 @@ internal fun Route.catalogRoutes(
         get("/{id}") {
             val product = repository.getProduct(ProductId(call.requiredProductId()))
             if (product == null) call.productNotFound() else call.respondJson(CatalogProduct.serializer(), product)
+        }
+        get("/{id}/price-history") {
+            val history = repository.getPriceHistory(
+                ProductId(call.requiredProductId()),
+                call.historyLimit()
+            )
+            call.respondJson(ProductPriceHistory.serializer(), history)
         }
     }
     route("/api/v1/retailers/picnic/products") {
@@ -60,6 +70,12 @@ private fun io.ktor.server.application.ApplicationCall.searchLimit(): Int {
     val value = request.queryParameters["limit"] ?: return DEFAULT_SEARCH_LIMIT
     return value.toIntOrNull()?.takeIf { it in 1..MAX_SEARCH_LIMIT }
         ?: throw InvalidCatalogRequest("Query parameter 'limit' must be between 1 and $MAX_SEARCH_LIMIT.")
+}
+
+private fun io.ktor.server.application.ApplicationCall.historyLimit(): Int {
+    val value = request.queryParameters["limit"] ?: return DEFAULT_HISTORY_LIMIT
+    return value.toIntOrNull()?.takeIf { it in 1..MAX_HISTORY_LIMIT }
+        ?: throw InvalidCatalogRequest("Query parameter 'limit' must be between 1 and $MAX_HISTORY_LIMIT.")
 }
 
 private fun io.ktor.server.application.ApplicationCall.requiredProductId(): String =

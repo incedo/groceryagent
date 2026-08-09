@@ -2,7 +2,9 @@ package com.groceryautomate.postgres
 
 import com.groceryautomate.catalog.CatalogProduct
 import com.groceryautomate.events.CatalogEventCodec
+import com.groceryautomate.events.CatalogEvent
 import com.groceryautomate.events.EventEnvelope
+import com.groceryautomate.events.HistoricalPriceObserved
 import com.groceryautomate.events.reduceCatalogProduct
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -17,6 +19,14 @@ internal class PostgresProjectionWriter(
             envelope.schemaVersion,
             envelope.payload
         )
+        if (event is HistoricalPriceObserved) {
+            applyHistoricalPrice(envelope, event)
+        } else {
+            applyCatalog(envelope, event)
+        }
+    }
+
+    private fun applyCatalog(envelope: EventEnvelope, event: CatalogEvent) {
         val existing = load(envelope.streamId.value)
         if (existing != null && envelope.globalPosition <= existing.lastGlobalPosition) return
         val product = reduceCatalogProduct(existing?.product, event)
@@ -37,6 +47,27 @@ internal class PostgresProjectionWriter(
             it.setString(3, product.product.brand)
             it.setString(4, document)
             it.setLong(5, envelope.globalPosition)
+            it.executeUpdate()
+        }
+    }
+
+    private fun applyHistoricalPrice(envelope: EventEnvelope, event: HistoricalPriceObserved) {
+        val observation = event.observation
+        val document = CatalogEventCodec.json.encodeToString(observation)
+        connection.prepareStatement(
+            """
+            INSERT INTO product_price_history(
+                observation_id, product_id, retailer_id, purchased_at, document, last_global_position
+            ) VALUES (?, ?, ?, ?::timestamptz, ?::jsonb, ?)
+            ON CONFLICT (observation_id) DO NOTHING
+            """.trimIndent()
+        ).use {
+            it.setString(1, observation.id.value)
+            it.setString(2, observation.productId.value)
+            it.setString(3, observation.retailerId.value)
+            it.setString(4, observation.purchasedAt)
+            it.setString(5, document)
+            it.setLong(6, envelope.globalPosition)
             it.executeUpdate()
         }
     }

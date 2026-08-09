@@ -8,6 +8,7 @@ data class ImporterSettings(
     val batchIdOverride: String?,
     val picnicEnvironmentFile: Path,
     val providerTimeoutMillis: Long,
+    val mode: ImportMode,
     val database: PostgresSettings
 ) {
     companion object {
@@ -17,6 +18,7 @@ data class ImporterSettings(
                 batchIdOverride = read("IMPORT_BATCH_ID")?.trim()?.takeIf(String::isNotEmpty),
                 picnicEnvironmentFile = Path.of(read.value("PICNIC_ENV_FILE", "/run/secrets/picnic.env")),
                 providerTimeoutMillis = read.positiveLong("PICNIC_TIMEOUT_MILLIS", 15_000),
+                mode = ImportMode.from(read.value("IMPORT_MODE", "products-and-history")),
                 database = PostgresSettings(
                     jdbcUrl = read.value("DATABASE_URL", "jdbc:postgresql://127.0.0.1:5432/grocery"),
                     user = read.value("DATABASE_USER", "grocery"),
@@ -25,6 +27,19 @@ data class ImporterSettings(
                     connectionTimeoutMillis = read.positiveLong("DATABASE_TIMEOUT_MILLIS", 5_000)
                 )
             )
+    }
+}
+
+enum class ImportMode {
+    PRODUCTS_AND_HISTORY,
+    HISTORY_ONLY;
+
+    companion object {
+        fun from(value: String): ImportMode = when (value) {
+            "products-and-history" -> PRODUCTS_AND_HISTORY
+            "history-only" -> HISTORY_ONLY
+            else -> error("IMPORT_MODE must be products-and-history or history-only.")
+        }
     }
 }
 

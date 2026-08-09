@@ -28,6 +28,9 @@ class OrderCaptureServiceTest {
             assertTrue(Files.isRegularFile(capture.resolve("delivery-001.json")))
             assertTrue(Files.isRegularFile(capture.resolve("capture-complete.json")))
             assertEquals(listOf("s1001", "s1002"), manifest.products.map { it.productId })
+            assertEquals(1, manifest.historicalPrices.size)
+            assertEquals(949, manifest.historicalPrices.single().paidLineTotal.minorUnits)
+            assertEquals(2, manifest.historicalPrices.single().quantity)
             assertEquals(manifest, ImportManifestFile.read(manifestFile))
             assertEquals(0, provider.mutationCalls)
         } finally {
@@ -96,7 +99,12 @@ private class FakeDeliveryPort : PicnicDeliveryPort {
         detailRequests += deliveryId
         return when (deliveryId) {
             "delivery-1" -> Json.parseToJsonElement(
-                """{"items":[{"id":"s1001"},{"product_id":"s1002"}]}"""
+                """{"delivery_id":"delivery-1","orders":[{"id":"order-1",
+                    "creation_time":"2025-01-02T10:00:00Z","items":[
+                    {"id":"line-1","type":"ORDER_LINE","price":999,
+                     "decorators":[{"type":"PRICE","display_price":949}],
+                     "items":[{"id":"s1001","decorators":[{"type":"QUANTITY","quantity":2}]}]},
+                    {"product_id":"s1002"}]}]}""".trimIndent()
             )
             else -> Json.parseToJsonElement("""{"items":[{"articleId":"s1002"}]}""")
         }
