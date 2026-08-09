@@ -13,6 +13,7 @@ import com.groceryautomate.postgres.PostgresMigrator
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.java.Java
 import io.ktor.client.plugins.HttpTimeout
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.nio.file.Path
 import java.time.Instant
@@ -114,7 +115,11 @@ private fun runImport(settings: ImporterSettings, manifest: ImportManifest): Imp
             )
             val historicalPrices = HistoricalPriceImportService(repository) { UUID.randomUUID().toString() }
             runBlocking {
-                BatchProductImporter(imports, BatchHistoricalPriceImporter(historicalPrices)).run(manifest)
+                BatchProductImporter(
+                    imports,
+                    BatchHistoricalPriceImporter(historicalPrices),
+                    { delay(settings.providerRequestDelayMillis) }
+                ).run(manifest)
             }
         } finally {
             dataSource.close()

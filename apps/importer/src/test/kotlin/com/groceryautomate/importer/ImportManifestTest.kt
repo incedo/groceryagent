@@ -52,4 +52,20 @@ class ImportManifestTest {
             ImporterSettings.fromEnvironment { name -> if (name == "IMPORT_MODE") "fast" else null }
         }
     }
+
+    @Test
+    fun productRequestDelayHasASafeDefaultAndAcceptsExplicitZero() {
+        assertEquals(3_000, ImporterSettings.fromEnvironment { null }.providerRequestDelayMillis)
+        assertEquals(
+            0,
+            ImporterSettings.fromEnvironment { name ->
+                if (name == "PICNIC_REQUEST_DELAY_MILLIS") "0" else null
+            }.providerRequestDelayMillis
+        )
+        assertFailsWith<IllegalStateException> {
+            ImporterSettings.fromEnvironment { name ->
+                if (name == "PICNIC_REQUEST_DELAY_MILLIS") "-1" else null
+            }
+        }
+    }
 }
