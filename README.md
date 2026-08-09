@@ -204,3 +204,8 @@ non-divisible line total into a fabricated unit price. Multi-product order lines
 their combined price cannot be attributed safely. Review the manifest, then move raw order capture
 to Trash when it is no longer needed. The per-delivery detail route remains a live compatibility
 candidate; an incomplete capture cannot generate a manifest.
+
+Homelab imports are always explicit one-off Kubernetes Jobs; merging or publishing an image never
+starts one. Use the [Catalog Importer CronJob Runbook](docs/operations/catalog-importer-cronjob.md)
+for the required preflight, `history-only` override, manifest-size boundary, monitoring, resume,
+verification, and cleanup steps. Keep `CronJob/catalog-importer` suspended.
