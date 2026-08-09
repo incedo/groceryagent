@@ -69,6 +69,11 @@ class BatchProductImporterTest {
         val report = importer.run(manifest)
 
         assertEquals(listOf(ImportStatus.NOT_FOUND, ImportStatus.FAILED, ImportStatus.IMPORTED), report.results.map { it.status })
+        assertEquals(
+            listOf(ImportFailureCategory.PROVIDER_NOT_FOUND, ImportFailureCategory.UNEXPECTED, null),
+            report.results.map { it.failure?.category }
+        )
+        assertEquals("IllegalStateException", report.results[1].failure?.exceptionType)
         assertEquals(2, report.failureCount)
         assertEquals(false, report.successful)
         assertEquals(1, repository.appends.size)

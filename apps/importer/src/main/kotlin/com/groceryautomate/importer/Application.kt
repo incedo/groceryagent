@@ -67,7 +67,7 @@ fun main(args: Array<String>) {
         ImportMode.PRODUCTS_AND_HISTORY -> runImport(settings, manifest)
         ImportMode.HISTORY_ONLY -> runHistoricalPriceImport(settings, manifest)
     }
-    report.results.forEach { println("${it.productId}: ${it.status} (${it.eventCount} events)") }
+    report.results.forEach { println(it.toLogLine()) }
     println("Import batch ${report.batchId}: ${report.results.size} products, " +
         "${report.historicalPriceResults.size} historical prices, ${report.failureCount} failures.")
     if (!report.successful) kotlin.system.exitProcess(1)
@@ -118,7 +118,8 @@ private fun runImport(settings: ImporterSettings, manifest: ImportManifest): Imp
                 BatchProductImporter(
                     imports,
                     BatchHistoricalPriceImporter(historicalPrices),
-                    { delay(settings.providerRequestDelayMillis) }
+                    { delay(settings.providerRequestDelayMillis) },
+                    ::classifyPicnicImportFailure
                 ).run(manifest)
             }
         } finally {

@@ -8,7 +8,8 @@ import kotlinx.coroutines.CancellationException
 class BatchProductImporter(
     private val imports: ProductImportService,
     private val historicalPrices: BatchHistoricalPriceImporter? = null,
-    private val awaitNextProduct: suspend () -> Unit = {}
+    private val awaitNextProduct: suspend () -> Unit = {},
+    private val classifyFailure: (Throwable) -> ImportFailureDiagnostic = ::unexpectedFailureDiagnostic
 ) {
     suspend fun run(manifest: ImportManifest): ImportReport {
         val producerId = ProducerId(manifest.producerId)
@@ -21,7 +22,11 @@ class BatchProductImporter(
                         producerId
                     )
                     when {
-                        append == null -> ImportItemResult(product.productId, ImportStatus.NOT_FOUND)
+                        append == null -> ImportItemResult(
+                            product.productId,
+                            ImportStatus.NOT_FOUND,
+                            failure = providerNotFoundDiagnostic()
+                        )
                         append.duplicateCommand -> ImportItemResult(
                             product.productId,
                             ImportStatus.ALREADY_IMPORTED,
@@ -31,8 +36,12 @@ class BatchProductImporter(
                     }
                 } catch (cancelled: CancellationException) {
                     throw cancelled
-                } catch (_: Exception) {
-                    ImportItemResult(product.productId, ImportStatus.FAILED)
+                } catch (failure: Exception) {
+                    ImportItemResult(
+                        product.productId,
+                        ImportStatus.FAILED,
+                        failure = classifyFailure(failure)
+                    )
                 }
                 add(result)
                 if (index < manifest.products.lastIndex) awaitNextProduct()
@@ -61,7 +70,8 @@ data class HistoricalPriceResult(val observationId: String, val status: ImportSt
 data class ImportItemResult(
     val productId: String,
     val status: ImportStatus,
-    val eventCount: Int = 0
+    val eventCount: Int = 0,
+    val failure: ImportFailureDiagnostic? = null
 )
 
 enum class ImportStatus {
