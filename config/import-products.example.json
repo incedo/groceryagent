@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "batchId": "replace-with-a-unique-import-batch-id",
+  "producerId": "catalog-importer",
+  "products": [
+    {
+      "retailer": "picnic",
+      "productId": "replace-with-a-picnic-product-id"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ package com.groceryautomate.backend
 import com.groceryautomate.catalog.CatalogProduct
 import com.groceryautomate.events.AppendResult
 import com.groceryautomate.events.EventPage
+import com.groceryautomate.events.ProductImportService
 import com.groceryautomate.postgres.ManagedPostgresDataSource
 import com.groceryautomate.postgres.PostgresCatalogEventRepository
 import com.groceryautomate.postgres.PostgresDataSource
@@ -39,7 +40,7 @@ class CatalogComponentTest {
                     "00000000-0000-4000-8000-000000000003"
                 )
             )
-            val imports = CatalogImportService(
+            val imports = ProductImportService(
                 gateway,
                 repository,
                 { eventIds.removeFirst() },

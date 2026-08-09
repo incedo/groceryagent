@@ -1,20 +1,9 @@
-package com.groceryautomate.backend
+package com.groceryautomate.events
 
 import com.groceryautomate.catalog.ProductCatalogPort
 import com.groceryautomate.catalog.ProductId
-import com.groceryautomate.events.AppendCatalogEvents
-import com.groceryautomate.events.AppendResult
-import com.groceryautomate.events.CatalogEventRepository
-import com.groceryautomate.events.CommandId
-import com.groceryautomate.events.EventId
-import com.groceryautomate.events.OfferObserved
-import com.groceryautomate.events.ProducerId
-import com.groceryautomate.events.ProductImported
-import com.groceryautomate.events.ProposedCatalogEvent
-import com.groceryautomate.events.StreamId
-import com.groceryautomate.events.StreamVersionConflict
 
-class CatalogImportService(
+class ProductImportService(
     private val provider: ProductCatalogPort,
     private val repository: CatalogEventRepository,
     private val nextEventId: () -> String,
@@ -56,7 +45,7 @@ class CatalogImportService(
                 if (attempt == MAX_APPEND_ATTEMPTS - 1) throw conflict
             }
         }
-        error("Catalog import retry loop terminated unexpectedly.")
+        error("Product import retry loop terminated unexpectedly.")
     }
 
     private companion object {

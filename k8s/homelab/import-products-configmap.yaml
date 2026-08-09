@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalog-import-manifest
+  namespace: grocery-automate
+  labels:
+    app.kubernetes.io/name: grocery-automate
+    app.kubernetes.io/component: catalog-importer
+data:
+  import-products.json: |
+    {
+      "schemaVersion": 1,
+      "batchId": "replace-before-enabling",
+      "producerId": "homelab-catalog-importer",
+      "products": [
+        {
+          "retailer": "picnic",
+          "productId": "replace-with-a-picnic-product-id"
+        }
+      ]
+    }

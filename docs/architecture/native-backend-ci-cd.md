@@ -10,7 +10,8 @@ Deliver every backend change through one gated GitHub Actions pipeline while kee
 images private. Pull requests run the full multiplatform quality gate and build, start, and exercise
 the GraalVM microservice with PostgreSQL on an isolated GitHub-hosted runner. Successful pushes to
 `main` and version tags run the same native checks on the homelab runner, then publish the exact
-tested image only to the LAN registry at `registry.home.intelliworks.nl:5000`.
+tested service and importer images only to the LAN registry at
+`registry.home.intelliworks.nl:5000`.
 
 ## 2. Scope
 
@@ -18,6 +19,7 @@ tested image only to the LAN registry at `registry.home.intelliworks.nl:5000`.
 
 - Full repository tests and coverage before the backend image gate.
 - One native-image build reused for PostgreSQL smoke verification and publication.
+- One native importer image validated with a fixture manifest before publication.
 - Liveness, readiness, persisted-search, cursor-feed, and non-root runtime checks.
 - Immutable commit-SHA image tags on every eligible push.
 - A mutable `main` tag for successful main builds.
@@ -60,6 +62,7 @@ rebuilding it or moving a private image through a GitHub workflow artifact.
 ## 4. Image Contract
 
 - Registry repository: `registry.home.intelliworks.nl:5000/grocery-automate/catalog-service`.
+- Importer repository: `registry.home.intelliworks.nl:5000/grocery-automate/catalog-importer`.
 - Immutable tag: `sha-<full-git-sha>`.
 - Main-channel tag: `main`.
 - Release tags: the Git tag without its leading `v`, plus `latest`.
@@ -101,6 +104,9 @@ Local build and smoke-test equivalence:
 ./gradlew check
 docker compose config --quiet
 docker build --tag grocery-catalog-service:ci .
+docker build --file Dockerfile.importer --tag grocery-catalog-importer:ci .
+docker run --rm grocery-catalog-importer:ci \
+  --validate-manifest /app/import-products.example.json
 CATALOG_SERVICE_IMAGE=grocery-catalog-service:ci docker compose up --no-build --wait
 docker compose exec -T catalog-service /app/grocery-catalog-service --healthcheck
 docker compose down --volumes
@@ -120,6 +126,7 @@ observe a pull-request run where the build and smoke test pass and no publicatio
 - [x] Pull requests run the complete Gradle and isolated native backend gates.
 - [x] The pipeline builds the GraalVM microservice once per workflow run.
 - [x] The tested image runs with PostgreSQL and passes API health/query checks.
+- [x] The importer image validates a versioned fixture manifest before it can be published.
 - [x] The runtime is verified as non-root.
 - [x] Pull requests and manual runs cannot publish images.
 - [x] Project images and image archives are not published to GitHub or another public registry.

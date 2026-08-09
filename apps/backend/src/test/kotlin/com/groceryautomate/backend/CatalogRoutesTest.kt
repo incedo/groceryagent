@@ -3,6 +3,7 @@ package com.groceryautomate.backend
 import com.groceryautomate.catalog.CatalogProduct
 import com.groceryautomate.catalog.ProductSearchResult
 import com.groceryautomate.catalog.VerificationStatus
+import com.groceryautomate.events.ProductImportService
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -121,7 +122,7 @@ class CatalogRoutesTest {
             catalogModule(
                 repository,
                 gateway,
-                CatalogImportService(gateway, repository, { ids.removeFirst() }) { "2026-08-04T11:00:00Z" },
+                ProductImportService(gateway, repository, { ids.removeFirst() }) { "2026-08-04T11:00:00Z" },
                 readiness = { ready }
             )
         }

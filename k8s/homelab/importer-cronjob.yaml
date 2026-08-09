@@ -1,0 +1,79 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: catalog-importer
+  namespace: grocery-automate
+  labels:
+    app.kubernetes.io/name: grocery-automate
+    app.kubernetes.io/component: catalog-importer
+spec:
+  schedule: "0 3 * * *"
+  suspend: true
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: grocery-automate
+            app.kubernetes.io/component: catalog-importer
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: catalog-importer
+              image: registry.home.intelliworks.nl:5000/grocery-automate/catalog-importer:main
+              imagePullPolicy: Always
+              env:
+                - name: IMPORT_MANIFEST_FILE
+                  value: /app/config/import-products.json
+                - name: IMPORT_BATCH_ID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.labels['batch.kubernetes.io/job-name']
+                - name: PICNIC_ENV_FILE
+                  value: /run/secrets/picnic/auth.env
+                - name: DATABASE_POOL_SIZE
+                  value: "2"
+                - name: DATABASE_TIMEOUT_MILLIS
+                  value: "5000"
+                - name: PICNIC_TIMEOUT_MILLIS
+                  value: "15000"
+                - name: DATABASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: grocery-automate-database
+                      key: DATABASE_URL
+                - name: DATABASE_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: grocery-automate-database
+                      key: DATABASE_USER
+                - name: DATABASE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: grocery-automate-database
+                      key: DATABASE_PASSWORD
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+              volumeMounts:
+                - name: import-manifest
+                  mountPath: /app/config
+                  readOnly: true
+                - name: picnic-environment
+                  mountPath: /run/secrets/picnic
+                  readOnly: true
+          volumes:
+            - name: import-manifest
+              configMap:
+                name: catalog-import-manifest
+            - name: picnic-environment
+              secret:
+                secretName: grocery-automate-picnic

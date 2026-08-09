@@ -43,8 +43,10 @@ jobs:
       contents: read
     env:
       LOCAL_IMAGE: grocery-catalog-service:${{ github.sha }}
+      LOCAL_IMPORTER_IMAGE: grocery-catalog-importer:${{ github.sha }}
       REGISTRY_HOST: registry.home.intelliworks.nl:5000
       REGISTRY_IMAGE: registry.home.intelliworks.nl:5000/grocery-automate/catalog-service
+      REGISTRY_IMPORTER_IMAGE: registry.home.intelliworks.nl:5000/grocery-automate/catalog-importer
 
     steps:
       - name: Check out repository
@@ -55,6 +57,12 @@ jobs:
 
       - name: Build native service image
         run: docker build --tag "$LOCAL_IMAGE" .
+
+      - name: Build and validate native importer image
+        run: |
+          docker build --file Dockerfile.importer --tag "$LOCAL_IMPORTER_IMAGE" .
+          docker run --rm "$LOCAL_IMPORTER_IMAGE" \
+            --validate-manifest /app/import-products.example.json
 
       - name: Start tested image with PostgreSQL
         env:
@@ -82,12 +90,17 @@ jobs:
         run: |
           set -euo pipefail
           sha_tag="$REGISTRY_IMAGE:sha-$GITHUB_SHA"
+          importer_sha_tag="$REGISTRY_IMPORTER_IMAGE:sha-$GITHUB_SHA"
           docker tag "$LOCAL_IMAGE" "$sha_tag"
+          docker tag "$LOCAL_IMPORTER_IMAGE" "$importer_sha_tag"
           docker push "$sha_tag"
+          docker push "$importer_sha_tag"
 
           if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             docker tag "$LOCAL_IMAGE" "$REGISTRY_IMAGE:main"
+            docker tag "$LOCAL_IMPORTER_IMAGE" "$REGISTRY_IMPORTER_IMAGE:main"
             docker push "$REGISTRY_IMAGE:main"
+            docker push "$REGISTRY_IMPORTER_IMAGE:main"
           elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             version="${GITHUB_REF_NAME#v}"
             [[ "$version" =~ ^[0-9][0-9A-Za-z._-]{0,127}$ ]] || {
@@ -96,8 +109,12 @@ jobs:
             }
             docker tag "$LOCAL_IMAGE" "$REGISTRY_IMAGE:$version"
             docker tag "$LOCAL_IMAGE" "$REGISTRY_IMAGE:latest"
+            docker tag "$LOCAL_IMPORTER_IMAGE" "$REGISTRY_IMPORTER_IMAGE:$version"
+            docker tag "$LOCAL_IMPORTER_IMAGE" "$REGISTRY_IMPORTER_IMAGE:latest"
             docker push "$REGISTRY_IMAGE:$version"
             docker push "$REGISTRY_IMAGE:latest"
+            docker push "$REGISTRY_IMPORTER_IMAGE:$version"
+            docker push "$REGISTRY_IMPORTER_IMAGE:latest"
           fi
 
       - name: Show service logs after failure

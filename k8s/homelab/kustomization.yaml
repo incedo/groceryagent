@@ -4,6 +4,8 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - deployment.yaml
+  - import-products-configmap.yaml
+  - importer-cronjob.yaml
   - service.yaml
   - ingressroute.yaml
   - dnsendpoint.yaml

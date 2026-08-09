@@ -33,6 +33,7 @@ The project is being established with the same shared-first architecture used by
 - [Picnic catalog object model](docs/architecture/picnic-catalog-object-model.md)
 - [Canonical catalog and backend query API](docs/architecture/canonical-catalog-backend.md)
 - [Native event-sourced catalog backend](docs/architecture/native-event-sourced-backend.md)
+- [Batch product importer](docs/architecture/batch-product-importer.md)
 - [Native backend CI/CD pipeline](docs/architecture/native-backend-ci-cd.md)
 - [Sanitized Picnic capture fixtures](docs/architecture/picnic-sanitized-fixtures.md)
 - [Picnic capture coverage expansion](docs/architecture/picnic-capture-coverage.md)
@@ -56,6 +57,7 @@ Implemented catalog-backend modules are:
 - `integration/picnic-client`: Picnic client plus the adapter from Picnic objects to canonical catalog objects;
 - `integration/postgres`: JDBC event store, checksum-protected migrations, and rebuildable catalog projection;
 - `apps/backend`: Ktor CIO composition root, import command, persisted catalog queries, cursor feed, and native-image entry point.
+- `apps/importer`: one-shot manifest-driven product import through the same canonical events and PostgreSQL projection path.
 
 The first provider integration is `integration/picnic-client`, a Kotlin Multiplatform ports-and-adapters client matching the public route surface of `MRVDH/picnic-api` 4.6.0. It exposes Picnic service ports while keeping HTTP, authentication storage, time, and password hashing replaceable at the composition root.
 
@@ -138,3 +140,19 @@ Picnic environment file read-only through a local Compose override and set `PICN
 container path. The checked-in Compose service intentionally starts without provider credentials
 and reports that adapter as unavailable. Local ports bind to loopback and database credentials are
 development-only.
+
+Run a bounded product import by copying `config/import-products.example.json`, replacing its batch
+and Picnic product identifiers, and providing the ignored Picnic environment file:
+
+```shell
+IMPORT_MANIFEST_FILE=/absolute/path/import-products.json \
+PICNIC_ENV_HOST_FILE=/absolute/path/auth.env \
+docker compose --profile import run --rm catalog-importer
+```
+
+The importer processes products sequentially and prints one redacted status per identifier.
+Running the same `batchId` again resumes idempotently; use a new batch ID only when a fresh
+product/offer observation is intended. Product and offer facts are stored through
+`ProductImported` and `OfferObserved`, never by directly mutating catalog tables. Recipe ingestion
+is a follow-up because the current retailer recipe endpoint has no agreed canonical mapper or
+recipe event contract.

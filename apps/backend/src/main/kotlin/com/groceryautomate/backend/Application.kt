@@ -1,5 +1,6 @@
 package com.groceryautomate.backend
 
+import com.groceryautomate.events.ProductImportService
 import com.groceryautomate.picnic.PicnicClient
 import com.groceryautomate.picnic.adapter.`in`.catalog.PicnicCanonicalCatalogAdapter
 import com.groceryautomate.picnic.adapter.out.config.PicnicEnvironmentFile
@@ -32,7 +33,7 @@ fun main(args: Array<String>) {
         val repository = PostgresCatalogEventRepository(dataSource)
         val provider = createProvider(settings, httpClient)
         val gateway = ProviderCatalogGateway(provider)
-        val imports = CatalogImportService(
+        val imports = ProductImportService(
             provider = gateway,
             repository = repository,
             nextEventId = { UUID.randomUUID().toString() },
