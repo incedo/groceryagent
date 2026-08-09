@@ -126,13 +126,14 @@ docker compose up --build --wait
 
 curl http://127.0.0.1:8080/health/ready
 curl --get --data-urlencode 'query=pasta' \
-  http://127.0.0.1:8080/api/v1/products
+  http://127.0.0.1:8080/api/v1/catalog/products
 docker compose down --volumes
 ```
 
-Catalog queries read the PostgreSQL projection. Provider discovery remains explicitly transient at
-`GET /api/v1/provider-products`; importing a selected product requires an `Idempotency-Key` UUID at
-`POST /api/v1/products/{id}/imports`. For provider-backed discovery/imports, mount the ignored
+Catalog queries read the PostgreSQL projection. Picnic discovery remains explicitly transient at
+`GET /api/v1/retailers/picnic/products`; importing a selected Picnic product requires an
+`Idempotency-Key` UUID at `POST /api/v1/retailers/picnic/products/{id}/imports`. For provider-backed
+discovery/imports, mount the ignored
 Picnic environment file read-only through a local Compose override and set `PICNIC_ENV_FILE` to its
 container path. The checked-in Compose service intentionally starts without provider credentials
 and reports that adapter as unavailable. Local ports bind to loopback and database credentials are

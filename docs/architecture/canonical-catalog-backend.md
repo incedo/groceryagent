@@ -1,7 +1,7 @@
 # Canonical Catalog and Backend Query API
 
 **Status:** SATISFIED
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-09
 **Depends on:** Picnic catalog object model and Picnic live smoke client
 
 ## 1. Overview
@@ -19,8 +19,8 @@ canonical products, compositions, offers, quantities, money, and provenance only
 - Safe integer-minor-unit money and structured package quantities.
 - Explicit unknown allergen, nutrition, availability, and verification states.
 - Picnic search and detail mapping behind a core catalog port.
-- `GET /api/v1/products?query=...&limit=...`.
-- `GET /api/v1/products/{id}`.
+- `GET /api/v1/retailers/picnic/products?query=...&limit=...` for transient discovery.
+- `GET /api/v1/catalog/products/{id}` for persisted canonical detail.
 - Local JVM backend composition using an ignored Picnic environment file.
 - Deterministic core, adapter, route, error, and serialization tests.
 
@@ -87,19 +87,19 @@ integration. A malformed or unavailable provider response is not reported as pro
 
 ## 7. Backend API
 
-### `GET /api/v1/products`
+### `GET /api/v1/retailers/picnic/products`
 
 - Requires a non-blank `query` parameter.
 - Optional `limit` defaults to 20 and accepts 1 through 100.
 - Returns a canonical `ProductSearchResult`.
 
-### `GET /api/v1/products/{id}`
+### `GET /api/v1/catalog/products/{id}`
 
-- Returns a canonical `CatalogProduct`.
-- Returns `404 PRODUCT_NOT_FOUND` only when the provider reports route-level absence.
+- Returns a persisted canonical `CatalogProduct`.
+- Returns `404 PRODUCT_NOT_FOUND` when the projection does not contain the product.
 
 Validation uses `400 INVALID_REQUEST`. Unexpected provider failures use a redacted
-`502 PROVIDER_UNAVAILABLE`. Errors never contain tokens, headers, raw response bodies, or provider
+`503 PROVIDER_UNAVAILABLE`. Errors never contain tokens, headers, raw response bodies, or provider
 payloads.
 
 ## 8. Provider Mapping Rules
