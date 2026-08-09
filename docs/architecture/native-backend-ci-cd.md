@@ -6,11 +6,13 @@
 
 ## 1. Overview
 
-Deliver every backend change through one gated GitHub Actions pipeline while keeping project-built
-images private. Pull requests run the full multiplatform quality gate and build, start, and exercise
-the GraalVM microservice with PostgreSQL on an isolated GitHub-hosted runner. Successful pushes to
-`main` and version tags run the same native checks on the homelab runner, then publish the exact
-tested service and importer images only to the LAN registry at
+Deliver every code, build, deployment, or configuration change through one gated GitHub Actions
+pipeline while keeping project-built images private. Documentation-only changes retain the two
+required successful check contexts but skip Gradle, native builds, Docker, PostgreSQL, and image
+publication. Code-bearing pull requests run the full multiplatform quality gate and build, start,
+and exercise the GraalVM microservice with PostgreSQL on an isolated GitHub-hosted runner.
+Successful code-bearing pushes to `main` and version tags run the same native checks on the homelab
+runner, then publish the exact tested service and importer images only to the LAN registry at
 `registry.home.intelliworks.nl:5000`.
 
 ## 2. Scope
@@ -27,6 +29,8 @@ tested service and importer images only to the LAN registry at
 - Publication from the LAN-connected, self-hosted `homelab` runner only.
 - Isolation of pull-request code from the self-hosted LAN runner.
 - Pull-request and manual builds that never publish images.
+- Documentation-only branch pushes and pull requests complete lightweight required contexts
+  without allocating macOS or native-build runners.
 
 ### Out of scope
 
@@ -43,7 +47,9 @@ tested service and importer images only to the LAN registry at
 
 ```text
 pull request / main push / v* tag / manual run
-  -> macOS ./gradlew check
+  -> classify changed paths
+       |-> docs-only: lightweight required contexts; stop
+       +-> code/config/build: macOS ./gradlew check
   -> native Docker build
        |-> pull request/manual: GitHub-hosted Ubuntu
        +-> main push/v* tag: self-hosted homelab
@@ -58,6 +64,13 @@ The native job starts only after the complete Gradle gate succeeds. Pull request
 use GitHub-hosted Ubuntu so untrusted fork code never executes inside the LAN. Eligible pushes build
 and test on the homelab runner, then tag and publish the already-tested local image without
 rebuilding it or moving a private image through a GitHub workflow artifact.
+
+Files below `docs/` and files whose names end in `.md` are documentation. Any other changed path,
+including workflows, Kubernetes manifests, Dockerfiles, Gradle files, source, tests, fixtures, and
+configuration, triggers the complete pipeline. Manual runs and version tags always run the complete
+pipeline. The two lightweight documentation-only jobs deliberately keep the exact protected-branch
+contexts `Multiplatform check` and `Build, verify, and deliver native backend`; using workflow path
+filters would leave those required contexts pending and block a documentation pull request.
 
 ## 4. Image Contract
 
@@ -95,6 +108,7 @@ rebuilding it or moving a private image through a GitHub workflow artifact.
 - Pull requests, including forks, build and smoke-test on GitHub-hosted Ubuntu but cannot publish.
 - No container archive is uploaded to GitHub Actions artifacts.
 - Provider tests remain deterministic and credential-free.
+- Documentation-only changes cannot build or publish images and do not use the self-hosted runner.
 
 ## 7. Verification
 
@@ -134,6 +148,7 @@ observe a pull-request run where the build and smoke test pass and no publicatio
 - [x] Successful `v*` tags are configured to publish the same image under SHA, version, and
   `latest` tags.
 - [x] README, contributor rules, and architecture guidance define the private boundary.
+- [x] Documentation-only changes preserve required contexts without running expensive code gates.
 
 The loop becomes `SATISFIED` after a pull-request run proves the isolated native path and the first
 eligible push proves this repository can schedule the `homelab` job, complete the native smoke test,
