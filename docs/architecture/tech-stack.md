@@ -45,6 +45,7 @@ apps/ios
 apps/desktop
 apps/web
 apps/backend
+apps/importer
 shared/app
 feature/discover
 feature/compare
@@ -70,8 +71,9 @@ Add modules only when their boundary is real; the list is a target structure, no
 
 The implemented catalog slice uses `core/catalog` for provider-neutral models, `core/events` for
 versioned envelopes and reducers, `integration/picnic-client` for provider mapping,
-`integration/postgres` for the event store and projection, and `apps/backend` for the Ktor command,
-query, event-feed, and health API.
+`integration/postgres` for the event store and projection, `apps/backend` for the Ktor command,
+query, event-feed, and health API, and `apps/importer` for one-shot manifest-driven product
+ingestion through the same core import use case.
 
 ## 3. Client Stack
 

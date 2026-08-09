@@ -39,5 +39,24 @@ services:
       timeout: 2s
       retries: 30
 
+  catalog-importer:
+    profiles: ["import"]
+    image: ${CATALOG_IMPORTER_IMAGE:-grocery-automate-catalog-importer:local}
+    build:
+      context: .
+      dockerfile: Dockerfile.importer
+    environment:
+      IMPORT_MANIFEST_FILE: /app/import-manifest.json
+      PICNIC_ENV_FILE: /run/secrets/picnic.env
+      DATABASE_URL: jdbc:postgresql://postgres:5432/grocery
+      DATABASE_USER: grocery
+      DATABASE_PASSWORD: grocery-local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ${IMPORT_MANIFEST_FILE:-./config/import-products.example.json}:/app/import-manifest.json:ro
+      - ${PICNIC_ENV_HOST_FILE:-./.env.picnic.local}:/run/secrets/picnic.env:ro
+
 volumes:
   grocery-postgres:

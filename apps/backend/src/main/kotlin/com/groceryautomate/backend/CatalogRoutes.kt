@@ -8,6 +8,7 @@ import com.groceryautomate.events.AppendResult
 import com.groceryautomate.events.CatalogEventRepository
 import com.groceryautomate.events.CommandId
 import com.groceryautomate.events.ProducerId
+import com.groceryautomate.events.ProductImportService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.request.header
@@ -22,7 +23,7 @@ private const val MAX_SEARCH_LIMIT = 100
 internal fun Route.catalogRoutes(
     repository: CatalogEventRepository,
     provider: ProductCatalogPort,
-    imports: CatalogImportService
+    imports: ProductImportService
 ) {
     route("/api/v1/catalog/products") {
         get {

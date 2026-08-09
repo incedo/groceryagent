@@ -3,6 +3,7 @@ package com.groceryautomate.backend
 import com.groceryautomate.catalog.ProductCatalogPort
 import com.groceryautomate.events.CatalogEventRepository
 import com.groceryautomate.events.CommandConflict
+import com.groceryautomate.events.ProductImportService
 import com.groceryautomate.events.StreamVersionConflict
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -17,7 +18,7 @@ import java.sql.SQLException
 fun Application.catalogModule(
     repository: CatalogEventRepository,
     provider: ProductCatalogPort,
-    imports: CatalogImportService,
+    imports: ProductImportService,
     readiness: suspend () -> Boolean
 ) {
     install(StatusPages) {
