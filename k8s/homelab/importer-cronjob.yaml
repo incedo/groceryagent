@@ -43,6 +43,26 @@ spec:
                   value: "15000"
                 - name: PICNIC_REQUEST_DELAY_MILLIS
                   value: "3000"
+                - name: IMAGE_IMPORT_LIMIT
+                  value: "50"
+                - name: S3_ENDPOINT
+                  value: https://minio.home.intelliworks.nl
+                - name: S3_BUCKET
+                  value: grocery-product-images
+                - name: ASSET_BASE_URL
+                  value: https://assets.home.intelliworks.nl
+                - name: S3_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: grocery-automate-product-images
+                      key: S3_ACCESS_KEY
+                      optional: true
+                - name: S3_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: grocery-automate-product-images
+                      key: S3_SECRET_KEY
+                      optional: true
                 - name: DATABASE_URL
                   valueFrom:
                     secretKeyRef:

@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":core:catalog"))
     implementation(project(":core:events"))
     implementation(project(":integration:picnic-client"))
+    implementation(project(":integration:object-storage"))
     implementation(project(":integration:postgres"))
     implementation(libs.ktor.client.java)
     implementation(libs.kotlinx.coroutines.core)

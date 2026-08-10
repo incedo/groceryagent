@@ -34,4 +34,8 @@ fun reduceCatalogProduct(current: CatalogProduct?, event: CatalogEvent): Catalog
             )
         )
     }
+
+    is ProductImageStored -> requireNotNull(current) {
+        "Product image asset requires an imported product."
+    }
 }

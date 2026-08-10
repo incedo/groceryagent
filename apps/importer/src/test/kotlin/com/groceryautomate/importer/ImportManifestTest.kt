@@ -88,4 +88,25 @@ class ImportManifestTest {
             }
         }
     }
+
+    @Test
+    fun productImageModeIsBoundedAndUsesHomelabStorageDefaults() {
+        val settings = ImporterSettings.fromEnvironment { name ->
+            when (name) {
+                "IMPORT_MODE" -> "product-images"
+                "IMAGE_IMPORT_LIMIT" -> "25"
+                else -> null
+            }
+        }
+
+        assertEquals(ImportMode.PRODUCT_IMAGES, settings.mode)
+        assertEquals(25, settings.imageImportLimit)
+        assertEquals("https://minio.home.intelliworks.nl", settings.s3Endpoint)
+        assertEquals("grocery-product-images", settings.imageBucket)
+        assertFailsWith<IllegalArgumentException> {
+            ImporterSettings.fromEnvironment { name ->
+                if (name == "IMAGE_IMPORT_LIMIT") "51" else null
+            }
+        }
+    }
 }

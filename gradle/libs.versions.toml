@@ -9,6 +9,7 @@ hikari = "7.1.0"
 postgresql-driver = "42.7.13"
 testcontainers = "2.0.5"
 slf4j = "2.0.18"
+minio = "9.0.2"
 
 [libraries]
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -29,6 +30,7 @@ postgresql-driver = { module = "org.postgresql:postgresql", version.ref = "postg
 testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
 testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+minio = { module = "io.minio:minio", version.ref = "minio" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

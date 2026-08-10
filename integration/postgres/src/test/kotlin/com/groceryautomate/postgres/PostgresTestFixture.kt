@@ -71,7 +71,7 @@ internal fun fixtureCatalogProduct(): CatalogProduct {
         routeGeneration = ProviderRouteGeneration.CURRENT
     )
     return CatalogProduct(
-        product = Product(productId, "Wholegrain oats", "Fixture", null, null),
+        product = Product(productId, "Wholegrain oats", "Fixture", null, "image-1"),
         composition = null,
         offers = listOf(
             ProductOffer(

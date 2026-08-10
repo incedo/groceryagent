@@ -62,6 +62,7 @@ core/events
 core/designsystem
 integration/open-food-facts
 integration/picnic-client
+integration/object-storage
 integration/retailers
 integration/recipe-providers
 integration/postgres
@@ -71,6 +72,7 @@ Add modules only when their boundary is real; the list is a target structure, no
 
 The implemented catalog slice uses `core/catalog` for provider-neutral models, `core/events` for
 versioned envelopes and reducers, `integration/picnic-client` for provider mapping,
+`integration/object-storage` for immutable S3-compatible product-image bytes,
 `integration/postgres` for the event store, current catalog projection, and immutable historical
 price projection, `apps/backend` for the Ktor command, query, event-feed, price-history, and health
 API, and `apps/importer` for one-shot manifest-driven product and order-price ingestion through the

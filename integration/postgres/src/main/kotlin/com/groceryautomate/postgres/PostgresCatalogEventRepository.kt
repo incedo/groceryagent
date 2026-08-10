@@ -5,6 +5,10 @@ import com.groceryautomate.catalog.ProductId
 import com.groceryautomate.catalog.ProductSearchResult
 import com.groceryautomate.catalog.ProductPriceHistory
 import com.groceryautomate.catalog.HistoricalPriceObservation
+import com.groceryautomate.catalog.ProductImageAsset
+import com.groceryautomate.catalog.ProductImageAssetPort
+import com.groceryautomate.catalog.ProductImageImportCandidate
+import com.groceryautomate.catalog.ProductImageVariant
 import com.groceryautomate.events.AppendCatalogEvents
 import com.groceryautomate.events.AppendResult
 import com.groceryautomate.events.CatalogEventCodec
@@ -20,7 +24,7 @@ import javax.sql.DataSource
 
 class PostgresCatalogEventRepository(
     private val dataSource: DataSource
-) : CatalogEventRepository {
+) : CatalogEventRepository, ProductImageAssetPort {
     override suspend fun findCommand(commandId: CommandId): AppendResult? = io {
         dataSource.connection.use { connection ->
             connection.prepareStatement(
@@ -137,6 +141,63 @@ class PostgresCatalogEventRepository(
         ProductPriceHistory(productId, observations)
     }
 
+    override suspend fun findImageImportCandidates(
+        variant: ProductImageVariant,
+        limit: Int
+    ): List<ProductImageImportCandidate> = io {
+        require(limit in 1..50) { "Image import limit must be between 1 and 50." }
+        dataSource.connection.use { connection ->
+            connection.prepareStatement(
+                """
+                SELECT product.product_id, product.document->'product'->>'imageId' AS source_image_id
+                FROM catalog_products product
+                WHERE nullif(product.document->'product'->>'imageId', '') IS NOT NULL
+                  AND NOT EXISTS (
+                    SELECT 1 FROM product_image_assets asset
+                    WHERE asset.product_id = product.product_id
+                      AND asset.variant = ?
+                      AND asset.source_image_id = product.document->'product'->>'imageId'
+                  )
+                ORDER BY product_id LIMIT ?
+                """.trimIndent()
+            ).use {
+                it.setString(1, variant.name)
+                it.setInt(2, limit)
+                it.executeQuery().use { result ->
+                    buildList {
+                        while (result.next()) add(
+                            ProductImageImportCandidate(
+                                ProductId(result.getString("product_id")),
+                                result.getString("source_image_id")
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    override suspend fun getProductImageAsset(
+        productId: ProductId,
+        variant: ProductImageVariant
+    ): ProductImageAsset? = io {
+        dataSource.connection.use { connection ->
+            connection.prepareStatement(
+                "SELECT document FROM product_image_assets WHERE product_id = ? AND variant = ?"
+            ).use {
+                it.setString(1, productId.value)
+                it.setString(2, variant.name)
+                it.executeQuery().use { result ->
+                    if (result.next()) {
+                        CatalogEventCodec.json.decodeFromString<ProductImageAsset>(result.getString("document"))
+                    } else {
+                        null
+                    }
+                }
+            }
+        }
+    }
+
     override suspend fun readEvents(after: Long, limit: Int): EventPage = io {
         require(after >= 0) { "Event cursor must not be negative." }
         require(limit in 1..1000) { "Event limit must be between 1 and 1000." }
@@ -160,6 +221,7 @@ class PostgresCatalogEventRepository(
     override suspend fun rebuildProjections(): Int = io {
         dataSource.connection.use { connection ->
             connection.inTransaction {
+                createStatement().use { it.executeUpdate("DELETE FROM product_image_assets") }
                 createStatement().use { it.executeUpdate("DELETE FROM product_price_history") }
                 createStatement().use { it.executeUpdate("DELETE FROM product_previous_ids") }
                 createStatement().use { it.executeUpdate("DELETE FROM catalog_products") }

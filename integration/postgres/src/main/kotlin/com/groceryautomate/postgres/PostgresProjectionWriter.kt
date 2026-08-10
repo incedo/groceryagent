@@ -6,6 +6,7 @@ import com.groceryautomate.events.CatalogEvent
 import com.groceryautomate.events.EventEnvelope
 import com.groceryautomate.events.HistoricalPriceObserved
 import com.groceryautomate.events.PreviousProductIdLinked
+import com.groceryautomate.events.ProductImageStored
 import com.groceryautomate.events.reduceCatalogProduct
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -22,8 +23,37 @@ internal class PostgresProjectionWriter(
         )
         if (event is HistoricalPriceObserved) {
             applyHistoricalPrice(envelope, event)
+        } else if (event is ProductImageStored) {
+            applyProductImage(envelope, event)
         } else {
             applyCatalog(envelope, event)
+        }
+    }
+
+    private fun applyProductImage(envelope: EventEnvelope, event: ProductImageStored) {
+        val asset = event.asset
+        require(envelope.streamId.value == "product:${asset.productId.value}") {
+            "Product image asset belongs to another stream."
+        }
+        val document = CatalogEventCodec.json.encodeToString(asset)
+        connection.prepareStatement(
+            """
+            INSERT INTO product_image_assets(
+                product_id, variant, source_image_id, document, last_global_position
+            ) VALUES (?, ?, ?, ?::jsonb, ?)
+            ON CONFLICT (product_id, variant) DO UPDATE SET
+                source_image_id = EXCLUDED.source_image_id,
+                document = EXCLUDED.document,
+                last_global_position = EXCLUDED.last_global_position
+            WHERE product_image_assets.last_global_position < EXCLUDED.last_global_position
+            """.trimIndent()
+        ).use {
+            it.setString(1, asset.productId.value)
+            it.setString(2, asset.variant.name)
+            it.setString(3, asset.sourceImageId)
+            it.setString(4, document)
+            it.setLong(5, envelope.globalPosition)
+            it.executeUpdate()
         }
     }
 
