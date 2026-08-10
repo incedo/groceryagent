@@ -7,6 +7,8 @@ not start an import. The CronJob must remain suspended; every import is a named 
 ## Safety model
 
 - `CronJob/catalog-importer` has `spec.suspend: true` and must stay suspended.
+- Import Jobs use `backoffLimit: 0`; a non-zero exit is reported for operator review and never
+  retries an entire shard automatically.
 - `history-only` writes historical price events without loading Picnic credentials or making
   retailer requests.
 - `products-and-history` reads every listed product from Picnic before storing product, current
@@ -42,13 +44,13 @@ test -f "$IMPORT_FILE"
 kubectl auth can-i create jobs.batch -n "$IMPORT_NAMESPACE"
 kubectl auth can-i create configmaps -n "$IMPORT_NAMESPACE"
 kubectl -n "$IMPORT_NAMESPACE" get cronjob catalog-importer \
-  -o jsonpath='{.spec.suspend}{"\n"}'
+  -o jsonpath='suspend={.spec.suspend}{" backoffLimit="}{.spec.jobTemplate.spec.backoffLimit}{"\n"}'
 kubectl -n "$IMPORT_NAMESPACE" get secret grocery-automate-database
 kubectl -n "$IMPORT_NAMESPACE" get jobs
 ```
 
-The suspend query must print `true`. Stop if a previous importer Job is active, required secrets are
-missing, the manifest is unreviewed, or the selected mode is not intentional.
+The query must print `suspend=true backoffLimit=0`. Stop if a previous importer Job is active,
+required secrets are missing, the manifest is unreviewed, or the selected mode is not intentional.
 
 For `products-and-history` or `search-replacements`, also verify
 `Secret/grocery-automate-picnic` and obtain explicit approval
@@ -144,10 +146,12 @@ kubectl apply -f -
 ```
 
 Immediately inspect the submitted contract. For `history-only`, the mode must be present and the
-run-specific ConfigMap must be mounted:
+run-specific ConfigMap must be mounted, and `backoffLimit` must be zero:
 
 ```shell
 kubectl -n "$IMPORT_NAMESPACE" get job "$IMPORT_JOB" -o yaml
+test "$(kubectl -n "$IMPORT_NAMESPACE" get job "$IMPORT_JOB" \
+  -o jsonpath='{.spec.backoffLimit}')" = "0"
 ```
 
 Never run the plain `kubectl create job --from=cronjob/...` command for historical order data: the
@@ -215,7 +219,8 @@ kubectl -n "$IMPORT_NAMESPACE" delete job "$IMPORT_JOB" --wait=true
 
 Inspect the redacted logs and database/event counts before retrying. Recreate the Job with the same
 `IMPORT_JOB` value and unchanged manifest to resume idempotently. Use a new Job name only for a
-deliberately new observation batch.
+deliberately new observation batch. Never increase `backoffLimit` to automate a provider retry;
+review the failed products and account state first.
 
 ## 6. Cleanup
 
