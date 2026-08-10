@@ -9,7 +9,6 @@ kotlin {
 dependencies {
     api(project(":core:catalog"))
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.minio)
 
     testImplementation(kotlin("test"))
     testImplementation(libs.kotlinx.coroutines.test)

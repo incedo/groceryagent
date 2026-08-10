@@ -118,22 +118,24 @@ sync. Clients use the projected immutable HTTPS URL. Deletion/tombstones are out
 - Endpoint: `https://minio.home.intelliworks.nl`.
 - Bucket: `grocery-product-images`; it must already exist.
 - Public base: `https://assets.home.intelliworks.nl`.
-- Kubernetes secret: `grocery-automate-product-images` with keys `S3_ACCESS_KEY` and
-  `S3_SECRET_KEY`; values are never committed.
+- Kubernetes secret: `grocery-automate-product-images` with keys `S3_ACCESS_KEY`,
+  `S3_SECRET_KEY`, and `S3_REGION`; values are never committed.
 - The importer requires explicit `IMPORT_MODE=product-images` and `IMAGE_IMPORT_LIMIT` (maximum
   50). The checked-in CronJob remains suspended and keeps `backoffLimit: 0`.
 
-## 13. Dependency Decisions
+## 13. S3 Client Decision
 
-- New dependency: MinIO Java SDK `io.minio:minio:9.0.2` in a concrete object-storage integration.
-- Latest stable checked on 2026-08-10 using Maven Central and the official MinIO Java repository.
-- It supports Java 17 and S3-compatible HTTPS endpoints; no pre-release exception is used.
+- The concrete object-storage integration uses a small AWS Signature Version 4 HTTPS PUT adapter.
+- It reuses JDK 17 HTTP and cryptography APIs already supported by the native importer image.
+- The MinIO Java SDK was removed after homelab smoke testing showed its PUT path was not compatible
+  with this GraalVM native image, while the same credentials, endpoint, and object worked on the JVM.
 
 ## 14. Testing
 
 - Core tests: validation, deterministic command/event IDs, duplicate/no-op decisions, codec.
 - PostgreSQL tests: candidate selection, projection update, duplicate ordering, rebuild.
-- Object-store tests: key/content metadata and put behavior against a fake MinIO client boundary.
+- Object-store tests: key/content metadata, deterministic Signature Version 4 headers, HTTP PUT,
+  and non-success handling against a fake HTTP boundary.
 - Importer tests: settings, bounded sequential behavior, skip, failure continuation, pacing.
 - Live tests remain opt-in and never run in CI.
 

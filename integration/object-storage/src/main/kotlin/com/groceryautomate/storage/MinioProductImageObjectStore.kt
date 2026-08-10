@@ -2,11 +2,6 @@ package com.groceryautomate.storage
 
 import com.groceryautomate.catalog.ProductImageObject
 import com.groceryautomate.catalog.ProductImageObjectStore
-import io.minio.MinioClient
-import io.minio.PutObjectArgs
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.ByteArrayInputStream
 
 data class ProductImageStorageSettings(
     val endpoint: String,
@@ -31,13 +26,7 @@ class MinioProductImageObjectStore(
     private val settings: ProductImageStorageSettings
 ) : ProductImageObjectStore {
     constructor(settings: ProductImageStorageSettings) : this(
-        MinioObjectWriter(
-            MinioClient.builder()
-                .endpoint(settings.endpoint)
-                .region(settings.region)
-                .credentials(settings.accessKey, settings.secretKey)
-                .build()
-        ),
+        S3SignedHttpObjectWriter(settings),
         settings
     )
 
@@ -58,27 +47,4 @@ class MinioProductImageObjectStore(
 
 fun interface ProductImageObjectWriter {
     suspend fun put(bucket: String, objectKey: String, bytes: ByteArray, mediaType: String)
-}
-
-private class MinioObjectWriter(
-    private val client: MinioClient
-) : ProductImageObjectWriter {
-    override suspend fun put(
-        bucket: String,
-        objectKey: String,
-        bytes: ByteArray,
-        mediaType: String
-    ) = withContext(Dispatchers.IO) {
-        ByteArrayInputStream(bytes).use { stream ->
-            client.putObject(
-                PutObjectArgs.builder()
-                    .bucket(bucket)
-                    .`object`(objectKey)
-                    .contentType(mediaType)
-                    .stream(stream, bytes.size.toLong(), -1)
-                    .build()
-            )
-        }
-        Unit
-    }
 }
