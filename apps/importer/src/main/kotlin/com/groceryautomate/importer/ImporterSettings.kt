@@ -11,6 +11,7 @@ data class ImporterSettings(
     val providerRequestDelayMillis: Long,
     val imageImportLimit: Int,
     val s3Endpoint: String,
+    val s3Region: String,
     val s3AccessKey: String?,
     val s3SecretKey: String?,
     val imageBucket: String,
@@ -30,6 +31,7 @@ data class ImporterSettings(
                     require(it <= 50) { "IMAGE_IMPORT_LIMIT must not exceed 50." }
                 },
                 s3Endpoint = read.value("S3_ENDPOINT", "https://minio.home.intelliworks.nl"),
+                s3Region = read.value("S3_REGION", "us-east-1"),
                 s3AccessKey = read("S3_ACCESS_KEY")?.trim()?.takeIf(String::isNotEmpty),
                 s3SecretKey = read("S3_SECRET_KEY")?.trim()?.takeIf(String::isNotEmpty),
                 imageBucket = read.value("S3_BUCKET", "grocery-product-images"),

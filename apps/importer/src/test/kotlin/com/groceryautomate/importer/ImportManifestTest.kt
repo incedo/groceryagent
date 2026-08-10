@@ -102,6 +102,7 @@ class ImportManifestTest {
         assertEquals(ImportMode.PRODUCT_IMAGES, settings.mode)
         assertEquals(25, settings.imageImportLimit)
         assertEquals("https://minio.home.intelliworks.nl", settings.s3Endpoint)
+        assertEquals("us-east-1", settings.s3Region)
         assertEquals("grocery-product-images", settings.imageBucket)
         assertFailsWith<IllegalArgumentException> {
             ImporterSettings.fromEnvironment { name ->

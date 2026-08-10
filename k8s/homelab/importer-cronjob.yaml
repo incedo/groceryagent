@@ -49,6 +49,11 @@ spec:
                   value: https://minio.home.intelliworks.nl
                 - name: S3_BUCKET
                   value: grocery-product-images
+                - name: S3_REGION
+                  valueFrom:
+                    secretKeyRef:
+                      name: grocery-automate-product-images
+                      key: S3_REGION
                 - name: ASSET_BASE_URL
                   value: https://assets.home.intelliworks.nl
                 - name: S3_ACCESS_KEY
