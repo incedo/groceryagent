@@ -22,6 +22,8 @@ import com.groceryautomate.events.CommandId
 import com.groceryautomate.events.EventPage
 import com.groceryautomate.events.OfferObserved
 import com.groceryautomate.events.ProductImportService
+import com.groceryautomate.events.ProductReplacementImportService
+import com.groceryautomate.events.ProductReplacementImportStatus
 import com.groceryautomate.events.ProductImported
 import com.groceryautomate.events.HistoricalPriceImportService
 import com.groceryautomate.events.HistoricalPriceObserved
@@ -97,6 +99,37 @@ class BatchProductImporterTest {
         assertEquals(ImportStatus.ALREADY_IMPORTED, resumed.historicalPriceResults.single().status)
         assertTrue(repository.appends.last().events.single().event is HistoricalPriceObserved)
         assertEquals(2, repository.appends.size)
+    }
+
+    @Test
+    fun replacementSearchesStaySequentialAndReportNoMatch() = runTest {
+        var pacingBoundaries = 0
+        val importer = BatchProductReplacementImporter(
+            ProductReplacementImportService(
+                FakeProvider(),
+                RecordingRepository(),
+                { EVENT_ID_1 },
+                { OBSERVED_AT }
+            ),
+            awaitNextProduct = { pacingBoundaries += 1 }
+        )
+        val products = listOf("s-old-1", "s-old-2").map {
+            ImportProduct(
+                ImportRetailer.PICNIC,
+                it,
+                historicalName = "Historical product",
+                historicalUnitQuantity = "300 gram"
+            )
+        }
+
+        val report = importer.run(ImportManifest(1, "replacement-batch", "importer", products))
+
+        assertEquals(listOf(
+            ProductReplacementImportStatus.NO_MATCH,
+            ProductReplacementImportStatus.NO_MATCH
+        ), report.results.map { it.status })
+        assertEquals(1, pacingBoundaries)
+        assertEquals(2, report.failureCount)
     }
 }
 

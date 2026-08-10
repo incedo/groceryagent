@@ -1,0 +1,1917 @@
+{
+  "schemaVersion": 1,
+  "batchId": "picnic-failed-product-replacements-v1",
+  "producerId": "picnic-replacement-importer",
+  "products": [
+    {
+      "retailer": "picnic",
+      "productId": "s1000005",
+      "historicalName": "Bolletje kruidnoten",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "a915be1c8c9fa39e832fce55723c5d2ae5312e1384240c8076866b4b7979fe6d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1000063",
+      "historicalName": "Verse friet voorgebakken",
+      "historicalUnitQuantity": "700 gram",
+      "historicalImageId": "7dda0418bf4c0ebfc18359780ab4782c9d2e0f45eeaa6922764d4d51b4566253"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1000381",
+      "historicalName": "Pompoenblokjes",
+      "historicalUnitQuantity": "400 gram",
+      "historicalImageId": "953ffef7c482d0189265f0911cba29bfd3e60e6fc0e8f29619a1c27fc61e58ba"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1000485",
+      "historicalName": "Veldsla melange",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "ad2bb317c63b65437f65e0dc47075f95b9741a9b632c876e9a5f7f09c89aeb65"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1000607",
+      "historicalName": "Always ultra day normal maandverband met wings",
+      "historicalUnitQuantity": "14 stuks",
+      "historicalImageId": "6538a3319154a6f1efe8aae49902a39e136200c9d57d580622215b3b0d450813"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1000627",
+      "historicalName": "Aardbeien",
+      "historicalUnitQuantity": "400 gram",
+      "historicalImageId": "768dbd806f045e291424d28815315bb1ba866f254f81f5f0ea6a1adfb327cca4"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1000628",
+      "historicalName": "Always daily protect exta long inlegkruisjes",
+      "historicalUnitQuantity": "22 stuks",
+      "historicalImageId": "e1e492650155fcb59bb8874debb9d651df38253956d83ec8f0848b8bc843d31c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1000673",
+      "historicalName": "Always ultra day & night maandverband",
+      "historicalUnitQuantity": "10 stuks",
+      "historicalImageId": "882475de5310c5ec07a9ef0b4339abd142f4028731d6ab52da1ea04a0646f17e"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1000751",
+      "historicalName": "Achterham flinterdun",
+      "historicalUnitQuantity": "110 gram",
+      "historicalImageId": "e6291674bbc6d8e5e5084ae4fe05616ed0bd71d1f20aa58b3fb7a223eba37763"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1000847",
+      "historicalName": "Indische balletjes",
+      "historicalUnitQuantity": "110 gram",
+      "historicalImageId": "fca6eb47c6d9fa1202036ae53ee79b95f106c03415a2a3d2a457bd40b7d950f0"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1000861",
+      "historicalName": "Satéballetjes Indisch gekruid",
+      "historicalUnitQuantity": "110 gram",
+      "historicalImageId": "7b6fd912cdd0aac02ff4cb16f3b2eceff39c1cdb5c2c529fd5696f0526374ec6"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1000952",
+      "historicalName": "Always ultra day normal maandverband",
+      "historicalUnitQuantity": "16 stuks",
+      "historicalImageId": "befec927b5bf9f4acacaf98c6a45eb1bf33b4375c69c8a80fe70460b57f8fdbb"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001103",
+      "historicalName": "Johma rundvleesschotel",
+      "historicalUnitQuantity": "400 gram",
+      "historicalImageId": "7d4f2d37ce63b876dadb1b64e429145af1ee4efef32d47588c3954acddce73c9"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001133",
+      "historicalName": "Luxe vleesschotel",
+      "historicalUnitQuantity": "430 gram",
+      "historicalImageId": "d903dce6e721ab38d06c902a1ad594c5e69205f6d031a559fc8320f188606e0e"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001139",
+      "historicalName": "Picnic Royale mini gehakt cordon bleu",
+      "historicalUnitQuantity": "4 x 50 gram",
+      "historicalImageId": "ea2bb21fc268fe9bad9ef0071cfa20869631d5858b7e691c5111e88868f51cce"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001145",
+      "historicalName": "Picnic Royale mini slavinken",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "8ad10e99ad7061666001e243939b168e64aa4f765e713a66d3cb40a84585d4c8"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001160",
+      "historicalName": "Picnic Royale mini hamburgers",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "146032199902e4828ccf1df85c8033fc1c75291e1624a1859da2ad814ec252ae"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001170",
+      "historicalName": "Picnic Royale mini chipolata",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "43f0704f2520775cfbdbc97caa824b9da9baedc5bf1ac1c08c0b2cc68c3eaf08"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001191",
+      "historicalName": "Picnic Royale mini biefstuk",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "e7832ab49cdb6c9688c7bf3e5c2d4343d43af4251ccf10fe78231ccbd207d9a3"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001275",
+      "historicalName": "Hertenbiefstuk",
+      "historicalUnitQuantity": "2 stuks à 125 gram",
+      "historicalImageId": "e434033946066b923df5fd287df5a5c51dc1a383159ea288c1ce8feb279f1e1b"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001614",
+      "historicalName": "'t Slagershuys runderriblappen",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "228ff0b855e99dd8e826fe0b4550699bad975279f1eb7d3ed70aacd5f68c4368"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001665",
+      "historicalName": "Gember",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "2eca53253e86a11b563bef77f33d11d3aef15ec92ad681acf03d0be351bff62c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001715",
+      "historicalName": "CêlaVita patatas bravas",
+      "historicalUnitQuantity": "425 gram",
+      "historicalImageId": "cb2a76736e62ba742539ecc754a06962603010aa7d451bbb64a9384b3194c3aa"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001753",
+      "historicalName": "'t Slagershuys speklap paprika-peper",
+      "historicalUnitQuantity": "4 stuks à 80 gram",
+      "historicalImageId": "953cd67f3fc38597beca65f5aafde4d3ed234f5f93bc3c20f5ed5f12ecda91f0"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001754",
+      "historicalName": "Elstar appels",
+      "historicalUnitQuantity": "6 stuks",
+      "historicalImageId": "d13f6ad42a42f9cae07da7d93d4714555317c2a364a360f9d3317ca44f3fed2f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001777",
+      "historicalName": "Chaumes 50+",
+      "historicalUnitQuantity": "circa 143 gram",
+      "historicalImageId": "ae588ba01fb3148e3fe32901a168371fdc5cd1e175ea5b59786ed20f2e247c38"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1001857",
+      "historicalName": "'t Slagershuys sukadelappen",
+      "historicalUnitQuantity": "600 gram",
+      "historicalImageId": "2bed3b4f85e5db420149e2baab351289e9f488ea7019a0b1d078da0588e04b8b"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1002048",
+      "historicalName": "Johma saladeschotel gevuld eitje",
+      "historicalUnitQuantity": "375 gram",
+      "historicalImageId": "9c68fc3fd62163764a4c5e5f7267fec707b322083e00054ed1fad98c9d1c2616"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1003210",
+      "historicalName": "Picnic Royale luxe stol met amarenen en amandelspijs",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "7d67f016874135a03fc4dc65355116052f4605b6be9e89f9a34504235be05bf9"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1003731",
+      "historicalName": "G'woon nootmuskaat",
+      "historicalUnitQuantity": "48 gram",
+      "historicalImageId": "5897c090b103c8e85ad80e8d403b20222cd2978f5a7abf24085ca3ac56e5eec7"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1003829",
+      "historicalName": "Hüttenkäse",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "6499bbc6c4e98e7229502a785358af5975f30d0ba58fe591eadb1b783776cddc"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1004052",
+      "historicalName": "Lemon citroensap",
+      "historicalUnitQuantity": "125 ml",
+      "historicalImageId": "d19859c764804e8de3ec0a38d1acc457cdc8b6cdad303c3b3a9b868bba3d61c7"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1004324",
+      "historicalName": "Tony's Chocolonely paaseitjes melk karamel zeezout",
+      "historicalUnitQuantity": "178 gram",
+      "historicalImageId": "5e1de42ebf64dde1f8482c25ce7616cae6c06826f8011491c2b19618d5749a94"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1004459",
+      "historicalName": "Garden Gourmet falafel classic",
+      "historicalUnitQuantity": "190 gram",
+      "historicalImageId": "fde95b0e423f628c689f06598cf5cf53e0262f1da47e50f788752e1c10a5fa05"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1004604",
+      "historicalName": "Henri verse tomatensoep met balletjes",
+      "historicalUnitQuantity": "500 ml",
+      "historicalImageId": "7f06ca9e6c5e7ed0c374e02b4c7ca4182e4b7b4da79a945873b5d8565995b579"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1005048",
+      "historicalName": "Portobello",
+      "historicalUnitQuantity": "2 stuks",
+      "historicalImageId": "947b402b1330c8a979ed731b0bfc005003e8f4466dae99b96f382ac133b01b0a"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1005086",
+      "historicalName": "Dr. Oetker hazelnoten garnering",
+      "historicalUnitQuantity": "55 gram",
+      "historicalImageId": "4146383bc1e6d41872bf552f5d4739e8176ef3cd8ef5c929e8a0e75ca6cfe6f1"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1005124",
+      "historicalName": "G'woon pindakoeken",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "071102c2f4a3b9c4204ff94dcd8ac25524b79e9aa982a323b93a0c15a16942f8"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1005135",
+      "historicalName": "Achterham",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "6b20673d9fb792249f04c21a9e9ab1789d33d485184959e247e3c52029dc81e4"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1005165",
+      "historicalName": "Lipton ice tea green",
+      "historicalUnitQuantity": "8 x 150ml",
+      "historicalImageId": "c1e75e07808ed958a1ccb3938fed142dfa10c6b08f19cbad29c87665ec7ff011"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1005406",
+      "historicalName": "Meester Jean oma's gehaktbrood",
+      "historicalUnitQuantity": "350 gram",
+      "historicalImageId": "0047eace946e0af244e44b22e95a59bdc77178197b485f582da21df17fec71a2"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1005530",
+      "historicalName": "Lay's bugles nacho cheese",
+      "historicalUnitQuantity": "160 gram",
+      "historicalImageId": "782fa6ec01c47c033af7bb3359cb1e6d0eff391ed2cc58a346e2f2182a9cdbe7"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1005781",
+      "historicalName": "Felix countryside sensations rund, kip & groenten",
+      "historicalUnitQuantity": "1 kilo",
+      "historicalImageId": "7373e0bbbed61b1c8670d3bfd2a3fb68ca0625a9444826ea6472fa5211a0716f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1006135",
+      "historicalName": "Tante Fanny bladerdeeg",
+      "historicalUnitQuantity": "270 gram",
+      "historicalImageId": "737b01e663cc004082d3880476713748b377dd5ec6985a042b63de223b2647a3"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1006226",
+      "historicalName": "G'woon pure chocolade",
+      "historicalUnitQuantity": "100 gram",
+      "historicalImageId": "e0f6d6c24ace629dc9f5394964f5a8ee36c24c71f12a0919fd871abcdb6cac4f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1006333",
+      "historicalName": "Verstegen cayennepeper gemalen",
+      "historicalUnitQuantity": "35 gram",
+      "historicalImageId": "866c1ab8ef29991948de0a61caab4721a6cc1e4034f2f6d7850c7d24f8c0f6ed"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1006475",
+      "historicalName": "Gevulde speculaasstaaf",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "293b59fa1c037aa7d7ec4bc0b318c387288c2d4da15571007d2f215e3cd55beb"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1006478",
+      "historicalName": "Nonna Ada verse ravioli kaas",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "71e60dc51d9e35f3e6fad0a6b071201269be2a7ddf427f7e46dc0286e438808a"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1006503",
+      "historicalName": "Mars mixed mini's",
+      "historicalUnitQuantity": "400 gram",
+      "historicalImageId": "7ceb6dd58ce74095427df7330c814f77ecfa4bb93a9afb773e0a3a96c42826e9"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1006573",
+      "historicalName": "Rode uien",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "58414acee1c45f870a2f2ac4535f1df3c5ff37317a1079bd97d19028d4e591ba"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1006870",
+      "historicalName": "Bio+ bio spinazie à la crème",
+      "historicalUnitQuantity": "450 gram",
+      "historicalImageId": "7134aed71b45b0808347b2c46c33a3b4547a47ceb6ba31ab7de8a2c0d6ef88a3"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1007385",
+      "historicalName": "Quiche zalm & spinazie",
+      "historicalUnitQuantity": "350 gram",
+      "historicalImageId": "a26c4dcedf7aec938c4c7c824f1465625945317e4792478807ffc8fbe8e58af8"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1007392",
+      "historicalName": "Andrélon shampoo glans & care",
+      "historicalUnitQuantity": "300 ml",
+      "historicalImageId": "5409e906c9fdd47d9cd775f62711d22d5637f9bb73fd827990f81453eb025451"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1008069",
+      "historicalName": "Smaaktalenten quiche spinazie, mozzarella, courgette & tomaat",
+      "historicalUnitQuantity": "350 gram",
+      "historicalImageId": "07af97a628614bd849f411517c22d9306bde551d36fa8d97d543286ce0c2d8f3"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1008265",
+      "historicalName": "Picnic keukenpapier 3 laags",
+      "historicalUnitQuantity": "4 stuks",
+      "historicalImageId": "5b4e24e58cd66d0d5632f25028aa2a1c42a87cd798f8dd7b0be5492108c54784"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1008338",
+      "historicalName": "Picnic eco keukenpapier 3 laags",
+      "historicalUnitQuantity": "2 stuks",
+      "historicalImageId": "646b2ae4c79791d36c3c3f0a84f8adf72712a53904776e8fdb0d96635124403e"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1008359",
+      "historicalName": "Dr. Oetker amandelen garnering",
+      "historicalUnitQuantity": "55 gram",
+      "historicalImageId": "cded7a7ddc64c77bb760d86d25b5323bb0d5d8843538162b9364fb9d5124e109"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1008380",
+      "historicalName": "Dr. Oetker amandelschaafsel garnering",
+      "historicalUnitQuantity": "40 gram",
+      "historicalImageId": "2767968c25b37e6aaf9ec5aa1eea7886834c38aa6a74edccb65edd70f41d6291"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1008457",
+      "historicalName": "Heineken pils",
+      "historicalUnitQuantity": "12 x 300 ml",
+      "historicalImageId": "7810735874cfda7fdd4858561cc2b6cf81bb51062609beddd15354535b76733b"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1008582",
+      "historicalName": "Boerenbrood bruin tijger",
+      "historicalUnitQuantity": "Half (400 g)"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1008596",
+      "historicalName": "G'woon notenmelange ongezouten",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "21093b661ca32b922aaa1465a0b7721a8330bb9d7d5b07fdb6fb008e78279ad1"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1008838",
+      "historicalName": "G'woon bladerdeeg plakjes",
+      "historicalUnitQuantity": "10 stuks",
+      "historicalImageId": "183051620ecdfac3e044977ff9e0e04c86351e2f90a607f74d65cbd67e5b8afe"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1008882",
+      "historicalName": "Brie",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "b7a4e52dab237476aed7165b0645844117e38a9d9a70e7d8edb3b192dba2d4a9"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1008902",
+      "historicalName": "Casinobrood wit",
+      "historicalUnitQuantity": "Heel (800 g)",
+      "historicalImageId": "a6a3503ae44b856fd64e24f5070a276776f78008a65d213c040fb743dc4b4cb1"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1009157",
+      "historicalName": "Gebrouwen door Vrouwen tricky tripel",
+      "historicalUnitQuantity": "330 ml",
+      "historicalImageId": "548e84ee407ff64964b28df8a1282ec9f447899d368edd66a482e2d9c57e14ee"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1009162",
+      "historicalName": "G'woon oven mini mix",
+      "historicalUnitQuantity": "ca. 16 stuks",
+      "historicalImageId": "3f3407635621028a26d53bfe37dd44cfeb94c475aa840682ef8f70b7f44b5717"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1009406",
+      "historicalName": "Kwekkeboom oven borrelsnacks gemixt",
+      "historicalUnitQuantity": "12 stuks",
+      "historicalImageId": "e9532d6a2f14855c614ab2531d924d2bd7c84570a3ef19619823be09781db425"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1009412",
+      "historicalName": "Bakkerij Ikra Libanees platbrood volkoren",
+      "historicalUnitQuantity": "5 stuks",
+      "historicalImageId": "d1de23f72b956da5498d48485178cc096eccc3254e1bf31d0082ec17c40c14ed"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1009589",
+      "historicalName": "Picnic toiletpapier 3 laags",
+      "historicalUnitQuantity": "8 stuks",
+      "historicalImageId": "1cad65df40ce7e4beed1d3f40d0f34ca0d66d0819e904cbe2ddfdbc62222d970"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1009823",
+      "historicalName": "G'woon oven bitterballen",
+      "historicalUnitQuantity": "12 stuks",
+      "historicalImageId": "9e76ee7571a56318baf678fd8b1236e372642b9b647a66ea6e58fd7c4a40fb18"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1009946",
+      "historicalName": "Andrélon shampoo oil & care",
+      "historicalUnitQuantity": "300 ml",
+      "historicalImageId": "4b825f2fbe9b5fe6be735850c9b0cce6fabaf844c1028ec336dd27c7612a14a8"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010019",
+      "historicalName": "Sjalotten",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "e2448af98441d7f13857e8fafd962838a5727ce6e65ce8c94dcffdca390122cd"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010101",
+      "historicalName": "Bapao rundvlees",
+      "historicalUnitQuantity": "1 stuk",
+      "historicalImageId": "5318b0d3e79810a98d5b06e6359d7916e0c65599a1670622f7193cf7d9a1b2a3"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010174",
+      "historicalName": "Jeeny's tamarinde pasta",
+      "historicalUnitQuantity": "220 gram",
+      "historicalImageId": "57d563d387c766ae70986e6e6f518a5a6af017d3297e0ee0cc59f27aaafbb9ea"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010195",
+      "historicalName": "Picnic vrije uitloop eieren",
+      "historicalUnitQuantity": "12 stuks L",
+      "historicalImageId": "e82a1b4c6ad1dfa86945e3227711b3a7f8f63ce1e117e623c6429bc8c01f203a"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010250",
+      "historicalName": "Bapao kip",
+      "historicalUnitQuantity": "1 stuk",
+      "historicalImageId": "9ed36edc047b2db79841e65d1edeeedf6be46f77ecdb8c36830e802a6724f4f4"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010269",
+      "historicalName": "Picnic Linzen",
+      "historicalUnitQuantity": "400 gram",
+      "historicalImageId": "071c7779480a25391bdb02cde912589350c08bfbce02e769defffd0ee14d7618"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010275",
+      "historicalName": "Echte Enkhuizer Jodekoek original",
+      "historicalUnitQuantity": "20 stuks",
+      "historicalImageId": "dec4b6822831636d2de6382915f46edb8b3b68ebc0fc56a5c77058e434cde172"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010373",
+      "historicalName": "Worstjes Italiaans gekruid",
+      "historicalUnitQuantity": "5 stuks à 65 gram",
+      "historicalImageId": "d59f40347dffa5130885e1b915c787ea050f73c6e5850f8a1a449fd58d343520"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010393",
+      "historicalName": "Worstjes smokey chicken",
+      "historicalUnitQuantity": "5 stuks à 65 gram",
+      "historicalImageId": "de73bd09f47d99202b4b192395ee6fa2472f220d2ce7c3d07cbf9b109b7774a8"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010567",
+      "historicalName": "Lenor beads unstoppables fris",
+      "historicalUnitQuantity": "11 wasbeurten",
+      "historicalImageId": "1a391ccf4b5aec7941bae54083dd4d9b6884113a9d13b3487b95fdcffd61f7be"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010701",
+      "historicalName": "G'woon voorgebakken rösti rondjes",
+      "historicalUnitQuantity": "750 gram",
+      "historicalImageId": "0599af8b30b9ff177c66d3a2fced6f87146a15e67250f4f683d762328191b276"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010723",
+      "historicalName": "Picnic Royale roomboter amandelstaaf",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "794011e8fa7d7acdc47cfd84ab872ff21717af8f777a23fb50a83b2f15f15b04"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010877",
+      "historicalName": "Scharreleieren",
+      "historicalUnitQuantity": "15 stuks M",
+      "historicalImageId": "e23ceae3b0953267e0e5508eeebb4284dbcdd1152428bc056ba9aa37d62951a7"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1010894",
+      "historicalName": "Picnic bio kikkererwten",
+      "historicalUnitQuantity": "400 gram",
+      "historicalImageId": "cf62035d987848ca2d5f8938884d78a92ce81a94d2090094eac8ac02131d3976"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011034",
+      "historicalName": "Robijn wasverzachter morgenfris",
+      "historicalUnitQuantity": "825 ml (33 wasbeurten)",
+      "historicalImageId": "a3429fec3887981d164a3d287f1c4d1a46f8564e3082625f3f488a0342a7cba5"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011037",
+      "historicalName": "Picnic Royale mini zalmblokjes",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "6d03798f090086746732434029c75a7c3b81eb3530b70aaaa9c0a1742eb2c77c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011118",
+      "historicalName": "Robijn wasverzachter puur & zacht",
+      "historicalUnitQuantity": "825 ml (33 wasbeurten)",
+      "historicalImageId": "7f533d31ada578fa194236c115170956dedcdd947b6802e36e07be6b9002e7ff"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011160",
+      "historicalName": "Picnic bio spaghetti volkoren",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "920c3dca40b192a24a776e777658790ef4d81e16221eb30ccc22c3e7e57f930c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011207",
+      "historicalName": "Picnic bio penne rigate volkoren",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "089a619d82d1ca0f63c22e927e9759ac4782e7bd060ff67f0714fcca5e6c961d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011254",
+      "historicalName": "Hardys Endeavour Cabernet Shiraz",
+      "historicalUnitQuantity": "750 ml",
+      "historicalImageId": "6d03e058e19bbedaaa33807b100e551fcf62297da0b3fa6f242212c921433f9e"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011299",
+      "historicalName": "Ted's pizza salami speciaal",
+      "historicalUnitQuantity": "1 stuk",
+      "historicalImageId": "090c223403a9072dd32ade2e1f7e90a0aaf3cb1ecccd2fb73b5ab67f46ca0d79"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011321",
+      "historicalName": "Ted's pizza prosciutto crudo",
+      "historicalUnitQuantity": "1 stuk",
+      "historicalImageId": "93d515a406a262296623c258ba395dba8db2b7663a96b1fb96f56eb16ac6519a"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011518",
+      "historicalName": "Johma huzarenschotel",
+      "historicalUnitQuantity": "400 gram",
+      "historicalImageId": "028d650473749bd4df5562977462ad882b88e10f886de5d67e74743b7f538d15"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011535",
+      "historicalName": "Picnic tissues 3 laags",
+      "historicalUnitQuantity": "90 stuks",
+      "historicalImageId": "c3274ee54e3d621c7cde894f533f7f1134572fdc329a6e9e99ad4f37e2c0e512"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011592",
+      "historicalName": "Château de Laurenceau Bordeaux",
+      "historicalUnitQuantity": "750 ml",
+      "historicalImageId": "6c46ddb60f1e74ce81962ee65b6738c0c0f0ed312f02596bfd59946387880888"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011621",
+      "historicalName": "Nesquik instant cacaopoeder",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "615756ee4686483aeaa637dc9117f2c9380b08b5e244f18886b294de6106e425"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011688",
+      "historicalName": "Suntat ajvar mild",
+      "historicalUnitQuantity": "190 gram",
+      "historicalImageId": "cb4cf5ad53de79470eb2e1d26196874733f61d83314657430d9f2fe332dca34f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011775",
+      "historicalName": "Hummus naturel",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "44c0fca98514fbf6948c43219d16c3301c0280890ff7fde7d3ed79f1f923842c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011787",
+      "historicalName": "Nooitgedagt Chenin Blanc",
+      "historicalUnitQuantity": "750 ml",
+      "historicalImageId": "6c78e8c28724685b361c0f1682c846dd828bf0e83d49979798c5999ac20b3d97"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011833",
+      "historicalName": "Mascarpone",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "6c48cf8e791782311e4f5067b8e1efebdd7e69123d49cfac043c5d8b8f222ee8"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011887",
+      "historicalName": "Tortora sauvignon blanc",
+      "historicalUnitQuantity": "750 ml",
+      "historicalImageId": "a55ccdac8e20961bbf5c99c882b0e904e4a2da74a5e2434a974b003942babfd9"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011909",
+      "historicalName": "Picnic tomatenblokjes",
+      "historicalUnitQuantity": "400 gram",
+      "historicalImageId": "db4c282f4e4e69d27b6d4d4c26d152c609567bef1c76a598dc69656c2e17b99d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011930",
+      "historicalName": "Douglas Green Cabernet Sauvignon",
+      "historicalUnitQuantity": "750 ml",
+      "historicalImageId": "e1b8226c4d6e910057ce0760a1f4d19fda3f4b15e41c03e0dbcd35eee4bb419a"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1011964",
+      "historicalName": "Picnic gepelde tomaten",
+      "historicalUnitQuantity": "400 gram",
+      "historicalImageId": "f1f4ca5c2ea0e11dfc51f1b00c463039debb5793d1c6af8fa6ced7a2fb4dac6c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012007",
+      "historicalName": "Dumil boterhamzakjes",
+      "historicalUnitQuantity": "200 stuks",
+      "historicalImageId": "2e0d1ab484e71ffe67a5541da3a5489d34c9cdcbf3658aab05e46e2cdd9767ab"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012023",
+      "historicalName": "Picnic Royale paaseitjes wit",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "369d7b642a9e085558e6b4838b812d3846bbc20fc0604e30bbe5d94df28a5f8c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012082",
+      "historicalName": "Magnum almond remix mini",
+      "historicalUnitQuantity": "6 stuks",
+      "historicalImageId": "13490f9042d8987c66a56a7b7e09fbfa9e332fe56e9523422496139373ffee78"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012105",
+      "historicalName": "Picnic Royale paaseitjes melk karamel zeezout",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "1370746caa115028b0bc28df7514ac91ac0c550bb12a8a22b7df8dedaa5012b1"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012199",
+      "historicalName": "10/10 schuursponsen",
+      "historicalUnitQuantity": "10 stuks",
+      "historicalImageId": "ac57ebe3575b62c712dd78f7c695cfbe2825881d3600f4d93919ec5727872a11"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012261",
+      "historicalName": "Ricotta",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "3e5de05e76926dc61ce54d9ebdabe515924dda69b80629ae62ee9a51638ce326"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012294",
+      "historicalName": "10/10 wasknijpers hout",
+      "historicalUnitQuantity": "48 stuks",
+      "historicalImageId": "3e31801f624e29962b7cb09726ade7b627a5599b72133620a2a70cab88ad9b22"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012343",
+      "historicalName": "Derlon handzeep hygiene zacht aloë vera",
+      "historicalUnitQuantity": "500 ml",
+      "historicalImageId": "afde48166e8dffdcfd1c78b8b16fd02c4dbb1620c80bc46cf62509fbd963cf45"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012482",
+      "historicalName": "Picnic bio karnemelk",
+      "historicalUnitQuantity": "1 liter",
+      "historicalImageId": "cf59dc8d17a25c7a6e54088e974edaaeee4ff956051b1ad5349b6bb8b798cace"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012561",
+      "historicalName": "Broekmans bankettaartjes met crème",
+      "historicalUnitQuantity": "15st",
+      "historicalImageId": "f6f5cdac29224bf7fd52a28bb9acbaba9302ec46580560486bd8994dc140a6b1"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012613",
+      "historicalName": "Mozzarella",
+      "historicalUnitQuantity": "125 gram",
+      "historicalImageId": "4a0837cc08300ffd82ff4f828ac92058fb090059021f0a2895cabf43183b435c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012655",
+      "historicalName": "Picnic kaasblokjes oud 48+",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "edaa7b3054c05ef716c9fb7886c71a73d0e03518fe01898bfd34fcf4470d1717"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012880",
+      "historicalName": "Picnic ananasstukjes op siroop",
+      "historicalUnitQuantity": "567 gram",
+      "historicalImageId": "4751fbe7726ded303c7dc98e8f8831e9c954d8a585f896a8b4856962d72eb4da"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012888",
+      "historicalName": "Picnic yoghurt Griekse stijl 5% vet",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "bd655b6c9477b29f82aa37d1d43e584700eafeaa76af014625027129edfe4374"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012949",
+      "historicalName": "Picnic pesto alla genovese",
+      "historicalUnitQuantity": "2 x 90 gram",
+      "historicalImageId": "728dceed317d95f7ee3790da5e947680eb9d42a0dac987d55591ba71617facee"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1012973",
+      "historicalName": "Picnic pesto rosso",
+      "historicalUnitQuantity": "2 x 90 gram",
+      "historicalImageId": "2611e9d56626aecbb60c225cf1e3ac7064391ad937810d49ce03cfe8308ba0f0"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013032",
+      "historicalName": "Picnic notenmix ongezouten ongebrand",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "78167ad0ffccd2dc17cb0e379793364c828aaf929878ab37a5aa8cb210b04095"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013056",
+      "historicalName": "Tortora merlot",
+      "historicalUnitQuantity": "750 ml",
+      "historicalImageId": "1752b7417cdcec76d1956165470a8e4c36664ad6433f1b4f30f4a2050047ed6d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013064",
+      "historicalName": "Picnic bio tofu",
+      "historicalUnitQuantity": "400 gram",
+      "historicalImageId": "36a865bb46e0bae1bbc90c9b9925674581699c74bbb1823faae62b4769b5913c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013088",
+      "historicalName": "Picnic pecannoten ongezouten ongebrand",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "d83153581a7656917eca8f5525d10123b8f4a02f8290f6fd27f7ad08ccb2cba3"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013164",
+      "historicalName": "Colli Argen Bardolino",
+      "historicalUnitQuantity": "750 ml",
+      "historicalImageId": "4b26d0e41fcab23ad62ff29fcf0344e6ed4d30a6f7fdb082b2fcb994e2ff74fe"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013299",
+      "historicalName": "Picnic boemboe rendang vlees",
+      "historicalUnitQuantity": "95 gram",
+      "historicalImageId": "3a39f63f153e188a2098e28b48226099d0570c55b10662ce76ab0c49dd19ffe1"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013328",
+      "historicalName": "Robijn wasverzachter jasmijn & sandelhout",
+      "historicalUnitQuantity": "825 ml (33 wasbeurten)",
+      "historicalImageId": "f7c1e7d41df42399245d3d7a65b77c405c8f8572dd96eb267cba7fd09254f1ed"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013369",
+      "historicalName": "Terre Verdi Sangiovese",
+      "historicalUnitQuantity": "750 ml",
+      "historicalImageId": "a549fed90407934eda4c4d4ef63592bf0ccfe93cdadcd96f5fe113a5b7dcc1cf"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013389",
+      "historicalName": "Picnic katjang pedis",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "f076efa50d52ad105efc616516c2b7f85f15c6e4d68fb9ee42ac0f120c6c4db0"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013413",
+      "historicalName": "Terre Verdi Nero d'Avola",
+      "historicalUnitQuantity": "750 ml",
+      "historicalImageId": "e6c7898d4f3f862d0214a46a668d23244664aed53f7b2f66e7495fc4664793be"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013483",
+      "historicalName": "Kipshaslicks",
+      "historicalUnitQuantity": "3 stuks à 80 gram",
+      "historicalImageId": "2c482b3c8418b4463bb51f20a88f3e30a6417ed6513d8d51f08357583c7bb220"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013578",
+      "historicalName": "Picnic cashewnoten ongezouten",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "bbd41bfc25b72cc6739376e58d64eef11ad0714773cd1b117dea18a29b411ea1"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013599",
+      "historicalName": "Picnic boemboe rode curry",
+      "historicalUnitQuantity": "95 gram",
+      "historicalImageId": "c37ad887590e1591bf762bbacb85997fe5843bd56fc738135c308a09f9f89f61"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013619",
+      "historicalName": "Picnic pinda's gezouten",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "2405e9e63f0a370e089dcd1582a2e46e40d98ebca4fb4548efea7aa921d34adb"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013637",
+      "historicalName": "Picnic Royale vleesschotel",
+      "historicalUnitQuantity": "750 gram",
+      "historicalImageId": "0f4f03977a51f603c08754c0afb061b6a375186f0c0384afb55955927de97b75"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013639",
+      "historicalName": "Tesa verpakkingstape 66m x 50mm",
+      "historicalUnitQuantity": "1 stuk",
+      "historicalImageId": "190c7f0f7acf5a08990bb9d7ebe538971aee1461b784a4a6836b20ab8bb01e99"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013644",
+      "historicalName": "Picnic ketjap manis",
+      "historicalUnitQuantity": "500 ml",
+      "historicalImageId": "5b0209b04c98f79b9935410bbf58f870d9889a9f3ba8d9c2341d33bb85d64867"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013662",
+      "historicalName": "Picnic walnoten ongezouten ongebrand",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "c9745b470f6c92ba65b0e3c955f51dc019fbbe915a5fc28122ab74c742fbc110"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013683",
+      "historicalName": "Picnic pinda's dry roasted",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "c0e5b0bd167470825401f0803606c32907613089eab96114c64511e18ea7ee14"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1013690",
+      "historicalName": "Terre Verdi Montepulciano d'Abruzzo",
+      "historicalUnitQuantity": "750 ml",
+      "historicalImageId": "7b5a54ea088550a6dc50fef4017297af6b3562255412d7d8982577d017162b25"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014005",
+      "historicalName": "Picnic sojasaus",
+      "historicalUnitQuantity": "150 ml",
+      "historicalImageId": "352e2385c7a673009f406ffb03e5571bb72678a54477cf7996ae56230b74eac8"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014026",
+      "historicalName": "Picnic sojasaus minder zout",
+      "historicalUnitQuantity": "150 ml",
+      "historicalImageId": "577672f924db236613031051c06306abf8ef3a685d7dbb159eb44dd699a75c1d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014046",
+      "historicalName": "Picnic chocolade sinterklaasjes",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "c8d28e519e0445c279d2c31706df867b398bf233695c2377e6e8d24103b993bf"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014048",
+      "historicalName": "Picnic tortilla wraps naturel large",
+      "historicalUnitQuantity": "6 stuks",
+      "historicalImageId": "3d875b847d934bcc4a5c4a2db45fb22a9ef73e3cc3f47e7911855c5649438b3a"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014087",
+      "historicalName": "Picnic zongedroogde tomaten",
+      "historicalUnitQuantity": "280 gram",
+      "historicalImageId": "26b0b8d4403436e0519d3a414f83de3e4d6c0ca7a9e1bcd9b222905c3fb3caa1"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014118",
+      "historicalName": "Picnic medium tortillawraps naturel",
+      "historicalUnitQuantity": "8 stuks",
+      "historicalImageId": "c783641ffb1d05489393569dca3f6b9954c748a01c62a260ea9aec94cbe35dd9"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014129",
+      "historicalName": "Picnic scharreleieren",
+      "historicalUnitQuantity": "18 stuks M",
+      "historicalImageId": "4a19a941b536c964d1ded6ca5bb755bd48073021d66ded13f051888683ed0b31"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014139",
+      "historicalName": "G'woon fruitijsjes peer",
+      "historicalUnitQuantity": "12 stuks",
+      "historicalImageId": "dea1209da5fd96e7fb62c8ab5c971b77af9e9ca0201a98601d96e1bb12c2eec2"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014220",
+      "historicalName": "Picnic chocolademelk halfvol",
+      "historicalUnitQuantity": "1 liter",
+      "historicalImageId": "ee8a08e2a452c9f5d86adc1069ec94d5fc780738a6351ab75f891b01b4d545a0"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014436",
+      "historicalName": "Salami",
+      "historicalUnitQuantity": "125 gram",
+      "historicalImageId": "116d70d7285d2f54e7566e4f5d805e208414f6ebb68c9ba76e57ce50fd107f57"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014657",
+      "historicalName": "Picnic vershoudzak hersluitbaar",
+      "historicalUnitQuantity": "1 liter • 40 stuks",
+      "historicalImageId": "22da4ba7d03fe87bd1536995364c87e1da61d83dd8d02182709ce97e49a06161"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014700",
+      "historicalName": "Picnic Royale sneeuwpop wit",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "9c44f3797b5de680603b31b4534d6d1c40ffd9541ddae9936acbdf268217cdaf"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014779",
+      "historicalName": "'t Slagershuys kiphaasjes",
+      "historicalUnitQuantity": "300 gram",
+      "historicalImageId": "a957c09c468251d0b1e94bb14610ab8fb55ad805f79d1439403eb536155a8bc4"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1014997",
+      "historicalName": "Picnic sambal oelek",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "8fe049f34310e09894a359b425b5ff9a2345f8145ae1bb6e7beadde7445025cf"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015036",
+      "historicalName": "G'woon kipbouillon",
+      "historicalUnitQuantity": "120 gram • 12 blokjes",
+      "historicalImageId": "26aa7bfc88d617e0cdba73c9640e0d578ffc139d7634391e0ab2661b0768695d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015052",
+      "historicalName": "'t Slagershuys kipdijfilet shoarma",
+      "historicalUnitQuantity": "650 gram",
+      "historicalImageId": "83e46119a89765febd6c40fddc39ab95f59b0c501dde850548ac8da9ea95058f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015110",
+      "historicalName": "'t Slagershuys kipdijfilet shoarma",
+      "historicalUnitQuantity": "275 gram",
+      "historicalImageId": "237eb1766ad2d7b154f216af4d5656f663bf94364cee24e76067c567b64eb502"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015125",
+      "historicalName": "10/10 glasreiniger spray & swipe",
+      "historicalUnitQuantity": "750 ml",
+      "historicalImageId": "4854debc6b9f21852fd482aa56c53332ae96c8c52c603883719300c5b0d766a0"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015142",
+      "historicalName": "Henri verse aspergesoep",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "7b9355396022526ffac2351dd6b5453db57f6b35b8cf1cd16451e43777a58c39"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015194",
+      "historicalName": "Euroma curry madras",
+      "historicalUnitQuantity": "90 gram",
+      "historicalImageId": "99fcff88a347640c0b8909a5e0e822c60db753cc99130a69135df02e6e827652"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015294",
+      "historicalName": "Heks'nkaas vegan gerookte paprika knoflook",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "c795f02ac017b320142ce966e4fbdf05b744ae046cd764711db4991d4426c722"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015321",
+      "historicalName": "Picnic ongezouten roomboter",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "bb641b2ac44a391923f9029906650af02795c0fc042f6841be65b2c3b68d59a4"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015429",
+      "historicalName": "10/10 allesreiniger eucalyptus",
+      "historicalUnitQuantity": "1 liter",
+      "historicalImageId": "40b2e599b02f56b48ce3427fdd96927ad1c48f9f3f0d587e5b67696f5d1e913f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015430",
+      "historicalName": "Granny smith appels",
+      "historicalUnitQuantity": "6 stuks",
+      "historicalImageId": "845580bd30eb087585b1ae3db184348464c4e4d5ea3542c1d52396eb39f2118c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015496",
+      "historicalName": "10/10 allesreiniger blossom",
+      "historicalUnitQuantity": "1 liter",
+      "historicalImageId": "0fa3dff32ad78e5dd93464672149a421c6492d893b73c4030dbe608a4d0edf9f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015563",
+      "historicalName": "Picnic Royale mini kipschnitzel",
+      "historicalUnitQuantity": "165 gram",
+      "historicalImageId": "253c9ed0da08331fd4f8e6bbfe2405ff4a0500b48e7f3971233f18131723bbda"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015564",
+      "historicalName": "Kipsatéspiesen",
+      "historicalUnitQuantity": "3 stuks à 85 gram",
+      "historicalImageId": "14dbe7bef8517e7e0b18844d106a5f0be5afe2892e5346072ea24a31ec6d4297"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015595",
+      "historicalName": "Trio hummus",
+      "historicalUnitQuantity": "210 gram",
+      "historicalImageId": "b6ae227cc6efd0ace2dd965c541fdc50ec20a033276bfad99642b8c77bb055ed"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015692",
+      "historicalName": "Picnic Fairtrade chocolade extra puur 72%",
+      "historicalUnitQuantity": "100 gram",
+      "historicalImageId": "6ca98cecae545e4ff24613e635918cd37134d79812de0bb2d8d1b5035fc0762f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015711",
+      "historicalName": "Picnic Fairtrade chocolade extra puur 85%",
+      "historicalUnitQuantity": "100 gram",
+      "historicalImageId": "8495968989dbb0246c2cac1ce9ac05e3e9d24979bd75277ddcbdd067a02930c2"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015770",
+      "historicalName": "Picnic Turkse yoghurt",
+      "historicalUnitQuantity": "1 liter",
+      "historicalImageId": "c8e5ffd1cd1fc06d15e640b6a1e9eb217ad25752a0d2dc1879c02197b10e8a77"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1015877",
+      "historicalName": "Hollandse balletjes",
+      "historicalUnitQuantity": "110 gram",
+      "historicalImageId": "bcd7ddb0891ca8709506f5bc811df6ad7446c5aa4b1545a4aa33050483f3339f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1016060",
+      "historicalName": "Picnic Royale grote paaseitjes wit melk puur",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "6cb9b38edf6e1e57b1ca1e4977fe6eee14444979323a0a42e0d160212c52660d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1016123",
+      "historicalName": "Picnic Royale mini varkenshaas medaillons gemarineerd",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "d8f3a4972fc5dee21264eb7a6d8a4e44c1d4e8b3b6bd27de064bd9a75e247918"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1016146",
+      "historicalName": "Picnic Royale mini biefstuk gemarineerd",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "a95061e69fc303d41bbef794136b282c49a4bde37e80a88ed042ef07c36d588e"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1016300",
+      "historicalName": "Elstar appels",
+      "historicalUnitQuantity": "1,5 kilo",
+      "historicalImageId": "9feeba9156fea06af5a383704a2ad6e0deb2251b319311565a5391d5256757a1"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1016341",
+      "historicalName": "Andrélon shampoo glans",
+      "historicalUnitQuantity": "300 ml",
+      "historicalImageId": "a7e2c3a5bae5f58b83ea7ed2e72fceedb48d6a0aefe7613c69dbf5e96d62b1fa"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1016520",
+      "historicalName": "Witte kaas",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "6bbab2a705ebc6311582fb4dbd9af6412d928f779b53ed21b5d3f54516173ffb"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1016717",
+      "historicalName": "Topking kaasTengels sweet chili",
+      "historicalUnitQuantity": "10 stuks",
+      "historicalImageId": "e87c94413acc636129ba4712d993837c0ee71e06ec295eeca97775f131a9be9f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1016745",
+      "historicalName": "Picnic bio couscous",
+      "historicalUnitQuantity": "275 gram",
+      "historicalImageId": "57b9be9a2cdaef4d22f41b8fecc0ee76e8e31e5c0417ee047b9efe76cc11eeda"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1016806",
+      "historicalName": "Picnic bio quinoa",
+      "historicalUnitQuantity": "275 gram",
+      "historicalImageId": "a08099c137e41cd3aa8da43e60b81b633a9d8aa50f9810c28e9e0b4857202114"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1016825",
+      "historicalName": "Picnic gele rijst",
+      "historicalUnitQuantity": "325 gram",
+      "historicalImageId": "82f6e290c12cb4acddd23a5b2a4451f02016d4fc4a46daa383dd1fe6dd3130fd"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1016970",
+      "historicalName": "Picnic Royale paascakejes",
+      "historicalUnitQuantity": "2 stuks",
+      "historicalImageId": "f619f912b38bf5b592a1314fdc5df5d3ceec530cc90b826dac31a11af6c481d7"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017113",
+      "historicalName": "Picnic cashewnoten gezouten",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "925e17a03e896a0e99df693680cf64987e973bd4e718d5f0e7392292dde297cc"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017134",
+      "historicalName": "Picnic notenmix ongezouten",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "cb61fcf4fd5d05b82a2ff9f7748a8afec284f5adb86b7dcedada6a8df5a62572"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017518",
+      "historicalName": "Bolletje kruidnoten chocolade mix",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "54d93e11264f95804ec2429d3881c4a4c7868c28ac4f922b93b7cfc1523d17d0"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017586",
+      "historicalName": "Picnic roomboter stroopwafels",
+      "historicalUnitQuantity": "390 gram",
+      "historicalImageId": "7a90d12fba6f43082b38c8c711a780d8128edfce9d2071aac0db280511070c1e"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017608",
+      "historicalName": "Slagroom 30% vet",
+      "historicalUnitQuantity": "250 ml",
+      "historicalImageId": "11530bf0153cf44053bb52a2b6cf881a1c33d6cea819e39e7025e0bb9e7c7665"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017682",
+      "historicalName": "Kitkat kerstmannen melk",
+      "historicalUnitQuantity": "5 stuks",
+      "historicalImageId": "b1ff4c3adf845d6c00fb05eeded472ecabe64a7916132b8cc1edd6ac536d6e4d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017725",
+      "historicalName": "Felix junior sensations",
+      "historicalUnitQuantity": "1 kilo",
+      "historicalImageId": "a349fcf956bc2f1a5a76e1e42eb77378861e521e8471db98bc484807d4a882ba"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017807",
+      "historicalName": "Picnic Royale mini kipchipolata",
+      "historicalUnitQuantity": "6 stuks",
+      "historicalImageId": "777b1aba008c35cbf6ffae0c565eed69da9bf40779dd47d9280c11a4ace38d11"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017821",
+      "historicalName": "G'woon tomatenketchup",
+      "historicalUnitQuantity": "490ml",
+      "historicalImageId": "e86169bfaf3ea841d1c47a9a78d97815627b60c11327d6d9000112b6550aa24c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017826",
+      "historicalName": "Picnic Royale mini kipburgers",
+      "historicalUnitQuantity": "180 gram",
+      "historicalImageId": "a120410a80439abc3c4cfa763de2f418cd1847999b015e63dd1f54d25a08a708"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017844",
+      "historicalName": "Picnic Royale mini kiplapjes",
+      "historicalUnitQuantity": "180 gram",
+      "historicalImageId": "4ed933a8ce843df4d8a9515fab6bb7b8ca8e20bb312cddcf3712b9201209dba9"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017872",
+      "historicalName": "Picnic Royale mini kipshoarma",
+      "historicalUnitQuantity": "180 gram",
+      "historicalImageId": "9b30cd3ad464917956cfd432aa52228f0e7be3e8a1cd2e1b287d53e83c8c0ac5"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017884",
+      "historicalName": "Prosciutto crudo",
+      "historicalUnitQuantity": "70 gram",
+      "historicalImageId": "671e0a2833588738f274797a591430f12057415bd3c20132d8faf3fbce93cdd4"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1017946",
+      "historicalName": "Heinz tomatenketchup",
+      "historicalUnitQuantity": "500 ml",
+      "historicalImageId": "d31e5fa619a5cdb90b18a52a4689120f82f847af341d521274c4dee44526d0c7"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1018005",
+      "historicalName": "Nutella hazelnootpasta",
+      "historicalUnitQuantity": "450 gram",
+      "historicalImageId": "d6286b38a8f3eafcbc7ec73a0abdba63e833e0e411f31324443dc99e1aa84b5e"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1018139",
+      "historicalName": "Mangoblokjes",
+      "historicalUnitQuantity": "175 gram",
+      "historicalImageId": "f4b2a9edff3581259588b809cab16356653a0b2624fe6e7135390f1307dc12dd"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1018148",
+      "historicalName": "Granaatappelpitjes",
+      "historicalUnitQuantity": "100 gram",
+      "historicalImageId": "626fdceb5ab3c750f3515a1dbcd20da0d4232131987fbdb73859f8e2e0e5eae2"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1045194",
+      "historicalName": "O.B. tampons original super plus",
+      "historicalUnitQuantity": "32 stuks",
+      "historicalImageId": "80c8f1e8aa09f9f92145d184a5a182f37438238d02fa769705fd2cd999043ff5"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1045198",
+      "historicalName": "O.B. tampons pro comfort super",
+      "historicalUnitQuantity": "16 stuks",
+      "historicalImageId": "f9ca9154fae02e99e79f2ad14d201a2ac235a36e70f472437e851315b54d96ea"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1045796",
+      "historicalName": "Longlife chinese noodles",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "bc12f12cefb403c22ed3954ac6fee2aed77d81a5c1b666de7c42bd9ee33c530f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1048865",
+      "historicalName": "Picnic blauwe bessen",
+      "historicalUnitQuantity": "750 gram",
+      "historicalImageId": "b4272ad68f1eb4612ef8299dc07ec11c1640634f6dd50b4e2201e3c70f3968a0"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1048866",
+      "historicalName": "Picnic zomerfruit",
+      "historicalUnitQuantity": "750 gram",
+      "historicalImageId": "0f762bd3aecf70cf7ac3326733d1748099eb8bd35b36237ccca7535fb0b3123a"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1048869",
+      "historicalName": "Picnic mango",
+      "historicalUnitQuantity": "750 gram",
+      "historicalImageId": "644de7f743c580b05cac38b73a0a7b8793b1788d544ca1584e2308b13edb866d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1048894",
+      "historicalName": "Picnic pijnboompitten",
+      "historicalUnitQuantity": "100 gram",
+      "historicalImageId": "cdd478edc9a348dc9022fae6c0cdeec8b09a5b07a6d40773f044efdc191926b9"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1049040",
+      "historicalName": "Picnic bio goji-bessen",
+      "historicalUnitQuantity": "175 gram",
+      "historicalImageId": "1a4ae823fd0731f0c86be184d29c89e31951728bd2dac1f5070b4fa01dbe9c91"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1049049",
+      "historicalName": "Picnic pijnboompitten",
+      "historicalUnitQuantity": "40 gram",
+      "historicalImageId": "c91763a7fb860ef8fd486ab1dccc702a34a08448bc065f9ba38cc90763993c48"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1049050",
+      "historicalName": "Picnic sultana rozijnen",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "0a9a2f460210f883b783b237ad7615ee9213a95ef35d5d2d6421ce208a4b4f3c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1050093",
+      "historicalName": "Coca-Cola regular",
+      "historicalUnitQuantity": "4 x 1,5 liter",
+      "historicalImageId": "8f1478ba6ac1f0413c6eee8dfeecae40bd6b73dce26658f6f58fd98bd078575d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1050095",
+      "historicalName": "Coca-Cola zero",
+      "historicalUnitQuantity": "4 x 1,5 liter",
+      "historicalImageId": "99bc109945a60b0a3dbf0adf4281e993946ec68b7d85cc655e32133b37713c73"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1050141",
+      "historicalName": "Asperge aardappels",
+      "historicalUnitQuantity": "1 kilo",
+      "historicalImageId": "b3ff772fac2adde7c26ee43185dbe7614ddd7f0f428cfeb601baa4e324cfec86"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1051270",
+      "historicalName": "'t Slagershuys varkenshaas culinair",
+      "historicalUnitQuantity": "300 gram",
+      "historicalImageId": "c8f2da4506fab37325014283acc3bd74a05aa47c8c555d0716eb8ba923e4639e"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1051273",
+      "historicalName": "Galbani grana padano poeder",
+      "historicalUnitQuantity": "60 gram",
+      "historicalImageId": "612f874c557b502115e98916d7f47b2769e87e27921cd2ff52a28a12e25d8a96"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1054439",
+      "historicalName": "Blooker cacaopoeder",
+      "historicalUnitQuantity": "230 gram",
+      "historicalImageId": "debf47c9cff718df93368682a6a98684af053782435c741a541aa5b17467a70c"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1059973",
+      "historicalName": "G'woon sorbetijs mango passievrucht",
+      "historicalUnitQuantity": "500 ml",
+      "historicalImageId": "9e2db383c18f77e331c8d18f55bb42fb3a34337eda4b3e8f78ad592aa06ee581"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1060727",
+      "historicalName": "Finish powerball quantum all in one",
+      "historicalUnitQuantity": "58 stuks",
+      "historicalImageId": "4f1a06ceb9d3d2ce7d4d006dc1715af420ea1f24a8821aace55729c99882af98"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1066221",
+      "historicalName": "Texels skuumkoppe 0.0%",
+      "historicalUnitQuantity": "300 ml",
+      "historicalImageId": "ca0e28f9d7e17e5f495c5700f4de172572b5127cbaa822c96ff7ef9d33b87174"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1066436",
+      "historicalName": "Maggi bouillon paste rund",
+      "historicalUnitQuantity": "160 gram",
+      "historicalImageId": "69e60e9b408f51364ba43605dc3f961715b66bdc4bdbd91f24b39550d643a21b"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1072751",
+      "historicalName": "Palmolive aroma essence sweet delight",
+      "historicalUnitQuantity": "250 ml",
+      "historicalImageId": "e435815338b9938a317f3f7a8a32d140ce4c697014da400f5b8119f9814b3db6"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1075156",
+      "historicalName": "Robijn wasverzachter pink sensation",
+      "historicalUnitQuantity": "780 ml",
+      "historicalImageId": "f1372d0ba2aaa6f0fa47bbb078d10b0ea2aa5c7c0b2312d703276ff40046b56a"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1080028",
+      "historicalName": "Picnic kruidnoten chocolade mix",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "b503848ccc67f92a8777a70b74631edb1259a22962a8e8b65edf22ff630a547f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1081326",
+      "historicalName": "Beef teriyaki verspakket 2 pers | 15 min",
+      "historicalUnitQuantity": "2 pers • 25 min",
+      "historicalImageId": "1c1b9fd17a09673acc66d181e5f5305df38ad29bf08fd6a390c7899f287f2a42"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1083778",
+      "historicalName": "Tony's Chocolonely witte chocolade letterreep S",
+      "historicalUnitQuantity": "180 gram",
+      "historicalImageId": "7d6005a65d3fa500d68f7e756368186e95b373f6023dcd03d2edcfb842fbd451"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1090397",
+      "historicalName": "'t Slagershuys mini pizza burgertjes",
+      "historicalUnitQuantity": "8 stuks à 25 gram",
+      "historicalImageId": "04ec98853304504eda4b95f64bcd555913eabb3c1c49108d167bf19e30c52754"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1090398",
+      "historicalName": "Picnic Royale mini gepaneerde schnitzels",
+      "historicalUnitQuantity": "5 stuks à 40 gram",
+      "historicalImageId": "a5245894298450ae40d87fa09c5e701279cca34f2e17f25280b7f0ac0bd27824"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1090485",
+      "historicalName": "Allegra verse girasoli gestoofd vlees",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "5767cbf5634ef59dfe4e1be4160efd196b3273cce7a04bd951c6af470b3b4a73"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1090486",
+      "historicalName": "Allegra verse ravioli truffel - parmigiano reggiano",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "a97f2d43f20a7f131546e55a190aa4edca28e751c001d85744dddf6d79915208"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1090491",
+      "historicalName": "Allegra gevulde pasta met eekhoorntjesbrood cantharellen & asiago kaas",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "4a04a2331c30a0a57e29e52175a649e7d868863d83b33d9746e7970789e31e89"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1090531",
+      "historicalName": "Picnic Royale mini kipfiletlapjes oriëntaals",
+      "historicalUnitQuantity": "165 gram",
+      "historicalImageId": "d53a90b64838f5fe66356d8b11e107e9ae6515bacd32c832611fbef140252713"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1090560",
+      "historicalName": "Picnic Royale kerstmannen melk",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "105c98382887094d7856542c1495106d716b047ecfe94a5021b1be81d7304f0d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1093720",
+      "historicalName": "Picnic slagroomijs",
+      "historicalUnitQuantity": "1 liter",
+      "historicalImageId": "7a4ac683fbbaf0e777d2361960693b2a60b4e6e1835a34fb5e6e28201ce52f08"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1100675",
+      "historicalName": "Jos Poell pasteibakjes kerst",
+      "historicalUnitQuantity": "4 stuks",
+      "historicalImageId": "f974adaf81a468fe8ace6c64105b22b311f87e59f653f6cb88483c914e35a773"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1108871",
+      "historicalName": "Picnic bio slagroom vers",
+      "historicalUnitQuantity": "250 ml",
+      "historicalImageId": "da39976fbf0d38fefd3987f19ffd1dc4917a191f6e814aba6d6cb4d61a63e59b"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1114010",
+      "historicalName": "Lenor beads unstoppables ariel",
+      "historicalUnitQuantity": "10 wasbeurten",
+      "historicalImageId": "28c392be4bd3bd268acb87ff3521d072fac32b9e9b2cf6af48b6db29095e7b40"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1114121",
+      "historicalName": "Gillette smooth navulmesjes",
+      "historicalUnitQuantity": "12 stuks",
+      "historicalImageId": "196b0e77cea034a1a5a4c66d54008d589be157d1c99805b3d5b87cc6f963e565"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1117592",
+      "historicalName": "Picnic roomboter kano's",
+      "historicalUnitQuantity": "275 gram",
+      "historicalImageId": "50fcc3e544474c9a3052ca6424d61f7232ed40c2f9040566985d940a673d44da"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1123277",
+      "historicalName": "Lay's patatje joppie chips",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "052d27eba6af031574f5e6a07fc9e3ee6862d5c514f09e3665e5eff6cc4a774b"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1129642",
+      "historicalName": "Le Petit Moulin waldkorn boerenbrood",
+      "historicalUnitQuantity": "Half (400 g)",
+      "historicalImageId": "613ffc1895466624ea9a015f21a5e36a7aea5ac4798e947149cde45f3dbc7fa4"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1130041",
+      "historicalName": "Pure & Basic douchegel aloë vera & cactusvijg",
+      "historicalUnitQuantity": "250 ml",
+      "historicalImageId": "311ce6dbc6996ffc88573acf17d84e0fb0f5abf8f7fc9c278acdb7ee536dab98"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1130042",
+      "historicalName": "Pure & Basic douchegel mango & grapefruit",
+      "historicalUnitQuantity": "250 ml",
+      "historicalImageId": "34fbd542867e4b2f55e9a73bfac8d8a9a08de3ff6dbb26ed09e417e9c0a31582"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1130047",
+      "historicalName": "Bakkerij Goedhart hamburgerbroodjes",
+      "historicalUnitQuantity": "4 stuks",
+      "historicalImageId": "066ad1761280d549d8ac2a6f4cbbc01a46e4b49298dd9f0b219aaf76caf09098"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1131105",
+      "historicalName": "Allegra girasoli citroen & ricotta",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "c91e16ddb18e7327d7d9c6daf08a273a828332c26ff3beae98f127a55acdeca0"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1131124",
+      "historicalName": "Snack wortels",
+      "historicalUnitQuantity": "350 gram",
+      "historicalImageId": "67075f053b38af231dbca1cfa5c8d6aa22a0337985c6804597be8d0aacdfecce"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1133200",
+      "historicalName": "Chocomel vol",
+      "historicalUnitQuantity": "6 x 250 ml",
+      "historicalImageId": "29e42cc171e175e7cb75df3cdbe50b5a535db4f9d95ced6fc04a42bea9a59710"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1133916",
+      "historicalName": "Picnic scharreleieren",
+      "historicalUnitQuantity": "15 stuks",
+      "historicalImageId": "49e1bdbd6dd3fa26e4c133cdd4754dd4166e0fd22060725cb97f700903786beb"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1136052",
+      "historicalName": "G'woon mango",
+      "historicalUnitQuantity": "250 gram",
+      "historicalImageId": "48629421064525ef4645f2180dd58b1fffcc335a6527d0d02cf36bfaa0a4c583"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1139387",
+      "historicalName": "Picnic kookroom 20% vet",
+      "historicalUnitQuantity": "250 ml",
+      "historicalImageId": "efdd1d42cc4c9b75a0f99e4a6dbbc4db382930d9aefa89b1127c7724d4e4ef08"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1139388",
+      "historicalName": "Picnic slagroom",
+      "historicalUnitQuantity": "200 ml",
+      "historicalImageId": "989ed36984f8d86e24b3d0a524db0716087fd2333329f1e340b94bb136aedc4d"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1144054",
+      "historicalName": "Inex crème fraiche",
+      "historicalUnitQuantity": "200 Gram",
+      "historicalImageId": "5006f355cf5d7846df0f14eed0db861b952d5d6ebb3d98b56bf62493963fec12"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1148105",
+      "historicalName": "Picnic Royale verse romige wildsoep",
+      "historicalUnitQuantity": "500 ml • 2 porties",
+      "historicalImageId": "e77d35cae91988af464961cf3126f0895d07699a3f53bc3e933fec065c6714ce"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1148549",
+      "historicalName": "Sperziebonen met spek",
+      "historicalUnitQuantity": "6 x 40 gram",
+      "historicalImageId": "09544f1717434c8f33c4eba23899d71a6dc1e49911924800c9d1c81cba8d2abc"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1150349",
+      "historicalName": "Johnny Cashew gebrand ongezouten",
+      "historicalUnitQuantity": "100 gram",
+      "historicalImageId": "d9e3310783c79ba1d891afdd47f094c003cb321e341fb66e0d3d155fe1e14071"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1151077",
+      "historicalName": "Qualino gepelde pistachenoten",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "d46aed07cc7d980ed443d6d4d0c8a2545ad025326b854fa1b1617108e222a12f"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1151609",
+      "historicalName": "Bettine geitenkaas schijfjes naturel",
+      "historicalUnitQuantity": "2 x 6 schijfjes",
+      "historicalImageId": "d2f09e97314695930019e3954b61ce45d1a5b7193bc3152e0dd53a8fd4a05dae"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1152088",
+      "historicalName": "Picnic bio pijnboompitten",
+      "historicalUnitQuantity": "100 gram",
+      "historicalImageId": "11a00355d0394b5016dc745291bd9df44bd32ee0d7296144e73e6fa927d348ea"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1154594",
+      "historicalName": "Picnic cashewnoten ongezouten",
+      "historicalUnitQuantity": "200 gram",
+      "historicalImageId": "98c42f0b195c02b3f49306726561a7315f9b0dde3dc3f5b198e9bcef40e73ce2"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1156027",
+      "historicalName": "Lenor wasverzachter zeebries",
+      "historicalUnitQuantity": "882 ml",
+      "historicalImageId": "ad7c4409bc72b30d2aeaa09b8191a60c54a106d3a6c69e885612eed3566d7ccc"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1156037",
+      "historicalName": "Lenor beads unstoppables ariel",
+      "historicalUnitQuantity": "155 gram",
+      "historicalImageId": "fe0b37857fb9537ada1b35ce489810171e31098dd368e1e1b26a1a987286655a"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1161914",
+      "historicalName": "Lay's oven baked paprika chips",
+      "historicalUnitQuantity": "225 gram",
+      "historicalImageId": "d0b084438f3c294762e8094bbd5eb55309ccf22d50382079bf3610fb9e83d848"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1163309",
+      "historicalName": "Johma huzarensalade",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "3d2c85d30f09cfcb84c942ca1d63b38074a8630137d68b821cefa928096d1916"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1165264",
+      "historicalName": "Picnic Royale paasstol met amandelspijs",
+      "historicalUnitQuantity": "750 gram",
+      "historicalImageId": "c7212436d9e809b4f12b34ae90dca36ea7e5bd38a1461855ee1c70b09b33da20"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1172478",
+      "historicalName": "Qualino ontbijtmix lijnzaad heel",
+      "historicalUnitQuantity": "500 gram",
+      "historicalImageId": "eca6b532d9e0b80d5fd69199883a9f56ceb616494b5af37674e0ee89d22065ba"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1174780",
+      "historicalName": "Picnic sint paardjes wit",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "db925dcd4922c95e68c1fc658976287e876f191c2928bd2c28fbf0825d9f7ef6"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1180411",
+      "historicalName": "Qualino pijnboompitten",
+      "historicalUnitQuantity": "100 gram",
+      "historicalImageId": "bebe1e06e042233af180fc2fde2d77f0a9e1c86336e85887de8251df4847e941"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1180992",
+      "historicalName": "Picnic Royale bonbon eitjes melk pecan karamel",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "6d8aa909770fa750ec99435bf7fe42a6fddf9eba4edc119e3ee93bec1a369dbf"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1180994",
+      "historicalName": "Picnic Royale bonbon eitjes wit red velvet",
+      "historicalUnitQuantity": "150 gram",
+      "historicalImageId": "5b56085473e263cf25a2593c2fd064d7e9345c26d1460809d28b5b00fee0e752"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1184108",
+      "historicalName": "Guzzini bewaarbak rond M",
+      "historicalUnitQuantity": "ø 15 cm",
+      "historicalImageId": "17a51a86ac376baa43f64e1fdfe1a9d25c716481c8bd89c8792f8a2437b170f8"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1184109",
+      "historicalName": "Guzzini bewaarbak rond L",
+      "historicalUnitQuantity": "ø 19 cm",
+      "historicalImageId": "3df789c2ba05d5ee43d779e7c17d78c390ef33c4effb9547f73043ac205046c4"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1184110",
+      "historicalName": "Guzzini bewaarbak rond XL",
+      "historicalUnitQuantity": "ø 22 cm",
+      "historicalImageId": "beccaf1e8134e0fa11b10e6ff9d804f5aa7427ebc4ef6d2ca7c290a3c19dea63"
+    },
+    {
+      "retailer": "picnic",
+      "productId": "s1184112",
+      "historicalName": "Guzzini bewaarbakje S",
+      "historicalUnitQuantity": "12 x 12 x 7 cm",
+      "historicalImageId": "3662f772426273d6ce360655d8dfeb9fb4e56bfd9dbf64c2e87781e85a8d85d7"
+    }
+  ]
+}

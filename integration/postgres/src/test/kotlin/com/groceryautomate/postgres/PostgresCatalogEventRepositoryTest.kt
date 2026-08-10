@@ -5,6 +5,7 @@ import com.groceryautomate.events.CommandConflict
 import com.groceryautomate.events.CommandId
 import com.groceryautomate.events.EventId
 import com.groceryautomate.events.OfferObserved
+import com.groceryautomate.events.PreviousProductIdLinked
 import com.groceryautomate.events.ProposedCatalogEvent
 import com.groceryautomate.events.StreamId
 import com.groceryautomate.events.StreamVersionConflict
@@ -41,7 +42,7 @@ class PostgresCatalogEventRepositoryTest {
                 it.execute("CREATE SCHEMA public")
             }
         }
-        assertEquals(2, PostgresMigrator(dataSource).migrate())
+        assertEquals(3, PostgresMigrator(dataSource).migrate())
         repository = PostgresCatalogEventRepository(dataSource)
     }
 
@@ -149,6 +150,38 @@ class PostgresCatalogEventRepositoryTest {
         assertEquals(3, repository.rebuildProjections())
         assertEquals(before, repository.getProduct(ProductId("picnic:nl:s1")))
         assertEquals(historyBefore, repository.getPriceHistory(ProductId("picnic:nl:s1")))
+    }
+
+    @Test
+    fun previousProductIdResolvesCurrentProductAndSurvivesRebuild() = runTest {
+        repository.append(catalogAppend())
+        val previousId = ProductId("picnic:nl:s-previous")
+        repository.append(
+            catalogAppend(
+                commandId = "00000000-0000-4000-8000-000000000010",
+                expectedVersion = 2,
+                events = listOf(
+                    ProposedCatalogEvent(
+                        EventId("00000000-0000-4000-8000-000000000011"),
+                        OCCURRED_AT,
+                        PreviousProductIdLinked(
+                            productId = ProductId("picnic:nl:s1"),
+                            previousProductId = previousId,
+                            matchedName = "Wholegrain oats",
+                            matchedUnitQuantity = "500 gram",
+                            evidence = fixtureCatalogProduct().evidence
+                        )
+                    )
+                )
+            )
+        )
+
+        val resolved = repository.getProduct(previousId)
+        assertEquals(ProductId("picnic:nl:s1"), resolved?.product?.id)
+        assertEquals(listOf(previousId), resolved?.product?.previousIds)
+
+        assertEquals(3, repository.rebuildProjections())
+        assertEquals(resolved, repository.getProduct(previousId))
     }
 
     @Test

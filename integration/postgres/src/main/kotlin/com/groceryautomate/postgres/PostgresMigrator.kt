@@ -68,7 +68,8 @@ class PostgresMigrator(
         fun loadDefaultMigrations(): List<SqlMigration> {
             return listOf(
                 loadMigration(1, "event_store"),
-                loadMigration(2, "historical_price_projection")
+                loadMigration(2, "historical_price_projection"),
+                loadMigration(3, "product_previous_ids")
             )
         }
 

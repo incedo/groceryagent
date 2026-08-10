@@ -32,6 +32,39 @@ object PicnicOrderReferenceExtractor {
         details.forEach { detail -> collectProductIds(detail, seen, this) }
     }
 
+    fun historicalProducts(details: Iterable<JsonElement>): List<PicnicHistoricalProductReference> {
+        val products = linkedMapOf<String, PicnicHistoricalProductReference>()
+        details.forEach { collectHistoricalProducts(it, products) }
+        return products.values.toList()
+    }
+
+    private fun collectHistoricalProducts(
+        element: JsonElement,
+        destination: MutableMap<String, PicnicHistoricalProductReference>
+    ) {
+        when (element) {
+            is JsonArray -> element.forEach { collectHistoricalProducts(it, destination) }
+            is JsonObject -> {
+                val id = productIdFields.firstNotNullOfOrNull { element[it].stringValue() }
+                    ?.takeIf(productIdPattern::matches)
+                val name = element["name"].stringValue()
+                val unitQuantity = element["unit_quantity"].stringValue()
+                    ?: element["unitQuantity"].stringValue()
+                if (id != null && name != null && unitQuantity != null) {
+                    destination[id] = PicnicHistoricalProductReference(
+                        productId = id,
+                        name = name,
+                        unitQuantity = unitQuantity,
+                        imageId = element["image_id"].stringValue()
+                            ?: (element["image_ids"] as? JsonArray)?.firstOrNull().stringValue()
+                    )
+                }
+                element.values.forEach { collectHistoricalProducts(it, destination) }
+            }
+            else -> Unit
+        }
+    }
+
     private fun collectProductIds(
         element: JsonElement,
         seen: MutableSet<String>,
@@ -53,3 +86,10 @@ object PicnicOrderReferenceExtractor {
     private fun JsonElement?.stringValue(): String? =
         (this as? JsonPrimitive)?.takeIf { it.isString }?.contentOrNull?.takeIf(String::isNotBlank)
 }
+
+data class PicnicHistoricalProductReference(
+    val productId: String,
+    val name: String,
+    val unitQuantity: String,
+    val imageId: String?
+)

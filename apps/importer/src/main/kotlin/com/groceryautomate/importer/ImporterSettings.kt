@@ -34,13 +34,17 @@ data class ImporterSettings(
 
 enum class ImportMode {
     PRODUCTS_AND_HISTORY,
-    HISTORY_ONLY;
+    HISTORY_ONLY,
+    SEARCH_REPLACEMENTS;
 
     companion object {
         fun from(value: String): ImportMode = when (value) {
             "products-and-history" -> PRODUCTS_AND_HISTORY
             "history-only" -> HISTORY_ONLY
-            else -> error("IMPORT_MODE must be products-and-history or history-only.")
+            "search-replacements" -> SEARCH_REPLACEMENTS
+            else -> error(
+                "IMPORT_MODE must be products-and-history, history-only, or search-replacements."
+            )
         }
     }
 }

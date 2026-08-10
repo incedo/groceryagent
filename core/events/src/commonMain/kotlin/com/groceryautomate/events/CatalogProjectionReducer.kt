@@ -24,4 +24,14 @@ fun reduceCatalogProduct(current: CatalogProduct?, event: CatalogEvent): Catalog
     }
 
     is HistoricalPriceObserved -> error("Historical price events use their own projection.")
+
+    is PreviousProductIdLinked -> {
+        val product = requireNotNull(current) { "Previous product id requires an imported product." }
+        require(product.product.id == event.productId) { "Previous product id belongs to another product." }
+        product.copy(
+            product = product.product.copy(
+                previousIds = (product.product.previousIds + event.previousProductId).distinct()
+            )
+        )
+    }
 }

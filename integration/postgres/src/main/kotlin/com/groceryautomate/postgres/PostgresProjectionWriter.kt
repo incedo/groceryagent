@@ -5,6 +5,7 @@ import com.groceryautomate.events.CatalogEventCodec
 import com.groceryautomate.events.CatalogEvent
 import com.groceryautomate.events.EventEnvelope
 import com.groceryautomate.events.HistoricalPriceObserved
+import com.groceryautomate.events.PreviousProductIdLinked
 import com.groceryautomate.events.reduceCatalogProduct
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -48,6 +49,33 @@ internal class PostgresProjectionWriter(
             it.setString(4, document)
             it.setLong(5, envelope.globalPosition)
             it.executeUpdate()
+        }
+        if (event is PreviousProductIdLinked) applyPreviousId(envelope, event)
+    }
+
+    private fun applyPreviousId(envelope: EventEnvelope, event: PreviousProductIdLinked) {
+        connection.prepareStatement(
+            """
+            INSERT INTO product_previous_ids(previous_product_id, product_id, last_global_position)
+            VALUES (?, ?, ?) ON CONFLICT (previous_product_id) DO NOTHING
+            """.trimIndent()
+        ).use {
+            it.setString(1, event.previousProductId.value)
+            it.setString(2, event.productId.value)
+            it.setLong(3, envelope.globalPosition)
+            it.executeUpdate()
+        }
+        val linkedProductId = connection.prepareStatement(
+            "SELECT product_id FROM product_previous_ids WHERE previous_product_id = ?"
+        ).use {
+            it.setString(1, event.previousProductId.value)
+            it.executeQuery().use { result ->
+                check(result.next()) { "Previous product id projection was not written." }
+                result.getString(1)
+            }
+        }
+        require(linkedProductId == event.productId.value) {
+            "Previous product id is already linked to another product."
         }
     }
 

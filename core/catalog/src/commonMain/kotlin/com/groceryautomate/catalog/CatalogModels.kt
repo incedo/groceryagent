@@ -42,10 +42,13 @@ data class Product(
     val brand: String?,
     val description: String?,
     val imageId: String?,
-    val highlights: List<String> = emptyList()
+    val highlights: List<String> = emptyList(),
+    val previousIds: List<ProductId> = emptyList()
 ) {
     init {
         require(name.isNotBlank()) { "Product name must not be blank." }
+        require(id !in previousIds) { "Current product id cannot also be a previous id." }
+        require(previousIds.distinct().size == previousIds.size) { "Previous product ids must be unique." }
     }
 }
 

@@ -54,6 +54,26 @@ class ImportManifestTest {
     }
 
     @Test
+    fun searchReplacementModeAndHistoricalReferenceAreExplicit() {
+        val settings = ImporterSettings.fromEnvironment { name ->
+            if (name == "IMPORT_MODE") "search-replacements" else null
+        }
+        val product = ImportProduct(
+            ImportRetailer.PICNIC,
+            "s1001",
+            historicalName = "Chicken tenderloins",
+            historicalUnitQuantity = "300 gram",
+            historicalImageId = "image-1"
+        )
+
+        assertEquals(ImportMode.SEARCH_REPLACEMENTS, settings.mode)
+        product.requireHistoricalReference()
+        assertFailsWith<IllegalArgumentException> {
+            ImportProduct(ImportRetailer.PICNIC, "s1002", historicalName = "Incomplete")
+        }
+    }
+
+    @Test
     fun productRequestDelayHasASafeDefaultAndAcceptsExplicitZero() {
         assertEquals(3_000, ImporterSettings.fromEnvironment { null }.providerRequestDelayMillis)
         assertEquals(
