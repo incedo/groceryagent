@@ -20,6 +20,7 @@ import com.groceryautomate.events.StreamId
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 class BatchProductImageImporterTest {
     @Test
@@ -55,6 +56,30 @@ class BatchProductImageImporterTest {
         assertEquals(1, delays)
         assertEquals(2, repository.appends.size)
         assertEquals("ProductImageStored", repository.appends.first().events.single().event.eventType)
+    }
+
+    @Test
+    fun reportsTheFailingExternalStageWithoutLoggingItsMessage() = runTest {
+        val repository = ImageRepository()
+        val importer = BatchProductImageImporter(
+            source = object : ProductImageSource {
+                override suspend fun getPng(sourceImageId: String, variant: ProductImageVariant) =
+                    PNG_SIGNATURE
+            },
+            objectStore = object : ProductImageObjectStore {
+                override suspend fun putPng(sha256: String, bytes: ByteArray): ProductImageObject =
+                    error("sensitive provider detail")
+            },
+            assets = repository,
+            events = ProductImageImportService(repository) { EVENT_ID },
+            now = { OCCURRED_AT }
+        )
+
+        val result = importer.run(1).results.single()
+
+        assertEquals(ImageImportStatus.FAILED, result.status)
+        assertEquals("ProductImageStorageException", result.failure?.exceptionType)
+        assertIs<ImportFailureDiagnostic>(result.failure)
     }
 
     private companion object {

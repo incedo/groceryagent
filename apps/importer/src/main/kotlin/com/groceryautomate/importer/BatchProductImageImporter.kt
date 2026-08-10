@@ -25,10 +25,14 @@ class BatchProductImageImporter(
             candidates.forEachIndexed { index, candidate ->
                 add(
                     try {
-                        val bytes = source.getPng(candidate.sourceImageId, ProductImageVariant.LARGE)
+                        val bytes = imageStage(::ProductImageDownloadException) {
+                            source.getPng(candidate.sourceImageId, ProductImageVariant.LARGE)
+                        }
                         validatePng(bytes)
                         val sha256 = bytes.sha256()
-                        val stored = objectStore.putPng(sha256, bytes)
+                        val stored = imageStage(::ProductImageStorageException) {
+                            objectStore.putPng(sha256, bytes)
+                        }
                         val asset = ProductImageAsset(
                             productId = candidate.productId,
                             provider = "picnic",
@@ -42,16 +46,18 @@ class BatchProductImageImporter(
                             sha256 = sha256,
                             observedAt = now()
                         )
-                        val append = events.record(
-                            asset,
-                            productImageCommandId(
-                                candidate.productId.value,
-                                candidate.sourceImageId,
-                                ProductImageVariant.LARGE.name,
-                                sha256
-                            ),
-                            ProducerId("catalog-image-importer")
-                        )
+                        val append = imageStage(::ProductImageEventException) {
+                            events.record(
+                                asset,
+                                productImageCommandId(
+                                    candidate.productId.value,
+                                    candidate.sourceImageId,
+                                    ProductImageVariant.LARGE.name,
+                                    sha256
+                                ),
+                                ProducerId("catalog-image-importer")
+                            )
+                        }
                         ProductImageImportResult(
                             candidate.productId.value,
                             candidate.sourceImageId,
@@ -86,6 +92,17 @@ class BatchProductImageImporter(
     private fun ByteArray.sha256(): String = MessageDigest.getInstance("SHA-256")
         .digest(this).joinToString("") { "%02x".format(it) }
 
+    private suspend fun <T> imageStage(
+        wrap: (Throwable) -> ProductImageStageException,
+        block: suspend () -> T
+    ): T = try {
+        block()
+    } catch (cancelled: CancellationException) {
+        throw cancelled
+    } catch (failure: Exception) {
+        throw wrap(failure)
+    }
+
     private companion object {
         const val MAX_IMAGE_BYTES = 10 * 1024 * 1024
         const val PNG_MEDIA_TYPE = "image/png"
@@ -93,6 +110,11 @@ class BatchProductImageImporter(
             .map(Int::toByte)
     }
 }
+
+sealed class ProductImageStageException(cause: Throwable) : IllegalStateException(cause)
+class ProductImageDownloadException(cause: Throwable) : ProductImageStageException(cause)
+class ProductImageStorageException(cause: Throwable) : ProductImageStageException(cause)
+class ProductImageEventException(cause: Throwable) : ProductImageStageException(cause)
 
 data class ProductImageImportReport(val results: List<ProductImageImportResult>) {
     val failureCount: Int = results.count { it.status == ImageImportStatus.FAILED }
