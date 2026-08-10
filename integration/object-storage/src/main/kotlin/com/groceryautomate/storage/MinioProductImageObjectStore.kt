@@ -10,6 +10,7 @@ import java.io.ByteArrayInputStream
 
 data class ProductImageStorageSettings(
     val endpoint: String,
+    val region: String,
     val accessKey: String,
     val secretKey: String,
     val bucket: String,
@@ -17,6 +18,7 @@ data class ProductImageStorageSettings(
 ) {
     init {
         require(endpoint.startsWith("https://")) { "S3 endpoint must use HTTPS." }
+        require(region.isNotBlank()) { "S3 region must not be blank." }
         require(accessKey.isNotBlank()) { "S3 access key must not be blank." }
         require(secretKey.isNotBlank()) { "S3 secret key must not be blank." }
         require(bucket.isNotBlank()) { "S3 bucket must not be blank." }
@@ -32,6 +34,7 @@ class MinioProductImageObjectStore(
         MinioObjectWriter(
             MinioClient.builder()
                 .endpoint(settings.endpoint)
+                .region(settings.region)
                 .credentials(settings.accessKey, settings.secretKey)
                 .build()
         ),

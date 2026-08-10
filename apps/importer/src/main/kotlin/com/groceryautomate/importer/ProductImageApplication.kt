@@ -23,6 +23,7 @@ internal fun runProductImageImport(settings: ImporterSettings): ProductImageImpo
     val environment = PicnicEnvironmentFile.load(settings.picnicEnvironmentFile)
     val storageSettings = ProductImageStorageSettings(
         endpoint = settings.s3Endpoint,
+        region = settings.s3Region,
         accessKey = requireNotNull(settings.s3AccessKey) { "S3_ACCESS_KEY is required." },
         secretKey = requireNotNull(settings.s3SecretKey) { "S3_SECRET_KEY is required." },
         bucket = settings.imageBucket,

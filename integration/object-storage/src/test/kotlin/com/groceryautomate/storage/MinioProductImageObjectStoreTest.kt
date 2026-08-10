@@ -15,6 +15,7 @@ class MinioProductImageObjectStoreTest {
             },
             ProductImageStorageSettings(
                 "https://minio.example.test",
+                "us-east-1",
                 "access",
                 "secret",
                 "product-images",
