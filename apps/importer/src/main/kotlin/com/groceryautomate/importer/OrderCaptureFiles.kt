@@ -68,12 +68,23 @@ class OrderCaptureFiles(
     fun toManifest(captureDirectory: Path, output: Path, batchId: String): ImportManifest {
         val details = readDeliveryDetails(captureDirectory)
         val productIds = PicnicOrderReferenceExtractor.productIds(details)
+        val historicalProducts = PicnicOrderReferenceExtractor.historicalProducts(details)
+            .associateBy { it.productId }
         require(productIds.isNotEmpty()) { "Order capture contains no recognized Picnic product ids." }
         return ImportManifest(
             schemaVersion = IMPORT_MANIFEST_SCHEMA_VERSION,
             batchId = batchId,
             producerId = "picnic-order-capture",
-            products = productIds.map { ImportProduct(ImportRetailer.PICNIC, it) },
+            products = productIds.map { productId ->
+                val historical = historicalProducts[productId]
+                ImportProduct(
+                    retailer = ImportRetailer.PICNIC,
+                    productId = productId,
+                    historicalName = historical?.name,
+                    historicalUnitQuantity = historical?.unitQuantity,
+                    historicalImageId = historical?.imageId
+                )
+            },
             historicalPrices = PicnicHistoricalPriceExtractor.observations(details, ::historicalObservationId)
         ).also { writeManifest(output, it) }
     }

@@ -55,6 +55,24 @@ class CatalogEventContractTest {
             event.eventType, event.schemaVersion, CatalogEventCodec.encode(event)
         ))
     }
+
+    @Test
+    fun previousProductIdRoundTripsAndUpdatesProjection() {
+        val imported = imported()
+        val initial = reduceCatalogProduct(null, imported)
+        val event = PreviousProductIdLinked(
+            productId = imported.product.id,
+            previousProductId = ProductId("picnic:nl:s-old"),
+            matchedName = "Oats",
+            matchedUnitQuantity = "500 gram",
+            evidence = imported.evidence
+        )
+
+        assertEquals(event, CatalogEventCodec.decode(
+            event.eventType, event.schemaVersion, CatalogEventCodec.encode(event)
+        ))
+        assertEquals(listOf(event.previousProductId), reduceCatalogProduct(initial, event).product.previousIds)
+    }
 }
 
 private fun imported(): ProductImported = ProductImported(

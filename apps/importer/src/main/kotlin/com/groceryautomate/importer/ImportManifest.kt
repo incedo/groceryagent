@@ -36,10 +36,32 @@ data class ImportManifest(
 @Serializable
 data class ImportProduct(
     val retailer: ImportRetailer,
-    val productId: String
+    val productId: String,
+    val historicalName: String? = null,
+    val historicalUnitQuantity: String? = null,
+    val historicalImageId: String? = null
 ) {
     init {
         require(productId.isNotBlank()) { "Provider product id must not be blank." }
+        require(historicalName == null || historicalName.isNotBlank()) {
+            "Historical product name must be null or non-blank."
+        }
+        require(historicalUnitQuantity == null || historicalUnitQuantity.isNotBlank()) {
+            "Historical unit quantity must be null or non-blank."
+        }
+        require(historicalImageId == null || historicalImageId.isNotBlank()) {
+            "Historical image id must be null or non-blank."
+        }
+        require((historicalName == null) == (historicalUnitQuantity == null)) {
+            "Historical product name and unit quantity must be provided together."
+        }
+    }
+
+    fun requireHistoricalReference() {
+        requireNotNull(historicalName) { "Search replacement import requires a historical product name." }
+        requireNotNull(historicalUnitQuantity) {
+            "Search replacement import requires a historical unit quantity."
+        }
     }
 }
 

@@ -108,7 +108,9 @@ depend on runtime reflection. Keep domain decisions in shared pure Kotlin rather
 
 The catalog event store atomically records command idempotency, contiguous stream versions,
 immutable event envelopes, and projection changes. JDBC keeps ordering and transaction boundaries
-visible. Projection rebuild replays the global cursor without changing the event log.
+visible. Projection rebuild replays the global cursor without changing the event log. Retailer IDs
+that have been replaced are linked by `PreviousProductIdLinked`; the PostgreSQL alias projection
+resolves an old ID to the current canonical product without rewriting historical price snapshots.
 
 Local-first capability is desirable for saved recipes, preferences, comparisons, and shopping lists. Local storage sits behind core repository contracts so SQLite or browser storage can vary per platform without leaking into features. Cloud sync uses stable IDs, idempotent writes, and per-device cursors.
 
@@ -229,6 +231,7 @@ Representative domain events:
 - `DietaryProfileUpdated`
 - `ProductImported`
 - `OfferObserved`
+- `PreviousProductIdLinked`
 - `ComparisonCreated`
 - `RecommendationGenerated`
 - `RecipeSaved`

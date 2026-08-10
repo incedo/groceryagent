@@ -2,6 +2,7 @@ package com.groceryautomate.importer
 
 import com.groceryautomate.events.ProductImportService
 import com.groceryautomate.events.HistoricalPriceImportService
+import com.groceryautomate.events.ProductReplacementImportService
 import com.groceryautomate.picnic.PicnicClient
 import com.groceryautomate.picnic.adapter.`in`.catalog.PicnicCanonicalCatalogAdapter
 import com.groceryautomate.picnic.adapter.out.config.PicnicEnvironmentFile
@@ -63,13 +64,26 @@ fun main(args: Array<String>) {
     val settings = ImporterSettings.fromEnvironment()
     val fileManifest = ImportManifestFile.read(settings.manifestFile)
     val manifest = settings.batchIdOverride?.let { fileManifest.copy(batchId = it) } ?: fileManifest
-    val report = when (settings.mode) {
-        ImportMode.PRODUCTS_AND_HISTORY -> runImport(settings, manifest)
-        ImportMode.HISTORY_ONLY -> runHistoricalPriceImport(settings, manifest)
+    when (settings.mode) {
+        ImportMode.PRODUCTS_AND_HISTORY -> printImportReport(runImport(settings, manifest))
+        ImportMode.HISTORY_ONLY -> printImportReport(runHistoricalPriceImport(settings, manifest))
+        ImportMode.SEARCH_REPLACEMENTS -> printReplacementReport(
+            runProductReplacementImport(settings, manifest)
+        )
     }
+}
+
+private fun printImportReport(report: ImportReport) {
     report.results.forEach { println(it.toLogLine()) }
     println("Import batch ${report.batchId}: ${report.results.size} products, " +
         "${report.historicalPriceResults.size} historical prices, ${report.failureCount} failures.")
+    if (!report.successful) kotlin.system.exitProcess(1)
+}
+
+private fun printReplacementReport(report: ProductReplacementImportReport) {
+    report.results.forEach { println(it.toLogLine()) }
+    println("Replacement import batch ${report.batchId}: ${report.results.size} products, " +
+        "${report.failureCount} failures.")
     if (!report.successful) kotlin.system.exitProcess(1)
 }
 
@@ -141,5 +155,48 @@ private fun runHistoricalPriceImport(settings: ImporterSettings, manifest: Impor
         ImportReport(manifest.batchId, emptyList(), results)
     } finally {
         dataSource.close()
+    }
+}
+
+private fun runProductReplacementImport(
+    settings: ImporterSettings,
+    manifest: ImportManifest
+): ProductReplacementImportReport {
+    manifest.products.forEach(ImportProduct::requireHistoricalReference)
+    require(manifest.historicalPrices.isEmpty()) {
+        "Search replacement mode does not import historical prices; run them in history-only mode."
+    }
+    val environment = PicnicEnvironmentFile.load(settings.picnicEnvironmentFile)
+    val httpClient = HttpClient(Java) {
+        install(HttpTimeout) { requestTimeoutMillis = settings.providerTimeoutMillis }
+    }
+    return try {
+        val dataSource = PostgresDataSource.create(settings.database)
+        try {
+            PostgresMigrator(dataSource).migrate()
+            val repository = PostgresCatalogEventRepository(dataSource)
+            val picnic = PicnicClient(
+                config = environment.config,
+                transport = KtorPicnicHttpTransport(httpClient),
+                authStore = InMemoryPicnicAuthStore(environment.authToken)
+            )
+            val service = ProductReplacementImportService(
+                PicnicCanonicalCatalogAdapter(picnic.catalog),
+                repository,
+                { UUID.randomUUID().toString() },
+                { Instant.now().toString() }
+            )
+            runBlocking {
+                BatchProductReplacementImporter(
+                    service,
+                    { delay(settings.providerRequestDelayMillis) },
+                    ::classifyPicnicImportFailure
+                ).run(manifest)
+            }
+        } finally {
+            dataSource.close()
+        }
+    } finally {
+        httpClient.close()
     }
 }

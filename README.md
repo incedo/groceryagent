@@ -35,6 +35,7 @@ The project is being established with the same shared-first architecture used by
 - [Native event-sourced catalog backend](docs/architecture/native-event-sourced-backend.md)
 - [Batch product importer](docs/architecture/batch-product-importer.md)
 - [Picnic order capture to product import](docs/architecture/picnic-order-capture-import.md)
+- [Picnic replacement product import](docs/architecture/picnic-product-replacement-import.md)
 - [Native backend CI/CD pipeline](docs/architecture/native-backend-ci-cd.md)
 - [Sanitized Picnic capture fixtures](docs/architecture/picnic-sanitized-fixtures.md)
 - [Picnic capture coverage expansion](docs/architecture/picnic-capture-coverage.md)
@@ -158,6 +159,13 @@ product/offer observation is intended. Product and offer facts are stored throug
 is a follow-up because the current retailer recipe endpoint has no agreed canonical mapper or
 recipe event contract.
 
+Historical IDs that no longer expose product details can use the explicit `search-replacements`
+mode. It searches by the captured historical name, accepts only one exact name and compatible-pack
+match, checks PostgreSQL, imports missing current details, and records the historical ID through
+`PreviousProductIdLinked`. The sanitized retry input is
+[`config/picnic-failed-product-replacements.json`](config/picnic-failed-product-replacements.json);
+it contains product references only and does not start automatically.
+
 To seed products from a different Picnic account's completed orders, first capture the private
 order responses locally with that account's explicit auth file:
 
@@ -171,8 +179,9 @@ PICNIC_ENV_FILE=/absolute/path/second-account.env \
 ```
 
 The first command performs only read requests and stores raw summary/detail JSON below the ignored
-`.local/` directory. The second command extracts only recognized Picnic product-ID fields,
-deduplicates them, and writes a regular import manifest. Supported single-product order lines also
+`.local/` directory. The second command extracts recognized Picnic product IDs plus their historical
+name, package, and image ID, deduplicates them, and writes a regular import manifest. Supported
+single-product order lines also
 produce historical paid-price observations with integer line totals, quantity, purchase time,
 promotion, package text, retailer, and region. Delivery, order, and line identifiers become an
 opaque SHA-256 observation ID; raw identifiers, addresses, payments, slots, and account data are

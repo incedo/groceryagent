@@ -93,9 +93,18 @@ class PostgresCatalogEventRepository(
     override suspend fun getProduct(id: ProductId): CatalogProduct? = io {
         dataSource.connection.use { connection ->
             connection.prepareStatement(
-                "SELECT document FROM catalog_products WHERE product_id = ?"
+                """
+                SELECT document FROM catalog_products
+                WHERE product_id = ? OR product_id = (
+                    SELECT product_id FROM product_previous_ids WHERE previous_product_id = ?
+                )
+                ORDER BY CASE WHEN product_id = ? THEN 0 ELSE 1 END
+                LIMIT 1
+                """.trimIndent()
             ).use {
                 it.setString(1, id.value)
+                it.setString(2, id.value)
+                it.setString(3, id.value)
                 it.executeQuery().use { result ->
                     if (result.next()) decodeProduct(result.getString("document")) else null
                 }
@@ -152,6 +161,7 @@ class PostgresCatalogEventRepository(
         dataSource.connection.use { connection ->
             connection.inTransaction {
                 createStatement().use { it.executeUpdate("DELETE FROM product_price_history") }
+                createStatement().use { it.executeUpdate("DELETE FROM product_previous_ids") }
                 createStatement().use { it.executeUpdate("DELETE FROM catalog_products") }
                 val writer = PostgresProjectionWriter(this)
                 createStatement().use { statement ->

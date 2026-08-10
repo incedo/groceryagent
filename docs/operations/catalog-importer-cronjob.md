@@ -12,6 +12,9 @@ not start an import. The CronJob must remain suspended; every import is a named 
 - `products-and-history` reads every listed product from Picnic before storing product, current
   offer, and historical price events. It defaults to a three-second delay between products; use it
   only with an approved account and pacing policy.
+- `search-replacements` searches by historical product name and package, imports only an
+  unambiguous current product, and records its old ID. It performs one search and at most one detail
+  request per item, sequentially, with the same configured delay between items.
 - A Job name becomes `IMPORT_BATCH_ID`. Reusing the same name after a failed attempt preserves
   idempotency for product imports; historical observations are idempotent by observation ID.
 - Deleting a Job stops future work but does not roll back events already committed to PostgreSQL.
@@ -47,7 +50,8 @@ kubectl -n "$IMPORT_NAMESPACE" get jobs
 The suspend query must print `true`. Stop if a previous importer Job is active, required secrets are
 missing, the manifest is unreviewed, or the selected mode is not intentional.
 
-For `products-and-history`, also verify `Secret/grocery-automate-picnic` and obtain explicit approval
+For `products-and-history` or `search-replacements`, also verify
+`Secret/grocery-automate-picnic` and obtain explicit approval
 for the account, delay, retry, and maximum-request policy. The homelab CronJob sets
 `PICNIC_REQUEST_DELAY_MILLIS=3000`; retain or deliberately increase it for sequential shard runs.
 
@@ -78,6 +82,11 @@ test "$(shasum -a 256 "$IMPORT_FILE" | awk '{print $1}')" = \
 Do not edit a generated shard. Regenerate the complete directory from the reviewed source instead.
 Run one shard at a time in index order and wait for database verification before submitting the
 next. Reuse the same shard and batch ID when resuming a failed run.
+
+The checked-in `config/picnic-failed-product-replacements.json` is a sanitized technical dataset:
+it contains only old product ID, historical name/package, and optional image ID. It contains no
+orders, prices, purchase counts, or purchase times. Review and shard it before a K3s run. Merely
+merging this file does not create a Job or unsuspend the CronJob.
 
 ## 2. Manifest delivery boundary
 
@@ -143,6 +152,23 @@ kubectl -n "$IMPORT_NAMESPACE" get job "$IMPORT_JOB" -o yaml
 
 Never run the plain `kubectl create job --from=cronjob/...` command for historical order data: the
 default mode is `products-and-history`, which performs Picnic requests.
+
+For `search-replacements`, retain the Picnic secret volume from the CronJob and override only the
+manifest ConfigMap and mode. Do not use the history-only transformation above because that
+deliberately removes Picnic authentication:
+
+```shell
+kubectl -n "$IMPORT_NAMESPACE" create job "$IMPORT_JOB" \
+  --from=cronjob/catalog-importer --dry-run=client -o json |
+jq --arg config "$IMPORT_CONFIG" '
+  (.spec.template.spec.volumes[] |
+    select(.name == "import-manifest").configMap.name) = $config |
+  (.spec.template.spec.containers[] | select(.name == "catalog-importer")).env |=
+    (map(select(.name != "IMPORT_MODE")) +
+      [{"name":"IMPORT_MODE","value":"search-replacements"}])
+' |
+kubectl apply -f -
+```
 
 For a shard set, repeat this section manually in `manifest-index.json` sequence order. Set
 `IMPORT_FILE`, `IMPORT_RUN`, `IMPORT_JOB`, and `IMPORT_CONFIG` from the selected shard and its batch

@@ -1,6 +1,7 @@
 package com.groceryautomate.picnic
 
 import com.groceryautomate.picnic.domain.PicnicOrderReferenceExtractor
+import com.groceryautomate.picnic.domain.PicnicHistoricalProductReference
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -54,5 +55,22 @@ class PicnicOrderReferenceExtractorTest {
 
         assertEquals(emptyList(), PicnicOrderReferenceExtractor.deliveryIds(unknown))
         assertEquals(emptyList(), PicnicOrderReferenceExtractor.productIds(listOf(unknown)))
+    }
+
+    @Test
+    fun extractsLatestSanitizedHistoricalProductFields() {
+        val details = listOf(
+            Json.parseToJsonElement(
+                """{"items":[{"id":"s1001","name":"Old name","unit_quantity":"300 gram", "image_ids":["image-1"]}]}"""
+            ),
+            Json.parseToJsonElement(
+                """{"items":[{"id":"s1001","name":"Current name","unit_quantity":"0.3 kg", "image_ids":["image-2"]}]}"""
+            )
+        )
+
+        assertEquals(
+            listOf(PicnicHistoricalProductReference("s1001", "Current name", "0.3 kg", "image-2")),
+            PicnicOrderReferenceExtractor.historicalProducts(details)
+        )
     }
 }
