@@ -57,6 +57,7 @@ Implemented catalog-backend modules are:
 - `core/catalog`: provider-neutral product, composition, offer, money, quantity, provenance, and catalog-port contracts;
 - `core/events`: platform-neutral event envelopes, catalog events, append contracts, and the deterministic catalog reducer;
 - `integration/picnic-client`: Picnic client plus the adapter from Picnic objects to canonical catalog objects;
+- `integration/object-storage`: S3-compatible immutable product-image object storage;
 - `integration/postgres`: JDBC event store, checksum-protected migrations, and rebuildable catalog projection;
 - `apps/backend`: Ktor CIO composition root, import command, persisted catalog queries, cursor feed, and native-image entry point.
 - `apps/importer`: one-shot manifest-driven product import through the same canonical events and PostgreSQL projection path.

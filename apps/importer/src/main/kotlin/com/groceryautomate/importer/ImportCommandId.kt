@@ -21,3 +21,8 @@ fun historicalObservationId(sourceKey: String): HistoricalPriceObservationId {
     val digest = MessageDigest.getInstance("SHA-256").digest(sourceKey.toByteArray(StandardCharsets.UTF_8))
     return HistoricalPriceObservationId(digest.joinToString("") { "%02x".format(it) })
 }
+
+fun productImageCommandId(productId: String, sourceImageId: String, variant: String, sha256: String): CommandId {
+    val name = "product-image:$productId:$sourceImageId:$variant:$sha256"
+    return CommandId(UUID.nameUUIDFromBytes(name.toByteArray(StandardCharsets.UTF_8)).toString())
+}

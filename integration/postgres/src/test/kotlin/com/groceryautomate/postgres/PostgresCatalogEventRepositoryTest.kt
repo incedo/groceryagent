@@ -1,12 +1,15 @@
 package com.groceryautomate.postgres
 
 import com.groceryautomate.catalog.ProductId
+import com.groceryautomate.catalog.ProductImageAsset
+import com.groceryautomate.catalog.ProductImageVariant
 import com.groceryautomate.events.CommandConflict
 import com.groceryautomate.events.CommandId
 import com.groceryautomate.events.EventId
 import com.groceryautomate.events.OfferObserved
 import com.groceryautomate.events.PreviousProductIdLinked
 import com.groceryautomate.events.ProposedCatalogEvent
+import com.groceryautomate.events.ProductImageStored
 import com.groceryautomate.events.StreamId
 import com.groceryautomate.events.StreamVersionConflict
 import kotlinx.coroutines.test.runTest
@@ -42,7 +45,7 @@ class PostgresCatalogEventRepositoryTest {
                 it.execute("CREATE SCHEMA public")
             }
         }
-        assertEquals(3, PostgresMigrator(dataSource).migrate())
+        assertEquals(4, PostgresMigrator(dataSource).migrate())
         repository = PostgresCatalogEventRepository(dataSource)
     }
 
@@ -182,6 +185,44 @@ class PostgresCatalogEventRepositoryTest {
 
         assertEquals(3, repository.rebuildProjections())
         assertEquals(resolved, repository.getProduct(previousId))
+    }
+
+    @Test
+    fun productImageCandidatesAreProjectedAndRebuilt() = runTest {
+        repository.append(catalogAppend())
+        val candidate = repository.findImageImportCandidates(ProductImageVariant.LARGE, 50).single()
+        assertEquals("image-1", candidate.sourceImageId)
+        val asset = ProductImageAsset(
+            ProductId("picnic:nl:s1"),
+            "picnic",
+            "image-1",
+            ProductImageVariant.LARGE,
+            "product-images",
+            "images/sha256/aa/${"a".repeat(64)}.png",
+            "https://assets.example.test/images/sha256/aa/${"a".repeat(64)}.png",
+            "image/png",
+            123,
+            "a".repeat(64),
+            OCCURRED_AT
+        )
+        repository.append(
+            catalogAppend(
+                commandId = "00000000-0000-4000-8000-000000000012",
+                expectedVersion = 2,
+                events = listOf(
+                    ProposedCatalogEvent(
+                        EventId("00000000-0000-4000-8000-000000000013"),
+                        OCCURRED_AT,
+                        ProductImageStored(asset)
+                    )
+                )
+            )
+        )
+
+        assertEquals(asset, repository.getProductImageAsset(asset.productId, asset.variant))
+        assertTrue(repository.findImageImportCandidates(ProductImageVariant.LARGE, 50).isEmpty())
+        assertEquals(3, repository.rebuildProjections())
+        assertEquals(asset, repository.getProductImageAsset(asset.productId, asset.variant))
     }
 
     @Test

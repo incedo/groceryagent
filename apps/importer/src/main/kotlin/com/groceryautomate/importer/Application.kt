@@ -62,6 +62,10 @@ fun main(args: Array<String>) {
     }
     require(args.isEmpty()) { "The importer accepts no arguments; configure it through environment variables." }
     val settings = ImporterSettings.fromEnvironment()
+    if (settings.mode == ImportMode.PRODUCT_IMAGES) {
+        printProductImageReport(runProductImageImport(settings))
+        return
+    }
     val fileManifest = ImportManifestFile.read(settings.manifestFile)
     val manifest = settings.batchIdOverride?.let { fileManifest.copy(batchId = it) } ?: fileManifest
     when (settings.mode) {
@@ -70,6 +74,7 @@ fun main(args: Array<String>) {
         ImportMode.SEARCH_REPLACEMENTS -> printReplacementReport(
             runProductReplacementImport(settings, manifest)
         )
+        ImportMode.PRODUCT_IMAGES -> error("Product image mode does not use a manifest.")
     }
 }
 

@@ -9,6 +9,8 @@ import com.groceryautomate.catalog.HistoricalPriceObservation
 import com.groceryautomate.catalog.HistoricalPriceObservationId
 import com.groceryautomate.catalog.Money
 import com.groceryautomate.catalog.RetailerId
+import com.groceryautomate.catalog.ProductImageAsset
+import com.groceryautomate.catalog.ProductImageVariant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -72,6 +74,31 @@ class CatalogEventContractTest {
             event.eventType, event.schemaVersion, CatalogEventCodec.encode(event)
         ))
         assertEquals(listOf(event.previousProductId), reduceCatalogProduct(initial, event).product.previousIds)
+    }
+
+    @Test
+    fun productImageAssetRoundTripsWithoutChangingProductFacts() {
+        val initial = reduceCatalogProduct(null, imported())
+        val event = ProductImageStored(
+            ProductImageAsset(
+                ProductId("picnic:nl:s1"),
+                "picnic",
+                "image-1",
+                ProductImageVariant.LARGE,
+                "product-images",
+                "images/sha256/aa/${"a".repeat(64)}.png",
+                "https://assets.example.test/images/sha256/aa/${"a".repeat(64)}.png",
+                "image/png",
+                123,
+                "a".repeat(64),
+                "2026-08-10T10:00:00Z"
+            )
+        )
+
+        assertEquals(event, CatalogEventCodec.decode(
+            event.eventType, event.schemaVersion, CatalogEventCodec.encode(event)
+        ))
+        assertEquals(initial, reduceCatalogProduct(initial, event))
     }
 }
 

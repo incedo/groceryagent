@@ -9,6 +9,12 @@ data class ImporterSettings(
     val picnicEnvironmentFile: Path,
     val providerTimeoutMillis: Long,
     val providerRequestDelayMillis: Long,
+    val imageImportLimit: Int,
+    val s3Endpoint: String,
+    val s3AccessKey: String?,
+    val s3SecretKey: String?,
+    val imageBucket: String,
+    val assetBaseUrl: String,
     val mode: ImportMode,
     val database: PostgresSettings
 ) {
@@ -20,6 +26,14 @@ data class ImporterSettings(
                 picnicEnvironmentFile = Path.of(read.value("PICNIC_ENV_FILE", "/run/secrets/picnic.env")),
                 providerTimeoutMillis = read.positiveLong("PICNIC_TIMEOUT_MILLIS", 15_000),
                 providerRequestDelayMillis = read.nonNegativeLong("PICNIC_REQUEST_DELAY_MILLIS", 3_000),
+                imageImportLimit = read.positiveInt("IMAGE_IMPORT_LIMIT", 50).also {
+                    require(it <= 50) { "IMAGE_IMPORT_LIMIT must not exceed 50." }
+                },
+                s3Endpoint = read.value("S3_ENDPOINT", "https://minio.home.intelliworks.nl"),
+                s3AccessKey = read("S3_ACCESS_KEY")?.trim()?.takeIf(String::isNotEmpty),
+                s3SecretKey = read("S3_SECRET_KEY")?.trim()?.takeIf(String::isNotEmpty),
+                imageBucket = read.value("S3_BUCKET", "grocery-product-images"),
+                assetBaseUrl = read.value("ASSET_BASE_URL", "https://assets.home.intelliworks.nl"),
                 mode = ImportMode.from(read.value("IMPORT_MODE", "products-and-history")),
                 database = PostgresSettings(
                     jdbcUrl = read.value("DATABASE_URL", "jdbc:postgresql://127.0.0.1:5432/grocery"),
@@ -35,15 +49,18 @@ data class ImporterSettings(
 enum class ImportMode {
     PRODUCTS_AND_HISTORY,
     HISTORY_ONLY,
-    SEARCH_REPLACEMENTS;
+    SEARCH_REPLACEMENTS,
+    PRODUCT_IMAGES;
 
     companion object {
         fun from(value: String): ImportMode = when (value) {
             "products-and-history" -> PRODUCTS_AND_HISTORY
             "history-only" -> HISTORY_ONLY
             "search-replacements" -> SEARCH_REPLACEMENTS
+            "product-images" -> PRODUCT_IMAGES
             else -> error(
-                "IMPORT_MODE must be products-and-history, history-only, or search-replacements."
+                "IMPORT_MODE must be products-and-history, history-only, search-replacements, " +
+                    "or product-images."
             )
         }
     }

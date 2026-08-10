@@ -6,12 +6,14 @@ import com.groceryautomate.catalog.ProductOffer
 import com.groceryautomate.catalog.ProductId
 import com.groceryautomate.catalog.ProviderEvidence
 import com.groceryautomate.catalog.HistoricalPriceObservation
+import com.groceryautomate.catalog.ProductImageAsset
 import kotlinx.serialization.Serializable
 
 const val PRODUCT_IMPORTED_TYPE = "ProductImported"
 const val OFFER_OBSERVED_TYPE = "OfferObserved"
 const val HISTORICAL_PRICE_OBSERVED_TYPE = "HistoricalPriceObserved"
 const val PREVIOUS_PRODUCT_ID_LINKED_TYPE = "PreviousProductIdLinked"
+const val PRODUCT_IMAGE_STORED_TYPE = "ProductImageStored"
 const val CATALOG_EVENT_SCHEMA_VERSION = 1
 
 sealed interface CatalogEvent {
@@ -60,5 +62,13 @@ data class PreviousProductIdLinked(
     }
 
     override val eventType: String = PREVIOUS_PRODUCT_ID_LINKED_TYPE
+    override val schemaVersion: Int = CATALOG_EVENT_SCHEMA_VERSION
+}
+
+@Serializable
+data class ProductImageStored(
+    val asset: ProductImageAsset
+) : CatalogEvent {
+    override val eventType: String = PRODUCT_IMAGE_STORED_TYPE
     override val schemaVersion: Int = CATALOG_EVENT_SCHEMA_VERSION
 }

@@ -17,6 +17,8 @@ not start an import. The CronJob must remain suspended; every import is a named 
 - `search-replacements` searches by historical product name and package, imports only an
   unambiguous current product, and records its old ID. It performs one search and at most one detail
   request per item, sequentially, with the same configured delay between items.
+- `product-images` reads missing image candidates from PostgreSQL, downloads one Picnic `large` PNG
+  at a time, stores it in MinIO, and emits a product-image event. It does not read a manifest.
 - A Job name becomes `IMPORT_BATCH_ID`. Reusing the same name after a failed attempt preserves
   idempotency for product imports; historical observations are idempotent by observation ID.
 - Deleting a Job stops future work but does not roll back events already committed to PostgreSQL.
@@ -56,6 +58,15 @@ For `products-and-history` or `search-replacements`, also verify
 `Secret/grocery-automate-picnic` and obtain explicit approval
 for the account, delay, retry, and maximum-request policy. The homelab CronJob sets
 `PICNIC_REQUEST_DELAY_MILLIS=3000`; retain or deliberately increase it for sequential shard runs.
+
+For `product-images`, also verify `Secret/grocery-automate-product-images` has exactly the
+`S3_ACCESS_KEY` and `S3_SECRET_KEY` keys. Create it from a private local env file when it is absent;
+never commit that file or pass credentials as literal shell arguments:
+
+```shell
+kubectl -n "$IMPORT_NAMESPACE" create secret generic grocery-automate-product-images \
+  --from-env-file=/absolute/private/path/minio-product-images.env
+```
 
 ### Split a large product batch into bounded manifests
 
@@ -179,6 +190,32 @@ For a shard set, repeat this section manually in `manifest-index.json` sequence 
 ID. Never create the next Job while another importer Job is active. Running the same shards later
 in `products-and-history` mode safely retries historical observations by observation ID, but product
 requests still require the separately approved account and pacing policy.
+
+### Create one bounded product-image Job
+
+Image import does not use the manifest. Generate a named Job from the suspended CronJob and replace
+only its mode and bounded limit. Start with one image for the storage/read smoke test; never exceed
+50 or create a second importer Job concurrently:
+
+```shell
+export IMPORT_RUN=product-images-YYYYMMDD-NNN
+export IMPORT_JOB=catalog-import-$IMPORT_RUN
+
+kubectl -n "$IMPORT_NAMESPACE" create job "$IMPORT_JOB" \
+  --from=cronjob/catalog-importer --dry-run=client -o json |
+jq '
+  (.spec.template.spec.containers[] | select(.name == "catalog-importer")).env |=
+    (map(select(.name != "IMPORT_MODE" and .name != "IMAGE_IMPORT_LIMIT")) +
+      [{"name":"IMPORT_MODE","value":"product-images"},
+       {"name":"IMAGE_IMPORT_LIMIT","value":"1"}])
+' |
+kubectl apply -f -
+```
+
+After completion, query `product_image_assets` through an approved read-only database path and
+request the projected `publicUrl`. It must return HTTP 200 from `assets.home.intelliworks.nl`
+before increasing the next Job to at most 50. A rerun selects only products whose current image ID
+and `large` variant are not yet projected.
 
 ## 4. Monitor and verify
 

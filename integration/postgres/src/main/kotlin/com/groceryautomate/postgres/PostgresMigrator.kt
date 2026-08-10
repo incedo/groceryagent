@@ -69,7 +69,8 @@ class PostgresMigrator(
             return listOf(
                 loadMigration(1, "event_store"),
                 loadMigration(2, "historical_price_projection"),
-                loadMigration(3, "product_previous_ids")
+                loadMigration(3, "product_previous_ids"),
+                loadMigration(4, "product_image_assets")
             )
         }
 
