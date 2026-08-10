@@ -156,6 +156,7 @@ Project rules for contributors and coding agents working in this repository.
 - Use fixed clocks, seeded fixtures, and fake providers in normal automated tests.
 - Live retailer, catalog, pricing, or recipe-provider tests are opt-in and must not consume provider quotas in ordinary CI.
 - Do not commit credentials, retailer tokens, precise user locations, or raw provider responses containing personal data.
+- When a local credential, password, API token, access key, or secret env file is created or rotated, add or update a Bitwarden save script for it and tell the user to run that script after unlocking Bitwarden. The local ignored file is only a working copy; Bitwarden is the recovery source.
 
 ## Dependency Version Rules
 
