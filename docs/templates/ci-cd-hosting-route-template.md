@@ -61,7 +61,8 @@ Pas deze matrix aan de repository aan.
 ## CI/CD-route
 
 ```text
-codex/* of feature/* branch
+Functionele werkbranch
+(bijvoorbeeld feature/*, fix/*, docs/* of chore/*)
         |
         v
 Pull request
